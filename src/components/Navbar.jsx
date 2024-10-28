@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import styled from 'styled-components';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
@@ -13,11 +13,20 @@ const Nav = styled(motion.nav)`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background: ${({ theme }) => `${theme.colors.glass}`};
-  backdrop-filter: blur(10px);
+  background: ${({ theme, $isMenuOpen }) => 
+    $isMenuOpen 
+      ? `${theme.colors.glass}F0`  // More opaque when menu is open
+      : `${theme.colors.glass}`
+  };
+  backdrop-filter: ${({ $isMenuOpen }) => 
+    $isMenuOpen 
+      ? 'blur(20px)'
+      : 'blur(10px)'
+  };
   border-bottom: 1px solid ${({ theme }) => theme.colors.border};
   z-index: 100;
   padding: 0 20px;
+  transition: all 0.3s ease;
 
   @media (min-width: 768px) {
     padding: 0 50px;
@@ -29,13 +38,14 @@ const MobileMenu = styled(motion.div)`
   top: 70px;
   left: 0;
   right: 0;
-  background: ${({ theme }) => theme.colors.glass};
-  backdrop-filter: blur(10px);
+  background: ${({ theme }) => `${theme.colors.glass}`};
+  backdrop-filter: blur(20px);
   border-bottom: 1px solid ${({ theme }) => theme.colors.border};
   padding: 20px;
   display: flex;
   flex-direction: column;
   gap: 15px;
+  z-index: 99;
   
   @media (min-width: 768px) {
     display: none;
@@ -217,12 +227,32 @@ const RightSection = styled.div`
 
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const menuRef = useRef(null);
+  const buttonRef = useRef(null);
+
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (
+        menuRef.current && 
+        !menuRef.current.contains(event.target) &&
+        !buttonRef.current.contains(event.target)
+      ) {
+        setIsMenuOpen(false);
+      }
+    }
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
 
   return (
     <Nav
       initial={{ opacity: 0, y: -20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.8 }}
+      $isMenuOpen={isMenuOpen}
     >
       <LogoSection>
         <LogoButton to="/">
@@ -243,6 +273,7 @@ export default function Navbar() {
         </div>
         <ThemeSwitcher />
         <MenuButton
+          ref={buttonRef}
           onClick={() => setIsMenuOpen(!isMenuOpen)}
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.95 }}
@@ -254,16 +285,17 @@ export default function Navbar() {
       <AnimatePresence>
         {isMenuOpen && (
           <MobileMenu
+            ref={menuRef}
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
           >
             <NavLinks>
-              <NavLink href="/work-in-progress" number="01">About</NavLink>
-              <NavLink href="/work-in-progress" number="02">Experience</NavLink>
-              <NavLink href="/work-in-progress" number="03">Work</NavLink>
-              <NavLink href="/work-in-progress" number="04">Contact</NavLink>
-              <ResumeButton href="/work-in-progress">Resume</ResumeButton>
+              <NavLink to="/work-in-progress" number="01">About</NavLink>
+              <NavLink to="/work-in-progress" number="02">Experience</NavLink>
+              <NavLink to="/work-in-progress" number="03">Work</NavLink>
+              <NavLink to="/work-in-progress" number="04">Contact</NavLink>
+              <ResumeButton as={Link} to="/work-in-progress">Resume</ResumeButton>
             </NavLinks>
           </MobileMenu>
         )}
