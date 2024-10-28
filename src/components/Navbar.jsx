@@ -10,20 +10,14 @@ const Nav = styled(motion.nav)`
   left: 0;
   right: 0;
   height: 70px;
-  padding: 0 50px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background: ${({ theme }) => theme.colors.glass};
+  background: ${({ theme }) => `${theme.colors.glass}`};
   backdrop-filter: blur(10px);
   border-bottom: 1px solid ${({ theme }) => theme.colors.border};
   z-index: 100;
-
-  .right-section {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-  }
+  padding: 0 50px;
 `;
 
 const LogoSection = styled(motion.div)`
@@ -36,7 +30,6 @@ const LogoButton = styled(Link)`
   font-family: 'JetBrains Mono', monospace;
   font-size: 1.5rem;
   color: ${({ theme }) => theme.colors.primary};
-  cursor: pointer;
   text-decoration: none;
   display: flex;
   align-items: center;
@@ -53,42 +46,34 @@ const StatusIndicator = styled.div`
   gap: 8px;
   font-family: 'JetBrains Mono', monospace;
   font-size: 14px;
-  color: #64ffda;
+  color: ${({ theme }) => theme.colors.primary};
   opacity: 0.8;
+  padding: 4px 8px;
+  border-radius: 4px;
+  background: ${({ theme }) => `${theme.colors.primary}10`};
 
   &:before {
     content: '';
     width: 8px;
     height: 8px;
+    background: ${({ theme }) => theme.colors.primary};
     border-radius: 50%;
-    background: #64ffda;
     animation: pulse 2s infinite;
-  }
-
-  @keyframes pulse {
-    0% { transform: scale(1); opacity: 1; }
-    50% { transform: scale(1.2); opacity: 0.5; }
-    100% { transform: scale(1); opacity: 1; }
+    box-shadow: 0 0 10px ${({ theme }) => theme.colors.primary};
   }
 `;
 
 const NavLinks = styled.div`
   display: flex;
-  gap: 3rem;
+  gap: 2rem;
   align-items: center;
-
-  @media (max-width: 768px) {
-    display: none;
-  }
 `;
 
 const NavLink = styled(motion.a)`
   font-family: 'JetBrains Mono', monospace;
-  color: #ccd6f6;
+  color: ${({ theme }) => theme.colors.text};
   text-decoration: none;
   font-size: 15px;
-  padding: 8px 12px;
-  border-radius: 8px;
   position: relative;
   display: flex;
   align-items: center;
@@ -97,14 +82,13 @@ const NavLink = styled(motion.a)`
 
   &:before {
     content: '${props => props.number}';
-    color: #64ffda;
+    color: ${({ theme }) => theme.colors.primary};
     font-size: 14px;
     opacity: 0.8;
   }
 
   &:hover {
-    background: rgba(100, 255, 218, 0.1);
-    color: #64ffda;
+    color: ${({ theme }) => theme.colors.primary};
     transform: translateY(-2px);
   }
 `;
@@ -176,6 +160,12 @@ const TechIcon = styled(motion.span)`
   }
 `;
 
+const RightSection = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+`;
+
 export default function Navbar() {
   const [showTech, setShowTech] = useState(false);
 
@@ -192,53 +182,46 @@ export default function Navbar() {
         <StatusIndicator>ready</StatusIndicator>
       </LogoSection>
 
-      <NavLinks>
-        <NavLink 
-          href="#about" 
-          number="01"
-          whileHover={{ y: -2 }}
-          whileTap={{ scale: 0.95 }}
-        >
-          About
-        </NavLink>
-        <NavLink 
-          href="#experience" 
-          number="02"
-          whileHover={{ y: -2 }}
-          whileTap={{ scale: 0.95 }}
-        >
-          Experience
-        </NavLink>
-        <NavLink 
-          href="#work" 
-          number="03"
-          whileHover={{ y: -2 }}
-          whileTap={{ scale: 0.95 }}
-        >
-          Work
-        </NavLink>
-        <NavLink 
-          href="#contact" 
-          number="04"
-          whileHover={{ y: -2 }}
-          whileTap={{ scale: 0.95 }}
-        >
-          Contact
-        </NavLink>
-        <ResumeButton 
-          href="/resume.pdf"
-          target="_blank"
-          rel="noopener noreferrer"
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-        >
-          <span>📄</span> Resume.pdf
-        </ResumeButton>
-      </NavLinks>
-
-      <div className="right-section">
+      <RightSection>
+        <NavLinks>
+          <NavLink 
+            href="#about" 
+            number="01"
+            whileHover={{ y: -2 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            About
+          </NavLink>
+          <NavLink 
+            href="#experience" 
+            number="02"
+            whileHover={{ y: -2 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            Experience
+          </NavLink>
+          <NavLink 
+            href="#work" 
+            number="03"
+            whileHover={{ y: -2 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            Work
+          </NavLink>
+          <NavLink 
+            href="#contact" 
+            number="04"
+            whileHover={{ y: -2 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            Contact
+          </NavLink>
+          <ResumeButton href="/resume.pdf">
+            Resume
+          </ResumeButton>
+        </NavLinks>
         <ThemeSwitcher />
-      </div>
+      </RightSection>
 
       <AnimatePresence>
         {showTech && (

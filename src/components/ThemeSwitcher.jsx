@@ -15,12 +15,12 @@ const ThemeButton = styled(motion.button)`
   background: ${({ theme }) => theme.colors.glass};
   border: 1px solid ${({ theme }) => theme.colors.primary};
   color: ${({ theme }) => theme.colors.primary};
-  padding: 8px 16px;
+  padding: 6px 12px;
   border-radius: 8px;
   cursor: pointer;
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
   font-family: 'JetBrains Mono', monospace;
   font-size: 0.9rem;
   position: relative;
@@ -34,6 +34,7 @@ const ThemeButton = styled(motion.button)`
 
   .label {
     position: relative;
+    font-size: 0.8rem;
     
     &::before {
       content: '';
