@@ -238,7 +238,7 @@ export default function Navbar() {
             <NavLink to="/work-in-progress" number="02">Experience</NavLink>
             <NavLink to="/work-in-progress" number="03">Work</NavLink>
             <NavLink to="/work-in-progress" number="04">Contact</NavLink>
-            <ResumeButton href="/work-in-progress">Resume</ResumeButton>
+            <ResumeButton as={Link} to="/work-in-progress">Resume</ResumeButton>
           </NavLinks>
         </div>
         <ThemeSwitcher />
