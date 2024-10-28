@@ -17,7 +17,44 @@ const Nav = styled(motion.nav)`
   backdrop-filter: blur(10px);
   border-bottom: 1px solid ${({ theme }) => theme.colors.border};
   z-index: 100;
-  padding: 0 50px;
+  padding: 0 20px;
+
+  @media (min-width: 768px) {
+    padding: 0 50px;
+  }
+`;
+
+const MobileMenu = styled(motion.div)`
+  position: fixed;
+  top: 70px;
+  left: 0;
+  right: 0;
+  background: ${({ theme }) => theme.colors.glass};
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid ${({ theme }) => theme.colors.border};
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  
+  @media (min-width: 768px) {
+    display: none;
+  }
+`;
+
+const MenuButton = styled(motion.button)`
+  background: transparent;
+  border: none;
+  color: ${({ theme }) => theme.colors.primary};
+  font-size: 1.5rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  padding: 5px;
+
+  @media (min-width: 768px) {
+    display: none;
+  }
 `;
 
 const LogoSection = styled(motion.div)`
@@ -67,6 +104,12 @@ const NavLinks = styled.div`
   display: flex;
   gap: 2rem;
   align-items: center;
+
+  @media (max-width: 767px) {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
 `;
 
 const NavLink = styled(motion.a)`
@@ -164,10 +207,16 @@ const RightSection = styled.div`
   display: flex;
   align-items: center;
   gap: 2rem;
+
+  @media (max-width: 767px) {
+    .desktop-nav {
+      display: none;
+    }
+  }
 `;
 
 export default function Navbar() {
-  const [showTech, setShowTech] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   return (
     <Nav
@@ -183,59 +232,40 @@ export default function Navbar() {
       </LogoSection>
 
       <RightSection>
-        <NavLinks>
-          <NavLink 
-            href="#about" 
-            number="01"
-            whileHover={{ y: -2 }}
-            whileTap={{ scale: 0.95 }}
-          >
-            About
-          </NavLink>
-          <NavLink 
-            href="#experience" 
-            number="02"
-            whileHover={{ y: -2 }}
-            whileTap={{ scale: 0.95 }}
-          >
-            Experience
-          </NavLink>
-          <NavLink 
-            href="#work" 
-            number="03"
-            whileHover={{ y: -2 }}
-            whileTap={{ scale: 0.95 }}
-          >
-            Work
-          </NavLink>
-          <NavLink 
-            href="#contact" 
-            number="04"
-            whileHover={{ y: -2 }}
-            whileTap={{ scale: 0.95 }}
-          >
-            Contact
-          </NavLink>
-          <ResumeButton href="/resume.pdf">
-            Resume
-          </ResumeButton>
-        </NavLinks>
+        <div className="desktop-nav">
+          <NavLinks>
+            <NavLink href="#about" number="01">About</NavLink>
+            <NavLink href="#experience" number="02">Experience</NavLink>
+            <NavLink href="#work" number="03">Work</NavLink>
+            <NavLink href="#contact" number="04">Contact</NavLink>
+            <ResumeButton href="/resume.pdf">Resume</ResumeButton>
+          </NavLinks>
+        </div>
         <ThemeSwitcher />
+        <MenuButton
+          onClick={() => setIsMenuOpen(!isMenuOpen)}
+          whileHover={{ scale: 1.1 }}
+          whileTap={{ scale: 0.95 }}
+        >
+          <i className={`fas fa-${isMenuOpen ? 'times' : 'bars'}`} />
+        </MenuButton>
       </RightSection>
 
       <AnimatePresence>
-        {showTech && (
-          <TechStack
+        {isMenuOpen && (
+          <MobileMenu
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
           >
-            <TechIcon title="React">⚛️</TechIcon>
-            <TechIcon title="Node.js">🟢</TechIcon>
-            <TechIcon title="TypeScript">📘</TechIcon>
-            <TechIcon title="Python">🐍</TechIcon>
-            <TechIcon title="AWS">☁️</TechIcon>
-          </TechStack>
+            <NavLinks>
+              <NavLink href="#about" number="01">About</NavLink>
+              <NavLink href="#experience" number="02">Experience</NavLink>
+              <NavLink href="#work" number="03">Work</NavLink>
+              <NavLink href="#contact" number="04">Contact</NavLink>
+              <ResumeButton href="/resume.pdf">Resume</ResumeButton>
+            </NavLinks>
+          </MobileMenu>
         )}
       </AnimatePresence>
     </Nav>

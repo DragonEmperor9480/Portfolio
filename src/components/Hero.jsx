@@ -22,13 +22,19 @@ const GlassCard = styled(motion.div)`
   border-radius: 20px;
   width: 95%;
   max-width: 1200px;
-  height: 650px;
+  height: auto;
+  min-height: 650px;
   display: flex;
-  margin-top: 2rem;
+  margin-top: 5rem;
   position: relative;
   overflow: hidden;
   border: 1px solid ${({ theme }) => theme.colors.border};
   box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+
+  @media (max-width: 768px) {
+    margin-top: 2rem;
+    min-height: auto;
+  }
 `;
 
 const TitleBar = styled.div`
@@ -91,6 +97,12 @@ const ContentWrapper = styled.div`
   width: 100%;
   margin-top: 40px;
   background: transparent;
+  flex-direction: row;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    margin-top: 20px;
+  }
 `;
 
 const LeftSection = styled.div`
@@ -99,7 +111,10 @@ const LeftSection = styled.div`
   align-items: center;
   justify-content: center;
   padding: 2rem;
-  // Removed border-right
+
+  @media (max-width: 768px) {
+    padding: 1rem;
+  }
 `;
 
 const RightSection = styled.div`
@@ -108,6 +123,11 @@ const RightSection = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
+
+  @media (max-width: 768px) {
+    padding: 1.5rem;
+    text-align: center;
+  }
 `;
 
 const ProfileImage = styled(motion.img)`
@@ -116,44 +136,61 @@ const ProfileImage = styled(motion.img)`
   border-radius: 50%;
   border: 3px solid rgba(100, 255, 218, 0.3);
   padding: 5px;
-  background: rgba(10, 25, 47, 0.2);
-  backdrop-filter: blur(5px);
-  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+
+  @media (max-width: 768px) {
+    width: 200px;
+    height: 200px;
+  }
+
+  @media (max-width: 480px) {
+    width: 150px;
+    height: 150px;
+  }
 `;
 
 const Name = styled(motion.h1)`
   font-size: 3rem;
-  color: ${({ theme }) => theme.colors.text};
-  margin-bottom: 1rem;
-  font-family: 'JetBrains Mono', monospace;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+  
+  @media (max-width: 768px) {
+    font-size: 2.5rem;
+  }
+
+  @media (max-width: 480px) {
+    font-size: 2rem;
+  }
 `;
 
 const TypewriterContainer = styled.div`
-  min-height: 48px;
-  font-family: 'JetBrains Mono', monospace;
   font-size: 2rem;
-  color: ${({ theme }) => theme.colors.primary};
-  margin-bottom: 1.5rem;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  text-shadow: 0 0 10px ${({ theme }) => theme.colors.primary}40;
-  font-weight: 600;
-  letter-spacing: 1px;
+
+  @media (max-width: 768px) {
+    font-size: 1.5rem;
+  }
+
+  @media (max-width: 480px) {
+    font-size: 1.2rem;
+  }
 `;
 
 const Bio = styled(motion.p)`
-  color: ${({ theme }) => theme.colors.textSecondary};
-  line-height: 1.8;
-  margin: 2rem 0;
   font-size: 1.2rem;
+
+  @media (max-width: 768px) {
+    font-size: 1rem;
+    margin: 1.5rem 0;
+  }
 `;
 
 const SocialLinks = styled(motion.div)`
   display: flex;
   gap: 2rem;
   margin-top: 2rem;
+  justify-content: flex-start;
+
+  @media (max-width: 768px) {
+    justify-content: center;
+    gap: 1.5rem;
+  }
 `;
 
 const SocialLink = styled(motion.a)`
