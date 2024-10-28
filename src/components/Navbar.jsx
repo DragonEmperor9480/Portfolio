@@ -15,8 +15,13 @@ const Nav = styled(motion.nav)`
   justify-content: space-between;
   background: ${({ theme, $isMenuOpen }) => 
     $isMenuOpen 
-      ? `${theme.colors.glass}F0`  // More opaque when menu is open
+      ? `${theme.colors.glass}F0`
       : `${theme.colors.glass}`
+  };
+  -webkit-backdrop-filter: ${({ $isMenuOpen }) => 
+    $isMenuOpen 
+      ? 'blur(20px)'
+      : 'blur(10px)'
   };
   backdrop-filter: ${({ $isMenuOpen }) => 
     $isMenuOpen 
@@ -27,6 +32,9 @@ const Nav = styled(motion.nav)`
   z-index: 100;
   padding: 0 20px;
   transition: all 0.3s ease;
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
+  will-change: backdrop-filter;
 
   @media (min-width: 768px) {
     padding: 0 50px;
@@ -38,7 +46,8 @@ const MobileMenu = styled(motion.div)`
   top: 70px;
   left: 0;
   right: 0;
-  background: ${({ theme }) => `${theme.colors.glass}`};
+  background: ${({ theme }) => `${theme.colors.glass}F0`};
+  -webkit-backdrop-filter: blur(20px);
   backdrop-filter: blur(20px);
   border-bottom: 1px solid ${({ theme }) => theme.colors.border};
   padding: 20px;
@@ -46,6 +55,9 @@ const MobileMenu = styled(motion.div)`
   flex-direction: column;
   gap: 15px;
   z-index: 99;
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
+  will-change: backdrop-filter;
   
   @media (min-width: 768px) {
     display: none;
