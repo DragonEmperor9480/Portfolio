@@ -1,0 +1,368 @@
+import { useState, useEffect } from 'react';
+import styled from 'styled-components';
+import { motion } from 'framer-motion';
+
+const HeroContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  width: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1;
+`;
+
+const GlassCard = styled(motion.div)`
+  background: ${({ theme }) => theme.colors.glass};
+  backdrop-filter: blur(10px);
+  border-radius: 20px;
+  width: 95%;
+  max-width: 1200px;
+  height: 650px;
+  display: flex;
+  margin-top: 2rem;
+  position: relative;
+  overflow: hidden;
+  border: 1px solid ${({ theme }) => theme.colors.border};
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+`;
+
+const TitleBar = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 40px;
+  background: rgba(10, 25, 47, 0.4);
+  backdrop-filter: blur(10px);
+  display: flex;
+  align-items: center;
+  padding: 0 15px;
+  color: #64ffda;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.9rem;
+  justify-content: space-between;
+  border-bottom: 1px solid rgba(100, 255, 218, 0.1);
+`;
+
+const TitleBarText = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  
+  .icon {
+    width: 16px;
+    height: 16px;
+    margin-right: 4px;
+  }
+`;
+
+const WindowControls = styled.div`
+  display: flex;
+  gap: 8px;
+`;
+
+const WindowButton = styled.div`
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: ${props => props.color};
+  cursor: pointer;
+  transition: all 0.3s ease;
+  opacity: 0.8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  color: rgba(0, 0, 0, 0);
+
+  &:hover {
+    opacity: 1;
+    color: rgba(0, 0, 0, 0.5);
+  }
+`;
+
+const ContentWrapper = styled.div`
+  display: flex;
+  width: 100%;
+  margin-top: 40px;
+  background: transparent;
+`;
+
+const LeftSection = styled.div`
+  flex: 0.8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  // Removed border-right
+`;
+
+const RightSection = styled.div`
+  flex: 1.2;
+  padding: 3rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+`;
+
+const ProfileImage = styled(motion.img)`
+  width: 300px;
+  height: 300px;
+  border-radius: 50%;
+  border: 3px solid rgba(100, 255, 218, 0.3);
+  padding: 5px;
+  background: rgba(10, 25, 47, 0.2);
+  backdrop-filter: blur(5px);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+`;
+
+const Name = styled(motion.h1)`
+  font-size: 3rem;
+  color: ${({ theme }) => theme.colors.text};
+  margin-bottom: 1rem;
+  font-family: 'JetBrains Mono', monospace;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+`;
+
+const TypewriterContainer = styled.div`
+  min-height: 48px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 2rem;
+  color: ${({ theme }) => theme.colors.primary};
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  text-shadow: 0 0 10px ${({ theme }) => theme.colors.primary}40;
+  font-weight: 600;
+  letter-spacing: 1px;
+`;
+
+const Bio = styled(motion.p)`
+  color: ${({ theme }) => theme.colors.textSecondary};
+  line-height: 1.8;
+  margin: 2rem 0;
+  font-size: 1.2rem;
+`;
+
+const SocialLinks = styled(motion.div)`
+  display: flex;
+  gap: 2rem;
+  margin-top: 2rem;
+`;
+
+const SocialLink = styled(motion.a)`
+  height: 50px;
+  min-width: 50px;
+  display: flex;
+  align-items: center;
+  color: ${({ theme }) => theme.colors.primary};
+  font-size: 1.5rem;
+  border-radius: 25px;
+  background: ${({ theme }) => theme.colors.glass};
+  backdrop-filter: blur(5px);
+  border: 1px solid ${({ theme }) => theme.colors.border};
+  text-decoration: none;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  position: relative;
+
+  .icon {
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    z-index: 2;
+  }
+
+  .username {
+    font-size: 1rem;
+    font-family: 'JetBrains Mono', monospace;
+    white-space: nowrap;
+    position: absolute;
+    left: 50px;
+    opacity: 0;
+    transform: translateX(10px);
+    transition: all 0.3s ease;
+    padding-right: 20px;
+  }
+
+  &:hover {
+    width: auto;
+    background: ${({ theme }) => `${theme.colors.primary}20`};
+    box-shadow: 0 0 20px ${({ theme }) => `${theme.colors.primary}30`};
+
+    .username {
+      opacity: 1;
+      transform: translateX(0);
+    }
+
+    & ~ a {
+      transform: translateX(10px);
+      opacity: 0;
+      visibility: hidden;
+    }
+  }
+`;
+
+const roles = [
+  "Software Engineer",
+  "Developer",
+  "Gamer",
+  "AI Artist",
+  "Prompt Engineer"
+];
+
+export default function Hero() {
+  const [text, setText] = useState('');
+  const [roleIndex, setRoleIndex] = useState(0);
+  const [isDeleting, setIsDeleting] = useState(false);
+
+  useEffect(() => {
+    const currentRole = roles[roleIndex];
+    
+    const timeout = setTimeout(() => {
+      if (!isDeleting) {
+        if (text.length < currentRole.length) {
+          setText(currentRole.slice(0, text.length + 1));
+          setTimeout(() => {}, 75);
+        } else {
+          setTimeout(() => setIsDeleting(true), 1500);
+        }
+      } else {
+        if (text.length > 0) {
+          setText(currentRole.slice(0, text.length - 1));
+          setTimeout(() => {}, 40);
+        } else {
+          setIsDeleting(false);
+          setRoleIndex((prev) => (prev + 1) % roles.length);
+          setTimeout(() => {}, 150);
+        }
+      }
+    }, isDeleting ? 40 : 75);
+
+    return () => clearTimeout(timeout);
+  }, [text, roleIndex, isDeleting]);
+
+  return (
+    <HeroContainer>
+      <GlassCard
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8 }}
+      >
+        <TitleBar>
+          <span>portfolio.exe</span>
+          <WindowControls>
+            <WindowButton 
+              color="#ff5f56" 
+              title="close"
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              ×
+            </WindowButton>
+            <WindowButton 
+              color="#ffbd2e" 
+              title="minimize"
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              −
+            </WindowButton>
+            <WindowButton 
+              color="#27c93f" 
+              title="maximize"
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              +
+            </WindowButton>
+          </WindowControls>
+        </TitleBar>
+
+        <ContentWrapper>
+          <LeftSection>
+            <ProfileImage
+              src="https://avatars.githubusercontent.com/u/107930548?v=4"
+              alt="Amrutesh Naregal"
+              whileHover={{ scale: 1.05 }}
+              transition={{ type: "spring", stiffness: 300 }}
+              draggable="false"
+            />
+          </LeftSection>
+
+          <RightSection>
+            <Name
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
+            >
+              Amrutesh Naregal
+            </Name>
+            
+            <TypewriterContainer>
+              <motion.span>{text}</motion.span>
+              <span className="cursor">|</span>
+            </TypewriterContainer>
+
+            <Bio
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.4 }}
+            >
+             I am a college student and a Tech Enthusiast. Learning new things and mastering the use of AI in this AI era is my current goal.
+            </Bio>
+            
+            <SocialLinks
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.5 }}
+            >
+              <SocialLink 
+                href="https://github.com/DragonEmperor9480"
+                target="_blank"
+                rel="noopener noreferrer"
+                whileTap={{ scale: 0.95 }}
+              >
+                <span className="icon">
+                  <i className="fab fa-github"></i>
+                </span>
+                <span className="username">DragonEmperor9480</span>
+              </SocialLink>
+              
+              <SocialLink 
+                href="https://www.linkedin.com/in/amrutesh-naregal"
+                target="_blank"
+                rel="noopener noreferrer"
+                whileTap={{ scale: 0.95 }}
+              >
+                <span className="icon">
+                  <i className="fab fa-linkedin-in"></i>
+                </span>
+                <span className="username">amrutesh-naregal</span>
+              </SocialLink>
+              
+              <SocialLink 
+                href="mailto:amruteshnaregal1234@gmail.com"
+                whileTap={{ scale: 0.95 }}
+              >
+                <span className="icon">
+                  <i className="fas fa-envelope"></i>
+                </span>
+                <span className="username">amruteshnaregal1234@gmail.com</span>
+              </SocialLink>
+            </SocialLinks>
+          </RightSection>
+        </ContentWrapper>
+      </GlassCard>
+    </HeroContainer>
+  );
+}
