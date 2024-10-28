@@ -1,4 +1,4 @@
-import { BrowserRouter as Router } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import { ThemeProvider as StyledThemeProvider } from 'styled-components';
 import { ThemeProvider } from './context/ThemeContext';
 import { themes } from './themes/themes';
@@ -7,6 +7,7 @@ import Hero from './components/Hero';
 import DevBackground from './components/DevBackground';
 import GlobalStyles from './styles/GlobalStyles';
 import { useTheme } from './context/ThemeContext';
+import WorkInProgress from './components/WorkInProgress';
 
 function ThemedApp() {
   const { currentTheme } = useTheme();
@@ -14,12 +15,13 @@ function ThemedApp() {
   return (
     <StyledThemeProvider theme={themes[currentTheme]}>
       <Router>
-        <div style={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
-          <GlobalStyles />
-          <DevBackground />
-          <Navbar />
-          <Hero />
-        </div>
+        <GlobalStyles />
+        <DevBackground />
+        <Navbar />
+        <Routes>
+          <Route path="/" element={<Hero />} />
+          <Route path="/work-in-progress" element={<WorkInProgress />} />
+        </Routes>
       </Router>
     </StyledThemeProvider>
   );
