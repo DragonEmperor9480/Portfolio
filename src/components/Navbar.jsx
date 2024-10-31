@@ -249,8 +249,7 @@ const RightSection = styled.div`
 
 const navItems = [
   { name: 'About', link: '#about', number: '01' },
-  { name: 'Experience', link: '#experience', number: '02' },
-  { name: 'Certifications', link: '#certifications', number: '03' }
+  { name: 'Certifications', link: '#certifications', number: '02' }
 ];
 
 export default function Navbar() {
@@ -333,9 +332,7 @@ export default function Navbar() {
           >
             <NavLinks>
               <NavLink href="#about" number="01">About</NavLink>
-              <NavLink href="#experience" number="02">Experience</NavLink>
-              <NavLink href="#work" number="03">Work</NavLink>
-              <NavLink href="#contact" number="04">Contact</NavLink>
+              <NavLink href="#certifications" number="02">Certifications</NavLink>
               <ResumeButton 
                 href="https://drive.google.com/file/d/1LwmxptkPOEhyIEYJOoReFBfvzcMIUHkd/view?usp=sharing"
                 target="_blank"
@@ -343,7 +340,7 @@ export default function Navbar() {
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
               >
-                Resume
+                Resume.pdf
               </ResumeButton>
             </NavLinks>
           </MobileMenu>
