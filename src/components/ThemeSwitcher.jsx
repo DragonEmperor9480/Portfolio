@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { themes } from '../themes/themes';
 import { useTheme } from '../context/ThemeContext';
 
@@ -203,6 +203,25 @@ const ThemeShortcut = styled.span`
 export default function ThemeSwitcher() {
   const [isOpen, setIsOpen] = useState(false);
   const { currentTheme, setCurrentTheme } = useTheme();
+  const themeMenuRef = useRef(null);
+  const themeButtonRef = useRef(null);
+
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (
+        themeMenuRef.current && 
+        !themeMenuRef.current.contains(event.target) &&
+        !themeButtonRef.current.contains(event.target)
+      ) {
+        setIsOpen(false);
+      }
+    }
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
 
   const themeIcons = {
     dark: "moon",
@@ -216,7 +235,11 @@ export default function ThemeSwitcher() {
 
   return (
     <ThemeToggle>
-      <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
+      <motion.div 
+        whileHover={{ scale: 1.02 }} 
+        whileTap={{ scale: 0.98 }}
+        ref={themeButtonRef}
+      >
         <ThemeButton
           onClick={() => setIsOpen(!isOpen)}
           aria-label="Theme Configuration"
@@ -230,6 +253,7 @@ export default function ThemeSwitcher() {
       <AnimatePresence>
         {isOpen && (
           <ThemeMenu
+            ref={themeMenuRef}
             initial={{ opacity: 0, y: -10, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -10, scale: 0.95 }}
