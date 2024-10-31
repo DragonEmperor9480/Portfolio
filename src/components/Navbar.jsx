@@ -134,7 +134,7 @@ const NavLinks = styled.div`
   }
 `;
 
-const NavLink = styled(Link)`
+const NavLink = styled.a`
   font-family: 'JetBrains Mono', monospace;
   color: ${({ theme }) => theme.colors.text};
   text-decoration: none;
@@ -276,10 +276,10 @@ export default function Navbar() {
       <RightSection>
         <div className="desktop-nav">
           <NavLinks>
-            <NavLink to="/work-in-progress" number="01">About</NavLink>
-            <NavLink to="/work-in-progress" number="02">Experience</NavLink>
-            <NavLink to="/work-in-progress" number="03">Work</NavLink>
-            <NavLink to="/work-in-progress" number="04">Contact</NavLink>
+            <NavLink href="#about" number="01">About</NavLink>
+            <NavLink href="#experience" number="02">Experience</NavLink>
+            <NavLink href="#work" number="03">Work</NavLink>
+            <NavLink href="#contact" number="04">Contact</NavLink>
             <ResumeButton as={Link} to="/work-in-progress">Resume</ResumeButton>
           </NavLinks>
         </div>
@@ -303,10 +303,10 @@ export default function Navbar() {
             exit={{ opacity: 0, y: -20 }}
           >
             <NavLinks>
-              <NavLink to="/work-in-progress" number="01">About</NavLink>
-              <NavLink to="/work-in-progress" number="02">Experience</NavLink>
-              <NavLink to="/work-in-progress" number="03">Work</NavLink>
-              <NavLink to="/work-in-progress" number="04">Contact</NavLink>
+              <NavLink href="#about" number="01">About</NavLink>
+              <NavLink href="#experience" number="02">Experience</NavLink>
+              <NavLink href="#work" number="03">Work</NavLink>
+              <NavLink href="#contact" number="04">Contact</NavLink>
               <ResumeButton as={Link} to="/work-in-progress">Resume</ResumeButton>
             </NavLinks>
           </MobileMenu>

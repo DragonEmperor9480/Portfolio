@@ -2,18 +2,15 @@ import { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { motion } from 'framer-motion';
 
-const HeroContainer = styled.div`
+const HeroContainer = styled.section`
   display: flex;
   align-items: center;
   justify-content: center;
   min-height: 100vh;
   width: 100%;
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  position: relative;
   z-index: 1;
+  padding-top: 70px;
 `;
 
 const GlassCard = styled(motion.div)`
