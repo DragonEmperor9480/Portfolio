@@ -11,13 +11,15 @@ const AboutContainer = styled.section`
   position: relative;
   z-index: 1;
   padding: 70px 20px;
+  margin: 0 auto;
+  max-width: 1280px;
 `;
 
 const Terminal = styled(motion.div)`
   background: ${({ theme }) => theme.colors.glass};
   backdrop-filter: blur(10px);
   border-radius: 10px;
-  width: 95%;
+  width: 100%;
   max-width: 1200px;
   height: auto;
   min-height: 650px;
@@ -28,6 +30,7 @@ const Terminal = styled(motion.div)`
   border: 1px solid ${({ theme }) => theme.colors.border};
   box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
   font-family: 'JetBrains Mono', monospace;
+  margin: 0 auto;
 `;
 
 const TerminalHeader = styled.div`
@@ -53,6 +56,10 @@ const TerminalContent = styled.div`
   padding: 20px;
   color: ${({ theme }) => theme.colors.text};
   flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
 `;
 
 const Command = styled.div`

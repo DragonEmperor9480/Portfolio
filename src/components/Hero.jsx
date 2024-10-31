@@ -11,6 +11,8 @@ const HeroContainer = styled.section`
   position: relative;
   z-index: 1;
   padding-top: 70px;
+  margin: 0 auto;
+  max-width: 1280px;
 `;
 
 const GlassCard = styled(motion.div)`
@@ -95,6 +97,9 @@ const ContentWrapper = styled.div`
   margin-top: 40px;
   background: transparent;
   flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  padding: 0 20px;
 
   @media (max-width: 768px) {
     flex-direction: column;
