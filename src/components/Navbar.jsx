@@ -59,6 +59,15 @@ const MobileMenu = styled(motion.div)`
   -webkit-transform: translateZ(0);
   will-change: backdrop-filter;
   
+  /* Force hardware acceleration for Safari */
+  -webkit-transform: translate3d(0,0,0);
+  transform: translate3d(0,0,0);
+  
+  /* Additional Safari support */
+  @supports (-webkit-backdrop-filter: none) {
+    -webkit-backdrop-filter: blur(20px);
+  }
+  
   @media (min-width: 768px) {
     display: none;
   }
