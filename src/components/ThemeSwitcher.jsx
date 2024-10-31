@@ -206,9 +206,12 @@ export default function ThemeSwitcher() {
 
   const themeIcons = {
     dark: "moon",
+    black: "circle",
     light: "sun",
     neon: "bolt",
-    cyberpunk: "microchip"
+    cyberpunk: "microchip",
+    matrix: "terminal",
+    synthwave: "wave-square"
   };
 
   return (
