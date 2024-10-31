@@ -85,7 +85,7 @@ const LogoSection = styled(motion.div)`
   gap: 15px;
 `;
 
-const LogoButton = styled(Link)`
+const LogoButton = styled.a`
   font-family: 'JetBrains Mono', monospace;
   font-size: 1.5rem;
   color: ${({ theme }) => theme.colors.primary};
@@ -93,6 +93,7 @@ const LogoButton = styled(Link)`
   display: flex;
   align-items: center;
   gap: 5px;
+  cursor: pointer;
   
   &:hover {
     opacity: 0.8;
@@ -237,6 +238,12 @@ const RightSection = styled.div`
   }
 `;
 
+const navItems = [
+  { name: 'About', link: '#about', number: '01' },
+  { name: 'Experience', link: '#experience', number: '02' },
+  { name: 'Certifications', link: '#certifications', number: '03' }
+];
+
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const menuRef = useRef(null);
@@ -267,7 +274,7 @@ export default function Navbar() {
       $isMenuOpen={isMenuOpen}
     >
       <LogoSection>
-        <LogoButton to="/">
+        <LogoButton href="#home">
           <span>AN_</span>
         </LogoButton>
         <StatusIndicator>ready</StatusIndicator>
@@ -275,12 +282,17 @@ export default function Navbar() {
 
       <RightSection>
         <div className="desktop-nav">
-          <NavLinks>
-            <NavLink href="#about" number="01">About</NavLink>
-            <NavLink href="#experience" number="02">Certifications</NavLink>
-            <NavLink href="#work" number="03">Work</NavLink>
-            <NavLink href="#contact" number="04">Contact</NavLink>
-            <ResumeButton 
+          <NavLinks className="desktop-nav">
+            {navItems.map((item) => (
+              <NavLink
+                key={item.name}
+                href={item.link}
+                number={item.number}
+              >
+                {item.name}
+              </NavLink>
+            ))}
+            <ResumeButton
               href="https://drive.google.com/file/d/1LwmxptkPOEhyIEYJOoReFBfvzcMIUHkd/view?usp=sharing"
               target="_blank"
               rel="noopener noreferrer"

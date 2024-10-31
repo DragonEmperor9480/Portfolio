@@ -290,7 +290,7 @@ export default function Hero() {
   }, [text, roleIndex, isDeleting]);
 
   return (
-    <HeroContainer>
+    <HeroContainer id="home">
       <GlassCard
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
