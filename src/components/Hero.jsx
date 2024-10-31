@@ -71,23 +71,22 @@ const WindowControls = styled.div`
   gap: 8px;
 `;
 
-const WindowButton = styled.div`
+const WindowButton = styled(motion.div)`
   width: 12px;
   height: 12px;
   border-radius: 50%;
   background: ${props => props.color};
-  cursor: pointer;
-  transition: all 0.3s ease;
-  opacity: 0.8;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 10px;
-  color: rgba(0, 0, 0, 0);
+  cursor: pointer;
+  font-size: 14px;
+  color: rgba(0, 0, 0, 0.5);
+  opacity: 0.8;
+  transition: all 0.3s ease;
 
   &:hover {
     opacity: 1;
-    color: rgba(0, 0, 0, 0.5);
   }
 `;
 

@@ -1,0 +1,35 @@
+{
+  "certificates": [
+    {
+      "name": "Full Stack Development with React & Node JS",
+      "provider": "GeeksForGeeks",
+      "duration": "10-week course",
+      "link": "https://media.geeksforgeeks.org/courses/certificates/776d7f46c2c14e8a40ac7028953b7159.pdf",
+      "icon": "fas fa-code"
+    },
+    {
+      "name": "Introduction to Linux",
+      "provider": "LinkedIn Learning",
+      "link": "https://www.linkedin.com/learning/certificates/5fda272e8f080673457ef3040d44f105223752b3a553c62f21d8177a153ccf6e",
+      "icon": "fab fa-linux"
+    },
+    {
+      "name": "Git Essential Training: The basics",
+      "provider": "LinkedIn Learning",
+      "link": "https://www.linkedin.com/learning/certificates/cbd6df75c24cfd8cbd2e84bc855ef162f9579b015ca83d1bb013df861b9da739",
+      "icon": "fab fa-git-alt"
+    },
+    {
+      "name": "Beginning Bash scripting",
+      "provider": "Udemy",
+      "link": "https://www.udemy.com/certificate/UC-7897ac55-286d-4937-b61b-8c26865ce6d4/",
+      "icon": "fas fa-terminal"
+    },
+    {
+      "name": "Java object oriented programming",
+      "provider": "LinkedIn Learning",
+      "link": "https://www.linkedin.com/learning/certificates/1a16ef7dcc842c979333ada4665b9a93663e55f6389f595fde142310abc7b207",
+      "icon": "fab fa-java"
+    }
+  ]
+} 

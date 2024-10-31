@@ -6,8 +6,9 @@ import Navbar from './components/Navbar';
 import Hero from './components/Hero';
 import About from './components/sections/About';
 import DevBackground from './components/DevBackground';
-import GlobalStyles from './styles/GlobalStyles';
 import { useTheme } from './context/ThemeContext';
+import GlobalStyles from './styles/GlobalStyles';
+import Certifications from './components/sections/Certifications';
 
 function ThemedApp() {
   const { currentTheme } = useTheme();
@@ -21,6 +22,7 @@ function ThemedApp() {
         <main>
           <Hero />
           <About />
+          <Certifications />
         </main>
       </Router>
     </StyledThemeProvider>

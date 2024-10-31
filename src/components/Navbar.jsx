@@ -277,10 +277,18 @@ export default function Navbar() {
         <div className="desktop-nav">
           <NavLinks>
             <NavLink href="#about" number="01">About</NavLink>
-            <NavLink href="#experience" number="02">Experience</NavLink>
+            <NavLink href="#experience" number="02">Certifications</NavLink>
             <NavLink href="#work" number="03">Work</NavLink>
             <NavLink href="#contact" number="04">Contact</NavLink>
-            <ResumeButton as={Link} to="/work-in-progress">Resume</ResumeButton>
+            <ResumeButton 
+              href="https://drive.google.com/file/d/1LwmxptkPOEhyIEYJOoReFBfvzcMIUHkd/view?usp=sharing"
+              target="_blank"
+              rel="noopener noreferrer"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              Resume.pdf
+            </ResumeButton>
           </NavLinks>
         </div>
         <ThemeSwitcher />
@@ -307,7 +315,15 @@ export default function Navbar() {
               <NavLink href="#experience" number="02">Experience</NavLink>
               <NavLink href="#work" number="03">Work</NavLink>
               <NavLink href="#contact" number="04">Contact</NavLink>
-              <ResumeButton as={Link} to="/work-in-progress">Resume</ResumeButton>
+              <ResumeButton 
+                href="https://drive.google.com/file/d/1LwmxptkPOEhyIEYJOoReFBfvzcMIUHkd/view?usp=sharing"
+                target="_blank"
+                rel="noopener noreferrer"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                Resume
+              </ResumeButton>
             </NavLinks>
           </MobileMenu>
         )}
