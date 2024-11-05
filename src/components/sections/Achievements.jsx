@@ -72,6 +72,22 @@ const StatusBar = styled.div`
   color: #64ffda;
   font-size: 0.8rem;
   border-top: 1px solid ${({ theme }) => theme.colors.border};
+
+  .tech-stack {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+
+    .tech {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+
+      i {
+        font-size: 14px;
+      }
+    }
+  }
 `;
 
 const EditorContent = styled.div`
@@ -204,7 +220,16 @@ export default function Achievements() {
           <div>
             <i className="fas fa-code-branch"></i> main
           </div>
-          <div>JavaScript React</div>
+          <div className="tech-stack">
+            <div className="tech">
+              <i className="fab fa-react"></i>
+              React
+            </div>
+            <div className="tech">
+              <i className="fab fa-js"></i>
+              JavaScript
+            </div>
+          </div>
         </StatusBar>
       </IDE>
     </AchievementsContainer>
