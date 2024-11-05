@@ -97,6 +97,15 @@ const BadgeSection = styled.div`
     flex-direction: column;
     gap: 1rem;
     align-items: center;
+    transition: all 0.3s ease;
+
+    img {
+      transition: all 0.3s ease;
+      &:hover {
+        transform: translateY(-5px);
+        filter: drop-shadow(0 10px 30px rgba(2,12,27,0.7));
+      }
+    }
 
     @media (max-width: 768px) {
       img {
@@ -171,12 +180,12 @@ export default function Achievements() {
               transition={{ delay: 0.2 }}
             >
               <img 
-                src="https://github-readme-stats.vercel.app/api?username=DragonEmperor9480&show_icons=true&theme=tokyonight&hide_border=true" 
+                src="https://github-readme-stats.vercel.app/api?username=DragonEmperor9480&show_icons=true&theme=gotham&hide_border=true&bg_color=0d1117&title_color=64ffda&icon_color=64ffda&text_color=ffffff" 
                 alt="GitHub Stats"
                 style={{ height: 'auto', maxWidth: '100%' }}
               />
               <img 
-                src="https://github-readme-streak-stats.herokuapp.com?user=DragonEmperor9480&theme=gotham"
+                src="https://github-readme-streak-stats.herokuapp.com?user=DragonEmperor9480&theme=gotham&hide_border=true&background=0d1117&ring=64ffda&fire=64ffda&currStreakLabel=64ffda"
                 alt="GitHub Streak"
                 style={{ height: 'auto', maxWidth: '100%' }}
               />
