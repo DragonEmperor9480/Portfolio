@@ -249,7 +249,8 @@ const RightSection = styled.div`
 
 const navItems = [
   { name: 'About', link: '#about', number: '01' },
-  { name: 'Certifications', link: '#certifications', number: '02' }
+  { name: 'Achievements', link: '#achievements', number: '02' },
+  { name: 'Certifications', link: '#certifications', number: '03' }
 ];
 
 export default function Navbar() {
@@ -332,7 +333,8 @@ export default function Navbar() {
           >
             <NavLinks>
               <NavLink href="#about" number="01">About</NavLink>
-              <NavLink href="#certifications" number="02">Certifications</NavLink>
+              <NavLink href="#achievements" number="02">Achievements</NavLink>
+              <NavLink href="#certifications" number="03">Certifications</NavLink>
               <ResumeButton 
                 href="https://drive.google.com/file/d/1LwmxptkPOEhyIEYJOoReFBfvzcMIUHkd/view?usp=sharing"
                 target="_blank"

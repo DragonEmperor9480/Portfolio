@@ -9,6 +9,7 @@ import DevBackground from './components/DevBackground';
 import { useTheme } from './context/ThemeContext';
 import GlobalStyles from './styles/GlobalStyles';
 import Certifications from './components/sections/Certifications';
+import Achievements from './components/sections/Achievements';
 
 function ThemedApp() {
   const { currentTheme } = useTheme();
@@ -22,6 +23,7 @@ function ThemedApp() {
         <main>
           <Hero />
           <About />
+          <Achievements />
           <Certifications />
         </main>
       </Router>
