@@ -53,72 +53,91 @@ const TerminalTitle = styled.div`
 `;
 
 const TerminalContent = styled.div`
-  padding: 20px;
+  padding: 30px;
   color: ${({ theme }) => theme.colors.text};
   flex: 1;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   justify-content: flex-start;
+  gap: 20px;
 `;
 
 const Command = styled.div`
-  margin-bottom: 15px;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
   
   .prompt {
     color: #64ffda;
     margin-right: 10px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    
+    i {
+      font-size: 12px;
+    }
   }
   
   .command-text {
     color: ${({ theme }) => theme.colors.text};
+    font-weight: 500;
   }
 `;
 
 const Output = styled(motion.div)`
-  margin: 10px 0 20px 25px;
+  margin: 10px 0 30px 25px;
   color: ${({ theme }) => theme.colors.text};
-  opacity: 0.8;
-  line-height: 1.6;
+  opacity: 0.9;
+  line-height: 1.8;
+  font-size: 0.95rem;
+  letter-spacing: 0.3px;
 `;
 
 const SkillsGrid = styled.div`
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 1rem;
-  margin-top: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+  margin: 1rem 0 0 25px;
+  width: 100%;
 `;
 
 const SkillCard = styled(motion.div)`
   background: rgba(100, 255, 218, 0.05);
   border: 1px solid rgba(100, 255, 218, 0.1);
-  border-radius: 8px;
-  padding: 1rem;
+  border-radius: 12px;
+  padding: 1.2rem;
   display: flex;
   align-items: center;
-  gap: 1rem;
+  gap: 1.2rem;
+  backdrop-filter: blur(5px);
 
   .icon {
-    font-size: 1.5rem;
+    font-size: 2rem;
     color: #64ffda;
+    filter: drop-shadow(0 0 8px rgba(100, 255, 218, 0.3));
   }
 
   .skill-info {
     .skill-name {
       font-weight: 600;
       color: #64ffda;
+      font-size: 1.1rem;
+      margin-bottom: 0.4rem;
     }
     .skill-description {
-      font-size: 0.8rem;
+      font-size: 0.9rem;
       opacity: 0.8;
-      margin-top: 0.25rem;
+      line-height: 1.4;
     }
   }
 
   &:hover {
     background: rgba(100, 255, 218, 0.1);
-    transform: translateY(-2px);
+    transform: translateY(-5px);
     transition: all 0.3s ease;
+    box-shadow: 0 10px 30px -15px rgba(100, 255, 218, 0.2);
   }
 `;
 
