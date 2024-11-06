@@ -235,20 +235,41 @@ const SocialLink = styled(motion.a)`
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
-  &:hover {
-    background: ${({ theme }) => `${theme.colors.primary}20`};
-    box-shadow: 0 0 20px ${({ theme }) => `${theme.colors.primary}30`};
-    width: 350px;
-    transform: translateX(10px);
+  @media (hover: hover) {
+    &:hover {
+      background: ${({ theme }) => `${theme.colors.primary}20`};
+      box-shadow: 0 0 20px ${({ theme }) => `${theme.colors.primary}30`};
+      width: 350px;
+      transform: translateX(10px);
 
-    .username {
-      opacity: 1;
-      transform: translateX(0);
+      .username {
+        opacity: 1;
+        transform: translateX(0);
+      }
+
+      .platform-name {
+        opacity: 0;
+        transform: translateX(20px);
+      }
     }
+  }
 
-    .platform-name {
-      opacity: 0;
-      transform: translateX(20px);
+  @media (hover: none) {
+    &:active {
+      background: ${({ theme }) => `${theme.colors.primary}20`};
+      box-shadow: 0 0 20px ${({ theme }) => `${theme.colors.primary}30`};
+      width: 350px;
+      transform: translateX(10px);
+
+      .username {
+        opacity: 1;
+        transform: translateX(0);
+      }
+
+      .platform-name {
+        opacity: 0;
+        transform: translateX(20px);
+      }
     }
   }
 `;
