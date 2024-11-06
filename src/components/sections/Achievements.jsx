@@ -48,7 +48,7 @@ const Tab = styled.div`
   display: flex;
   align-items: center;
   gap: 8px;
-  background: ${({ active }) => active ? 'rgba(100, 255, 218, 0.1)' : 'transparent'};
+  background: ${({ $active }) => $active ? 'rgba(100, 255, 218, 0.1)' : 'transparent'};
   border-radius: 5px;
   font-size: 0.9rem;
   cursor: pointer;
@@ -211,7 +211,7 @@ export default function Achievements() {
         viewport={{ once: true }}
       >
         <TabBar>
-          <Tab active>
+          <Tab $active>
             <i className="fas fa-trophy"></i>
             achievements.jsx
           </Tab>

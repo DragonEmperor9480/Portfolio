@@ -82,6 +82,74 @@ const Output = styled(motion.div)`
   line-height: 1.6;
 `;
 
+const SkillsGrid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  margin-top: 1rem;
+`;
+
+const SkillCard = styled(motion.div)`
+  background: rgba(100, 255, 218, 0.05);
+  border: 1px solid rgba(100, 255, 218, 0.1);
+  border-radius: 8px;
+  padding: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+
+  .icon {
+    font-size: 1.5rem;
+    color: #64ffda;
+  }
+
+  .skill-info {
+    .skill-name {
+      font-weight: 600;
+      color: #64ffda;
+    }
+    .skill-description {
+      font-size: 0.8rem;
+      opacity: 0.8;
+      margin-top: 0.25rem;
+    }
+  }
+
+  &:hover {
+    background: rgba(100, 255, 218, 0.1);
+    transform: translateY(-2px);
+    transition: all 0.3s ease;
+  }
+`;
+
+const skills = [
+  {
+    name: 'Android Development',
+    icon: '📱',
+    description: 'Custom ROM & Android app development'
+  },
+  {
+    name: 'System Programming',
+    icon: '🔧',
+    description: 'Low-level system optimization'
+  },
+  {
+    name: 'AI & Machine Learning',
+    icon: '🤖',
+    description: 'ML models & AI applications'
+  },
+  {
+    name: 'Problem Solving',
+    icon: '🚀',
+    description: 'Algorithmic & analytical thinking'
+  },
+  {
+    name: 'Custom ROM Development',
+    icon: '💻',
+    description: 'Android system customization'
+  }
+];
+
 export default function About() {
   const [commands, setCommands] = useState([]);
   const [currentCommand, setCurrentCommand] = useState(0);
@@ -99,7 +167,24 @@ As a custom ROM maintainer, I work on optimizing and enhancing Android operating
     },
     {
       command: 'ls ./skills/',
-      output: '📱 Android Development\n💻 Custom ROM Development\n🔧 System Programming\n🤖 AI & Machine Learning\n🚀 Problem Solving'
+      output: (
+        <SkillsGrid>
+          {skills.map((skill, index) => (
+            <SkillCard
+              key={index}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: index * 0.1 }}
+            >
+              <span className="icon">{skill.icon}</span>
+              <div className="skill-info">
+                <div className="skill-name">{skill.name}</div>
+                <div className="skill-description">{skill.description}</div>
+              </div>
+            </SkillCard>
+          ))}
+        </SkillsGrid>
+      )
     }
   ];
 
