@@ -18,11 +18,6 @@ const Nav = styled(motion.nav)`
       ? `${theme.colors.glass}F0`
       : `${theme.colors.glass}`
   };
-  -webkit-backdrop-filter: ${({ $isMenuOpen }) => 
-    $isMenuOpen 
-      ? 'blur(20px)'
-      : 'blur(10px)'
-  };
   backdrop-filter: ${({ $isMenuOpen }) => 
     $isMenuOpen 
       ? 'blur(20px)'
@@ -47,7 +42,6 @@ const MobileMenu = styled(motion.div)`
   left: 0;
   right: 0;
   background: ${({ theme }) => `${theme.colors.glass}F0`};
-  -webkit-backdrop-filter: blur(20px);
   backdrop-filter: blur(20px);
   border-bottom: 1px solid ${({ theme }) => theme.colors.border};
   padding: 20px;
@@ -58,19 +52,6 @@ const MobileMenu = styled(motion.div)`
   transform: translateZ(0);
   -webkit-transform: translateZ(0);
   will-change: backdrop-filter;
-  
-  /* Force hardware acceleration for Safari */
-  -webkit-transform: translate3d(0,0,0);
-  transform: translate3d(0,0,0);
-  
-  /* Additional Safari support */
-  @supports (-webkit-backdrop-filter: none) {
-    -webkit-backdrop-filter: blur(20px);
-  }
-  
-  @media (min-width: 768px) {
-    display: none;
-  }
 `;
 
 const MenuButton = styled(motion.button)`
