@@ -182,19 +182,19 @@ const Bio = styled(motion.p)`
 
 const SocialLinks = styled(motion.div)`
   display: flex;
-  gap: 2rem;
+  flex-direction: column;
+  gap: 1rem;
   margin-top: 2rem;
-  justify-content: flex-start;
-
+  
   @media (max-width: 768px) {
-    justify-content: center;
-    gap: 1.5rem;
+    align-items: center;
+    gap: 0.8rem;
   }
 `;
 
 const SocialLink = styled(motion.a)`
   height: 50px;
-  min-width: 50px;
+  width: 250px;
   display: flex;
   align-items: center;
   color: ${({ theme }) => theme.colors.primary};
@@ -205,7 +205,7 @@ const SocialLink = styled(motion.a)`
   border: 1px solid ${({ theme }) => theme.colors.border};
   text-decoration: none;
   overflow: hidden;
-  transition: all 0.3s ease;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
 
   .icon {
@@ -214,36 +214,41 @@ const SocialLink = styled(motion.a)`
     display: flex;
     align-items: center;
     justify-content: center;
-    position: relative;
     z-index: 2;
+  }
+
+  .platform-name {
+    font-size: 1rem;
+    font-family: 'JetBrains Mono', monospace;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: absolute;
+    left: 60px;
   }
 
   .username {
     font-size: 1rem;
     font-family: 'JetBrains Mono', monospace;
-    white-space: nowrap;
     position: absolute;
-    left: 50px;
+    left: 60px;
     opacity: 0;
-    transform: translateX(10px);
-    transition: all 0.3s ease;
-    padding-right: 20px;
+    transform: translateX(-20px);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   &:hover {
-    width: auto;
     background: ${({ theme }) => `${theme.colors.primary}20`};
     box-shadow: 0 0 20px ${({ theme }) => `${theme.colors.primary}30`};
+    width: 350px;
+    transform: translateX(10px);
 
     .username {
       opacity: 1;
       transform: translateX(0);
     }
 
-    & ~ a {
-      transform: translateX(10px);
+    .platform-name {
       opacity: 0;
-      visibility: hidden;
+      transform: translateX(20px);
     }
   }
 `;
@@ -371,6 +376,7 @@ export default function Hero() {
                 <span className="icon">
                   <i className="fab fa-github"></i>
                 </span>
+                <span className="platform-name">GitHub</span>
                 <span className="username">DragonEmperor9480</span>
               </SocialLink>
               
@@ -383,6 +389,7 @@ export default function Hero() {
                 <span className="icon">
                   <i className="fab fa-linkedin-in"></i>
                 </span>
+                <span className="platform-name">LinkedIn</span>
                 <span className="username">amrutesh-naregal</span>
               </SocialLink>
               
@@ -393,6 +400,7 @@ export default function Hero() {
                 <span className="icon">
                   <i className="fas fa-envelope"></i>
                 </span>
+                <span className="platform-name">Email</span>
                 <span className="username">amruteshnaregal1234@gmail.com</span>
               </SocialLink>
             </SocialLinks>
