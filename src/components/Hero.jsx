@@ -107,14 +107,12 @@ const ContentWrapper = styled.div`
 `;
 
 const LeftSection = styled.div`
-  flex: 0.8;
   display: flex;
-  align-items: center;
   justify-content: center;
-  padding: 2rem;
+  align-items: center;
 
   @media (max-width: 768px) {
-    padding: 1rem;
+    margin-top: 80px;
   }
 `;
 
