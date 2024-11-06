@@ -30,6 +30,12 @@
       "provider": "LinkedIn Learning",
       "link": "https://www.linkedin.com/learning/certificates/1a16ef7dcc842c979333ada4665b9a93663e55f6389f595fde142310abc7b207",
       "icon": "fab fa-java"
+    },
+    {
+      "name": "Cybersecurity Awareness: Cybersecurity Terminology",
+      "provider": "LinkedIn Learning",
+      "link": "https://www.linkedin.com/learning/certificates/9fc6d9864c4429978825c01869fba16396bc3a557dc08adb816668162807f728",
+      "icon": "fas fa-shield-alt"
     }
   ]
 } 
