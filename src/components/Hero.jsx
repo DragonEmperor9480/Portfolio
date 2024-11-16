@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { motion } from 'framer-motion';
+import profileImage from '../assets/profile.jpg';
 
 const HeroContainer = styled.section`
   display: flex;
@@ -353,7 +354,7 @@ export default function Hero() {
         <ContentWrapper>
           <LeftSection>
             <ProfileImage
-              src="https://avatars.githubusercontent.com/u/107930548?v=4"
+              src={profileImage}
               alt="Amrutesh Naregal"
               whileHover={{ scale: 1.05 }}
               transition={{ type: "spring", stiffness: 300 }}
