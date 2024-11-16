@@ -93,51 +93,70 @@ const Output = styled(motion.div)`
   line-height: 1.8;
   font-size: 0.95rem;
   letter-spacing: 0.3px;
+  text-align: justify;
+  
+  @media (max-width: 768px) {
+    text-align: justify;
+    padding-right: 25px;
+    hyphens: auto;
+    word-break: break-word;
+  }
 `;
 
 const SkillsGrid = styled.div`
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 1.5rem;
-  margin: 1rem 0 0 25px;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
   width: 100%;
+
+  @media (max-width: 768px) {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
 `;
 
 const SkillCard = styled(motion.div)`
-  background: rgba(100, 255, 218, 0.05);
-  border: 1px solid rgba(100, 255, 218, 0.1);
-  border-radius: 12px;
-  padding: 1.2rem;
   display: flex;
-  align-items: center;
-  gap: 1.2rem;
-  backdrop-filter: blur(5px);
+  align-items: flex-start;
+  gap: 15px;
+  padding: 15px;
+  border-radius: 8px;
+  background: ${({ theme }) => `${theme.colors.primary}10`};
+  border: 1px solid ${({ theme }) => `${theme.colors.primary}30`};
+  transition: all 0.3s ease;
 
-  .icon {
-    font-size: 2rem;
-    color: #64ffda;
-    filter: drop-shadow(0 0 8px rgba(100, 255, 218, 0.3));
-  }
-
-  .skill-info {
-    .skill-name {
-      font-weight: 600;
-      color: #64ffda;
-      font-size: 1.1rem;
-      margin-bottom: 0.4rem;
-    }
-    .skill-description {
-      font-size: 0.9rem;
-      opacity: 0.8;
-      line-height: 1.4;
-    }
+  @media (max-width: 768px) {
+    width: 90%;
+    max-width: 400px;
   }
 
   &:hover {
-    background: rgba(100, 255, 218, 0.1);
     transform: translateY(-5px);
-    transition: all 0.3s ease;
-    box-shadow: 0 10px 30px -15px rgba(100, 255, 218, 0.2);
+    box-shadow: 0 10px 30px -15px rgba(2, 12, 27, 0.7);
+    border-color: ${({ theme }) => theme.colors.primary};
+  }
+
+  .icon {
+    font-size: 24px;
+    color: ${({ theme }) => theme.colors.primary};
+  }
+
+  .skill-info {
+    flex: 1;
+  }
+
+  .skill-name {
+    font-size: 1.1rem;
+    color: ${({ theme }) => theme.colors.primary};
+    margin-bottom: 5px;
+  }
+
+  .skill-description {
+    font-size: 0.9rem;
+    opacity: 0.8;
+    line-height: 1.4;
   }
 `;
 
