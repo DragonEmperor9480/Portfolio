@@ -119,59 +119,30 @@ const ResumeButton = styled(motion.a)`
 `;
 
 const MobileMenu = styled(motion.div)`
-  position: fixed;
-  top: 0;
+  position: absolute;
+  top: 70px;
+  left: 0;
   right: 0;
-  width: 75%;
-  max-width: 300px;
-  height: 100vh;
-  background: ${({ theme }) => `${theme.colors.glass}F0`};
-  backdrop-filter: blur(20px);
-  border-left: 1px solid ${({ theme }) => theme.colors.border};
-  padding: 100px 40px;
+  background: ${({ theme }) => theme.colors.background};
+  border-bottom: 1px solid ${({ theme }) => theme.colors.border};
+  padding: 20px;
   display: flex;
   flex-direction: column;
-  gap: 30px;
+  gap: 15px;
   z-index: 98;
-  box-shadow: -10px 0px 30px -15px rgba(2, 12, 27, 0.7);
 
   ${NavLinks} {
-    margin-top: 20px;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
   }
 
   ${NavLink} {
-    font-size: 18px;
+    font-size: 16px;
   }
 
   ${ResumeButton} {
-    margin-top: 20px;
-    width: fit-content;
-  }
-`;
-
-const Overlay = styled(motion.div)`
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: ${({ theme }) => `${theme.colors.background}80`};
-  backdrop-filter: blur(5px);
-  z-index: 97;
-`;
-
-const MenuButton = styled(motion.button)`
-  background: transparent;
-  border: none;
-  color: ${({ theme }) => theme.colors.primary};
-  font-size: 1.5rem;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  padding: 5px;
-
-  @media (min-width: 768px) {
-    display: none;
+    margin: 10px auto;
   }
 `;
 
@@ -258,6 +229,22 @@ const RightSection = styled.div`
   }
 `;
 
+const MenuButton = styled(motion.button)`
+  background: transparent;
+  border: none;
+  color: ${({ theme }) => theme.colors.primary};
+  font-size: 1.5rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  padding: 5px;
+  z-index: 101;
+
+  @media (min-width: 768px) {
+    display: none;
+  }
+`;
+
 const navItems = [
   { name: 'About', link: '#about', number: '01' },
   { name: 'Achievements', link: '#achievements', number: '02' },
@@ -336,43 +323,34 @@ export default function Navbar() {
 
       <AnimatePresence>
         {isMenuOpen && (
-          <>
-            <Overlay
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={() => setIsMenuOpen(false)}
-            />
-            <MobileMenu
-              ref={menuRef}
-              initial={{ x: 300 }}
-              animate={{ x: 0 }}
-              exit={{ x: 300 }}
-              transition={{ type: "spring", damping: 20, stiffness: 100 }}
-            >
-              <NavLinks>
-                {navItems.map((item) => (
-                  <NavLink
-                    key={item.name}
-                    href={item.link}
-                    number={item.number}
-                    onClick={() => setIsMenuOpen(false)}
-                  >
-                    {item.name}
-                  </NavLink>
-                ))}
-                <ResumeButton
-                  href="https://drive.google.com/file/d/1LwmxptkPOEhyIEYJOoReFBfvzcMIUHkd/view?usp=sharing"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
+          <MobileMenu
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ type: "spring", damping: 20, stiffness: 100 }}
+          >
+            <NavLinks>
+              {navItems.map((item) => (
+                <NavLink
+                  key={item.name}
+                  href={item.link}
+                  number={item.number}
+                  onClick={() => setIsMenuOpen(false)}
                 >
-                  Resume.pdf
-                </ResumeButton>
-              </NavLinks>
-            </MobileMenu>
-          </>
+                  {item.name}
+                </NavLink>
+              ))}
+              <ResumeButton
+                href="https://drive.google.com/file/d/1LwmxptkPOEhyIEYJOoReFBfvzcMIUHkd/view?usp=sharing"
+                target="_blank"
+                rel="noopener noreferrer"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                Resume.pdf
+              </ResumeButton>
+            </NavLinks>
+          </MobileMenu>
         )}
       </AnimatePresence>
     </Nav>
