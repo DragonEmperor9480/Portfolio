@@ -38,20 +38,44 @@ const Nav = styled(motion.nav)`
 
 const MobileMenu = styled(motion.div)`
   position: fixed;
-  top: 70px;
-  left: 0;
+  top: 0;
   right: 0;
+  width: 75%;
+  max-width: 300px;
+  height: 100vh;
   background: ${({ theme }) => `${theme.colors.glass}F0`};
   backdrop-filter: blur(20px);
-  border-bottom: 1px solid ${({ theme }) => theme.colors.border};
-  padding: 20px;
+  border-left: 1px solid ${({ theme }) => theme.colors.border};
+  padding: 100px 40px;
   display: flex;
   flex-direction: column;
-  gap: 15px;
-  z-index: 99;
-  transform: translateZ(0);
-  -webkit-transform: translateZ(0);
-  will-change: backdrop-filter;
+  gap: 30px;
+  z-index: 98;
+  box-shadow: -10px 0px 30px -15px rgba(2, 12, 27, 0.7);
+
+  ${NavLinks} {
+    margin-top: 20px;
+  }
+
+  ${NavLink} {
+    font-size: 18px;
+  }
+
+  ${ResumeButton} {
+    margin-top: 20px;
+    width: fit-content;
+  }
+`;
+
+const Overlay = styled(motion.div)`
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: ${({ theme }) => `${theme.colors.background}80`};
+  backdrop-filter: blur(5px);
+  z-index: 97;
 `;
 
 const MenuButton = styled(motion.button)`
@@ -306,27 +330,43 @@ export default function Navbar() {
 
       <AnimatePresence>
         {isMenuOpen && (
-          <MobileMenu
-            ref={menuRef}
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-          >
-            <NavLinks>
-              <NavLink href="#about" number="01">About</NavLink>
-              <NavLink href="#achievements" number="02">Achievements</NavLink>
-              <NavLink href="#certifications" number="03">Certifications</NavLink>
-              <ResumeButton 
-                href="https://drive.google.com/file/d/1LwmxptkPOEhyIEYJOoReFBfvzcMIUHkd/view?usp=sharing"
-                target="_blank"
-                rel="noopener noreferrer"
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-              >
-                Resume.pdf
-              </ResumeButton>
-            </NavLinks>
-          </MobileMenu>
+          <>
+            <Overlay
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setIsMenuOpen(false)}
+            />
+            <MobileMenu
+              ref={menuRef}
+              initial={{ x: 300 }}
+              animate={{ x: 0 }}
+              exit={{ x: 300 }}
+              transition={{ type: "spring", damping: 20, stiffness: 100 }}
+            >
+              <NavLinks>
+                {navItems.map((item) => (
+                  <NavLink
+                    key={item.name}
+                    href={item.link}
+                    number={item.number}
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    {item.name}
+                  </NavLink>
+                ))}
+                <ResumeButton
+                  href="https://drive.google.com/file/d/1LwmxptkPOEhyIEYJOoReFBfvzcMIUHkd/view?usp=sharing"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  Resume.pdf
+                </ResumeButton>
+              </NavLinks>
+            </MobileMenu>
+          </>
         )}
       </AnimatePresence>
     </Nav>
