@@ -12,178 +12,97 @@ const ThemeToggle = styled.div`
 `;
 
 const ThemeButton = styled(motion.button)`
-  background: ${({ theme }) => theme.colors.glass};
-  border: 1px solid ${({ theme }) => theme.colors.primary};
+  background: ${({ theme }) => `${theme.colors.primary}10`};
+  border: 1px solid ${({ theme }) => `${theme.colors.primary}30`};
   color: ${({ theme }) => theme.colors.primary};
-  padding: 6px 12px;
-  border-radius: 8px;
+  padding: 8px 16px;
+  border-radius: 12px;
   cursor: pointer;
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
   font-family: 'JetBrains Mono', monospace;
   font-size: 0.9rem;
-  position: relative;
-  overflow: hidden;
-  backdrop-filter: blur(10px);
-  box-shadow: 0 0 15px ${({ theme }) => `${theme.colors.primary}20`};
+  transition: all 0.3s ease;
   
   .icon {
-    font-size: 1rem;
+    font-size: 1.1rem;
   }
 
   .label {
-    position: relative;
-    font-size: 0.8rem;
-    
-    &::before {
-      content: '';
-      position: absolute;
-      left: -8px;
-      top: 50%;
-      width: 4px;
-      height: 4px;
-      background: ${({ theme }) => theme.colors.primary};
-      border-radius: 50%;
-      transform: translateY(-50%);
-    }
+    font-size: 0.85rem;
+    letter-spacing: 0.5px;
   }
 
-  &::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(
-      45deg,
-      ${({ theme }) => `${theme.colors.primary}10`},
-      transparent,
-      ${({ theme }) => `${theme.colors.primary}10`}
-    );
-    opacity: 0;
-    transition: 0.3s;
-  }
-
-  &:hover::before {
-    opacity: 1;
-  }
-
-  &::after {
-    content: '';
-    position: absolute;
-    width: 100%;
-    height: 2px;
-    background: ${({ theme }) => theme.colors.primary};
-    bottom: 0;
-    left: 0;
-    transform: scaleX(0);
-    transform-origin: right;
-    transition: transform 0.3s ease;
-  }
-
-  &:hover::after {
-    transform: scaleX(1);
-    transform-origin: left;
-  }
-
-  .status {
-    position: absolute;
-    top: 4px;
-    right: 4px;
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: ${({ theme }) => theme.colors.primary};
-    animation: pulse 2s infinite;
-  }
-
-  @keyframes pulse {
-    0% {
-      transform: scale(1);
-      opacity: 1;
-    }
-    50% {
-      transform: scale(1.5);
-      opacity: 0.5;
-    }
-    100% {
-      transform: scale(1);
-      opacity: 1;
-    }
+  &:hover {
+    background: ${({ theme }) => `${theme.colors.primary}15`};
+    border-color: ${({ theme }) => theme.colors.primary};
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px ${({ theme }) => `${theme.colors.primary}20`};
   }
 `;
 
 const ThemeMenu = styled(motion.div)`
   position: absolute;
-  top: 70px;
-  left: 0;
+  top: calc(100% + 10px);
   right: 0;
-  background: ${({ theme }) => theme.colors.background};
-  border-bottom: 1px solid ${({ theme }) => theme.colors.border};
-  padding: 20px;
+  background: ${({ theme }) => theme.colors.glass};
+  backdrop-filter: blur(20px);
+  border: 1px solid ${({ theme }) => `${theme.colors.primary}30`};
+  border-radius: 16px;
+  padding: 8px;
   display: flex;
   flex-direction: column;
-  gap: 15px;
-  z-index: 97;
+  gap: 4px;
+  min-width: 280px;
+  box-shadow: 0 10px 30px -15px rgba(2, 12, 27, 0.7);
+  z-index: 101;
 
-  @media (min-width: 768px) {
-    position: absolute;
-    top: 100%;
-    left: auto;
-    right: 0;
-    margin-top: 10px;
-    background: ${({ theme }) => theme.colors.glass};
-    backdrop-filter: blur(20px);
+  @media (max-width: 768px) {
+    position: fixed;
+    top: 90px;
+    left: 20px;
+    right: 20px;
+    transform: none !important;
+    width: auto;
+    max-width: none;
+    min-width: unset;
+    background: ${({ theme }) => theme.colors.background};
     border: 1px solid ${({ theme }) => theme.colors.primary};
-    border-radius: 12px;
-    padding: 0.5rem;
-    min-width: 180px;
-    box-shadow: 0 0 20px ${({ theme }) => `${theme.colors.primary}30`};
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+    padding: 16px;
+    gap: 8px;
   }
 `;
 
 const ThemeOption = styled(motion.button)`
-  padding: 0.8rem 1rem;
+  width: 100%;
+  padding: 12px 16px;
   border: none;
-  border-radius: 8px;
+  border-radius: 12px;
   background: ${({ isActive, theme }) => 
-    isActive ? `${theme.colors.primary}20` : 'transparent'};
-  color: ${({ theme }) => theme.colors.primary};
+    isActive ? `${theme.colors.primary}15` : 'transparent'};
+  color: ${({ theme }) => theme.colors.text};
   cursor: pointer;
-  text-align: left;
   display: flex;
   align-items: center;
-  gap: 10px;
-  position: relative;
-  transition: all 0.3s ease;
+  gap: 12px;
   font-family: 'JetBrains Mono', monospace;
   font-size: 0.9rem;
-  letter-spacing: 0.5px;
+  transition: all 0.2s ease;
 
-  .icon {
+  @media (max-width: 768px) {
+    padding: 14px 16px;
     font-size: 1rem;
-    width: 20px;
-    text-align: center;
-  }
-
-  &:hover {
-    background: ${({ theme }) => `${theme.colors.primary}30`};
-    padding-left: 1.2rem;
+    
+    .icon {
+      font-size: 1.2rem;
+    }
   }
 
   ${({ isActive, theme }) => isActive && `
-    &::before {
-      content: '';
-      position: absolute;
-      left: 0;
-      top: 0;
-      bottom: 0;
-      width: 3px;
-      background: ${theme.colors.primary};
-      border-radius: 0 4px 4px 0;
-    }
+    background: ${theme.colors.primary}15;
+    color: ${theme.colors.primary};
   `}
 `;
 
@@ -192,8 +111,12 @@ const ThemeLabel = styled.span`
 `;
 
 const ThemeShortcut = styled.span`
+  color: ${({ theme }) => theme.colors.text};
   opacity: 0.5;
   font-size: 0.8rem;
+  padding: 2px 6px;
+  border-radius: 4px;
+  background: ${({ theme }) => `${theme.colors.primary}10`};
 `;
 
 export default function ThemeSwitcher() {

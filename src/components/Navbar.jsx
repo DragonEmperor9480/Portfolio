@@ -49,101 +49,93 @@ const NavLinks = styled.div`
 
   @media (max-width: 767px) {
     flex-direction: column;
-    align-items: flex-start;
-    gap: 1rem;
+    align-items: stretch;
+    gap: 8px;
   }
 `;
 
-const NavLink = styled.a`
+const NavLink = styled(motion.a)`
   font-family: 'JetBrains Mono', monospace;
   color: ${({ theme }) => theme.colors.text};
   text-decoration: none;
-  font-size: 15px;
-  position: relative;
+  font-size: 0.9rem;
+  padding: 12px 16px;
+  border-radius: 12px;
   display: flex;
   align-items: center;
-  gap: 8px;
-  transition: all 0.3s ease;
+  gap: 12px;
+  transition: all 0.2s ease;
 
   &:before {
     content: '${props => props.number}';
     color: ${({ theme }) => theme.colors.primary};
-    font-size: 14px;
+    font-size: 0.9rem;
     opacity: 0.8;
   }
 
-  &:hover {
-    color: ${({ theme }) => theme.colors.primary};
-    transform: translateY(-2px);
+  @media (max-width: 767px) {
+    padding: 14px 16px;
+    font-size: 1rem;
+    
+    &:hover {
+      background: ${({ theme }) => `${theme.colors.primary}10`};
+      transform: translateX(4px);
+    }
+  }
+
+  @media (min-width: 768px) {
+    &:hover {
+      color: ${({ theme }) => theme.colors.primary};
+      transform: translateY(-2px);
+    }
   }
 `;
 
 const ResumeButton = styled(motion.a)`
-  color: #64ffda;
-  background: transparent;
-  border: 1px solid #64ffda;
-  border-radius: 8px;
-  padding: 12px 24px;
+  color: ${({ theme }) => theme.colors.primary};
+  background: ${({ theme }) => `${theme.colors.primary}10`};
+  border: 1px solid ${({ theme }) => `${theme.colors.primary}30`};
+  border-radius: 12px;
+  padding: 12px 16px;
   font-family: 'JetBrains Mono', monospace;
-  font-size: 14px;
+  font-size: 0.9rem;
   cursor: pointer;
   text-decoration: none;
   display: flex;
   align-items: center;
-  gap: 8px;
-  position: relative;
-  overflow: hidden;
+  gap: 10px;
   transition: all 0.3s ease;
 
-  &:before {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 150%;
-    height: 150%;
-    background: rgba(100, 255, 218, 0.15);
-    transform: translate(-50%, -50%) rotate(45deg);
-    transition: transform 0.6s ease;
-    z-index: -1;
-  }
-
   &:hover {
+    background: ${({ theme }) => `${theme.colors.primary}15`};
+    border-color: ${({ theme }) => theme.colors.primary};
     transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(100, 255, 218, 0.2);
+    box-shadow: 0 5px 15px ${({ theme }) => `${theme.colors.primary}20`};
   }
 
-  &:hover:before {
-    transform: translate(-50%, -50%) rotate(225deg);
+  @media (max-width: 767px) {
+    margin-top: 8px;
+    padding: 14px 16px;
+    font-size: 1rem;
+    justify-content: center;
   }
 `;
 
 const MobileMenu = styled(motion.div)`
-  position: absolute;
-  top: 70px;
-  left: 0;
-  right: 0;
+  position: fixed;
+  top: 90px;
+  left: 20px;
+  right: 20px;
   background: ${({ theme }) => theme.colors.background};
-  border-bottom: 1px solid ${({ theme }) => theme.colors.border};
-  padding: 20px;
+  backdrop-filter: blur(20px);
+  border: 1px solid ${({ theme }) => theme.colors.primary};
+  border-radius: 16px;
+  padding: 16px;
   display: flex;
   flex-direction: column;
-  gap: 15px;
-  z-index: 98;
-
-  ${NavLinks} {
-    flex-direction: column;
-    align-items: center;
-    gap: 20px;
-  }
-
-  ${NavLink} {
-    font-size: 16px;
-  }
-
-  ${ResumeButton} {
-    margin: 10px auto;
-  }
+  gap: 8px;
+  z-index: 99;
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
 `;
 
 const LogoSection = styled(motion.div)`
@@ -267,11 +259,14 @@ export default function Navbar() {
       }
     }
 
-    document.addEventListener('mousedown', handleClickOutside);
+    if (isMenuOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, []);
+  }, [isMenuOpen]);
 
   return (
     <Nav
@@ -324,10 +319,11 @@ export default function Navbar() {
       <AnimatePresence>
         {isMenuOpen && (
           <MobileMenu
+            ref={menuRef}
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
-            transition={{ type: "spring", damping: 20, stiffness: 100 }}
+            transition={{ duration: 0.2 }}
           >
             <NavLinks>
               {navItems.map((item) => (
