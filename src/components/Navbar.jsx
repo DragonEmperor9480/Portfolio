@@ -31,6 +31,12 @@ const Nav = styled(motion.nav)`
   -webkit-transform: translateZ(0);
   will-change: backdrop-filter;
 
+  @media (max-width: 768px) {
+    background: ${({ theme }) => theme.colors.background};
+    backdrop-filter: none;
+    border-bottom: 1px solid ${({ theme }) => theme.colors.border};
+  }
+
   @media (min-width: 768px) {
     padding: 0 50px;
   }
