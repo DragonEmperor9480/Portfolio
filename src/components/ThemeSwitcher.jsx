@@ -117,34 +117,30 @@ const ThemeButton = styled(motion.button)`
 
 const ThemeMenu = styled(motion.div)`
   position: absolute;
-  top: 100%;
+  top: 70px;
+  left: 0;
   right: 0;
-  margin-top: 10px;
-  background: ${({ theme }) => theme.colors.glass};
-  backdrop-filter: blur(20px);
-  border: 1px solid ${({ theme }) => theme.colors.primary};
-  border-radius: 12px;
-  padding: 0.5rem;
+  background: ${({ theme }) => theme.colors.background};
+  border-bottom: 1px solid ${({ theme }) => theme.colors.border};
+  padding: 20px;
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
-  min-width: 180px;
-  overflow: hidden;
-  box-shadow: 0 0 20px ${({ theme }) => `${theme.colors.primary}30`};
+  gap: 15px;
+  z-index: 97;
 
-  &::before {
-    content: '';
+  @media (min-width: 768px) {
     position: absolute;
-    top: 0;
-    left: 0;
+    top: 100%;
+    left: auto;
     right: 0;
-    height: 2px;
-    background: linear-gradient(
-      90deg,
-      transparent,
-      ${({ theme }) => theme.colors.primary},
-      transparent
-    );
+    margin-top: 10px;
+    background: ${({ theme }) => theme.colors.glass};
+    backdrop-filter: blur(20px);
+    border: 1px solid ${({ theme }) => theme.colors.primary};
+    border-radius: 12px;
+    padding: 0.5rem;
+    min-width: 180px;
+    box-shadow: 0 0 20px ${({ theme }) => `${theme.colors.primary}30`};
   }
 `;
 
