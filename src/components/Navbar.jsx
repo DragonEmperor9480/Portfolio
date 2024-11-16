@@ -36,6 +36,82 @@ const Nav = styled(motion.nav)`
   }
 `;
 
+const NavLinks = styled.div`
+  display: flex;
+  gap: 2rem;
+  align-items: center;
+
+  @media (max-width: 767px) {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+`;
+
+const NavLink = styled.a`
+  font-family: 'JetBrains Mono', monospace;
+  color: ${({ theme }) => theme.colors.text};
+  text-decoration: none;
+  font-size: 15px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.3s ease;
+
+  &:before {
+    content: '${props => props.number}';
+    color: ${({ theme }) => theme.colors.primary};
+    font-size: 14px;
+    opacity: 0.8;
+  }
+
+  &:hover {
+    color: ${({ theme }) => theme.colors.primary};
+    transform: translateY(-2px);
+  }
+`;
+
+const ResumeButton = styled(motion.a)`
+  color: #64ffda;
+  background: transparent;
+  border: 1px solid #64ffda;
+  border-radius: 8px;
+  padding: 12px 24px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 14px;
+  cursor: pointer;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+
+  &:before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 150%;
+    height: 150%;
+    background: rgba(100, 255, 218, 0.15);
+    transform: translate(-50%, -50%) rotate(45deg);
+    transition: transform 0.6s ease;
+    z-index: -1;
+  }
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(100, 255, 218, 0.2);
+  }
+
+  &:hover:before {
+    transform: translate(-50%, -50%) rotate(225deg);
+  }
+`;
+
 const MobileMenu = styled(motion.div)`
   position: fixed;
   top: 0;
@@ -134,82 +210,6 @@ const StatusIndicator = styled.div`
     border-radius: 50%;
     animation: pulse 2s infinite;
     box-shadow: 0 0 10px ${({ theme }) => theme.colors.primary};
-  }
-`;
-
-const NavLinks = styled.div`
-  display: flex;
-  gap: 2rem;
-  align-items: center;
-
-  @media (max-width: 767px) {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 1rem;
-  }
-`;
-
-const NavLink = styled.a`
-  font-family: 'JetBrains Mono', monospace;
-  color: ${({ theme }) => theme.colors.text};
-  text-decoration: none;
-  font-size: 15px;
-  position: relative;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  transition: all 0.3s ease;
-
-  &:before {
-    content: '${props => props.number}';
-    color: ${({ theme }) => theme.colors.primary};
-    font-size: 14px;
-    opacity: 0.8;
-  }
-
-  &:hover {
-    color: ${({ theme }) => theme.colors.primary};
-    transform: translateY(-2px);
-  }
-`;
-
-const ResumeButton = styled(motion.a)`
-  color: #64ffda;
-  background: transparent;
-  border: 1px solid #64ffda;
-  border-radius: 8px;
-  padding: 12px 24px;
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 14px;
-  cursor: pointer;
-  text-decoration: none;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  position: relative;
-  overflow: hidden;
-  transition: all 0.3s ease;
-
-  &:before {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 150%;
-    height: 150%;
-    background: rgba(100, 255, 218, 0.15);
-    transform: translate(-50%, -50%) rotate(45deg);
-    transition: transform 0.6s ease;
-    z-index: -1;
-  }
-
-  &:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(100, 255, 218, 0.2);
-  }
-
-  &:hover:before {
-    transform: translate(-50%, -50%) rotate(225deg);
   }
 `;
 
