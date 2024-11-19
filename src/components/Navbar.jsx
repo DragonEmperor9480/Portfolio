@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import ThemeSwitcher from './ThemeSwitcher';
+import useWindowDimensions from '../hooks/useWindowDimensions';
 
 const Nav = styled(motion.nav)`
   position: fixed;
@@ -126,6 +127,8 @@ const MobileMenu = styled(motion.div)`
   top: 90px;
   left: 20px;
   right: 20px;
+  max-height: calc(100vh - 120px);
+  overflow-y: auto;
   background: ${({ theme }) => theme.colors.background};
   backdrop-filter: blur(20px);
   border: 1px solid ${({ theme }) => theme.colors.primary};
@@ -136,6 +139,30 @@ const MobileMenu = styled(motion.div)`
   gap: 8px;
   z-index: 99;
   box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+
+  /* Custom scrollbar styles */
+  &::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: ${({ theme }) => `${theme.colors.primary}10`};
+    border-radius: 4px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: ${({ theme }) => `${theme.colors.primary}30`};
+    border-radius: 4px;
+    
+    &:hover {
+      background: ${({ theme }) => `${theme.colors.primary}50`};
+    }
+  }
+
+  @media (max-height: 600px) {
+    top: 80px;
+    max-height: calc(100vh - 100px);
+  }
 `;
 
 const LogoSection = styled(motion.div)`
@@ -214,7 +241,7 @@ const RightSection = styled.div`
   align-items: center;
   gap: 2rem;
 
-  @media (max-width: 767px) {
+  @media (max-width: 1060px) {
     .desktop-nav {
       display: none;
     }
@@ -232,7 +259,7 @@ const MenuButton = styled(motion.button)`
   padding: 5px;
   z-index: 101;
 
-  @media (min-width: 768px) {
+  @media (min-width: 1061px) {
     display: none;
   }
 `;
@@ -245,8 +272,17 @@ const navItems = [
 
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { width, height } = useWindowDimensions();
   const menuRef = useRef(null);
   const buttonRef = useRef(null);
+
+  const shouldShowMobileMenu = width <= 1060 || height <= 883;
+
+  useEffect(() => {
+    if (!shouldShowMobileMenu && isMenuOpen) {
+      setIsMenuOpen(false);
+    }
+  }, [width, height, shouldShowMobileMenu]);
 
   useEffect(() => {
     function handleClickOutside(event) {
