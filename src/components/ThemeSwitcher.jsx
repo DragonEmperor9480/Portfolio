@@ -40,6 +40,27 @@ const ThemeButton = styled(motion.button)`
     transform: translateY(-2px);
     box-shadow: 0 5px 15px ${({ theme }) => `${theme.colors.primary}20`};
   }
+
+  @media (max-width: 768px) {
+    padding: 14px 16px;
+    font-size: 1rem;
+    
+    .icon {
+      font-size: 1.2rem;
+    }
+
+    .label {
+      display: none;
+    }
+  }
+
+  @media (max-width: 480px) {
+    padding: 12px;
+    
+    .icon {
+      font-size: 1.1rem;
+    }
+  }
 `;
 
 const ThemeMenu = styled(motion.div)`
