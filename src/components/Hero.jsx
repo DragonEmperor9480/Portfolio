@@ -375,15 +375,13 @@ export default function Hero() {
               <motion.span>{text}</motion.span>
               <span className="cursor">|</span>
             </TypewriterContainer>
-
-            <Bio
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.4 }}
-            >
-             I am a college student and a Tech Enthusiast. Learning new things and mastering the use of AI in this AI era is my current goal.
-            </Bio>
-            
+<Bio
+  initial={{ opacity: 0, y: 20 }}
+  animate={{ opacity: 1, y: 0 }}
+  transition={{ delay: 0.4 }}
+>
+  A curious computer science student with an insatiable drive for innovation. I explore emerging technologies and specialize in AI development, constantly seeking to push the boundaries of what's possible in our digital future.
+</Bio>
             <SocialLinks
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
