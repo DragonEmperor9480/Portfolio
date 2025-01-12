@@ -5,37 +5,43 @@
       "provider": "GeeksForGeeks",
       "duration": "10-week course",
       "link": "https://media.geeksforgeeks.org/courses/certificates/776d7f46c2c14e8a40ac7028953b7159.pdf",
-      "icon": "fas fa-code"
+      "icon": "fas fa-code",
+      "thumbnail": "/src/assets/certificates/gfg_fsd.png"
     },
     {
       "name": "Introduction to Linux",
       "provider": "LinkedIn Learning",
       "link": "https://www.linkedin.com/learning/certificates/5fda272e8f080673457ef3040d44f105223752b3a553c62f21d8177a153ccf6e",
-      "icon": "fab fa-linux"
+      "icon": "fab fa-linux",
+      "thumbnail": "/src/assets/certificates/ll_intro_to_linux.png"
     },
     {
       "name": "Git Essential Training: The basics",
       "provider": "LinkedIn Learning",
       "link": "https://www.linkedin.com/learning/certificates/cbd6df75c24cfd8cbd2e84bc855ef162f9579b015ca83d1bb013df861b9da739",
-      "icon": "fab fa-git-alt"
+      "icon": "fab fa-git-alt",
+      "thumbnail": "/src/assets/certificates/ll_git_basics.png"
     },
     {
       "name": "Beginning Bash scripting",
       "provider": "Udemy",
       "link": "https://www.udemy.com/certificate/UC-7897ac55-286d-4937-b61b-8c26865ce6d4/",
-      "icon": "fas fa-terminal"
+      "icon": "fas fa-terminal",
+      "thumbnail": "/src/assets/certificates/ud_bash_scripting.png"
     },
     {
       "name": "Java object oriented programming",
       "provider": "LinkedIn Learning",
       "link": "https://www.linkedin.com/learning/certificates/1a16ef7dcc842c979333ada4665b9a93663e55f6389f595fde142310abc7b207",
-      "icon": "fab fa-java"
+      "icon": "fab fa-java",
+      "thumbnail": "/src/assets/certificates/ll_java_oop.png"
     },
     {
       "name": "Cybersecurity Awareness: Cybersecurity Terminology",
       "provider": "LinkedIn Learning",
       "link": "https://www.linkedin.com/learning/certificates/9fc6d9864c4429978825c01869fba16396bc3a557dc08adb816668162807f728",
-      "icon": "fas fa-shield-alt"
+      "icon": "fas fa-shield-alt",
+      "thumbnail": "/src/assets/certificates/ll_cybersec_Awareness.png"
     }
   ]
-} 
+}
