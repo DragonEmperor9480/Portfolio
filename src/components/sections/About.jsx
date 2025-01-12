@@ -15,7 +15,7 @@ const AboutContainer = styled.section`
   max-width: 1280px;
 `;
 
-const Terminal = styled(motion.div)`
+const TerminalWrapper = styled(motion.div)`
   background: ${({ theme }) => theme.colors.glass};
   backdrop-filter: blur(10px);
   border-radius: 10px;
@@ -34,22 +34,29 @@ const Terminal = styled(motion.div)`
 `;
 
 const TerminalHeader = styled.div`
-  background: rgba(10, 25, 47, 0.7);
-  padding: 10px;
+  background: ${({ theme }) => theme.colors.terminalHeader};
+  padding: 12px 15px;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+  border-bottom: 1px solid ${({ theme }) => theme.colors.border};
   display: flex;
   align-items: center;
-  justify-content: space-between;
+`;
+
+const TerminalButton = styled.div`
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  margin-right: 8px;
+  background: ${props => props.color};
 `;
 
 const TerminalTitle = styled.div`
-  color: #64ffda;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  
-  i {
-    font-size: 14px;
-  }
+  color: ${({ theme }) => theme.colors.text};
+  margin-left: auto;
+  margin-right: auto;
+  opacity: 0.75;
+  font-size: 14px;
 `;
 
 const TerminalContent = styled.div`
@@ -103,60 +110,55 @@ const Output = styled(motion.div)`
   }
 `;
 
-const SkillsGrid = styled.div`
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 20px;
-  width: 100%;
+const TerminalOutput = styled.div`
+  padding: 20px 25px;
+  color: ${({ theme }) => theme.colors.text};
+  font-family: 'JetBrains Mono', monospace;
+  line-height: 1.6;
+`;
 
-  @media (max-width: 768px) {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
+const CommandPrompt = styled.div`
+  color: ${({ theme }) => theme.colors.primary};
+  margin-bottom: 15px;
+  display: flex;
+  align-items: center;
+  
+  &::before {
+    content: '[user@portfolio] ~';
+    color: ${({ theme }) => theme.colors.secondary};
+    margin-right: 10px;
   }
 `;
 
-const SkillCard = styled(motion.div)`
-  display: flex;
-  align-items: flex-start;
-  gap: 15px;
-  padding: 15px;
-  border-radius: 8px;
-  background: ${({ theme }) => `${theme.colors.primary}10`};
-  border: 1px solid ${({ theme }) => `${theme.colors.primary}30`};
-  transition: all 0.3s ease;
-
-  @media (max-width: 768px) {
-    width: 90%;
-    max-width: 400px;
-  }
-
-  &:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 30px -15px rgba(2, 12, 27, 0.7);
-    border-color: ${({ theme }) => theme.colors.primary};
-  }
-
-  .icon {
-    font-size: 24px;
-    color: ${({ theme }) => theme.colors.primary};
-  }
-
-  .skill-info {
-    flex: 1;
-  }
-
+const SkillItem = styled.div`
+  margin: 15px 0;
+  padding-left: 25px;
+  border-left: 1px dashed ${({ theme }) => theme.colors.border};
+  
   .skill-name {
-    font-size: 1.1rem;
     color: ${({ theme }) => theme.colors.primary};
-    margin-bottom: 5px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    
+    .icon {
+      margin-right: 10px;
+      font-size: 1.2em;
+    }
   }
-
-  .skill-description {
-    font-size: 0.9rem;
+  
+  .skill-desc {
+    padding: 5px 0 5px 28px;
+    color: ${({ theme }) => theme.colors.text};
     opacity: 0.8;
-    line-height: 1.4;
+    position: relative;
+    
+    &::before {
+      content: '└─';
+      position: absolute;
+      left: 0;
+      color: ${({ theme }) => theme.colors.secondary};
+    }
   }
 `;
 
@@ -206,22 +208,18 @@ As a custom ROM maintainer, I work on optimizing and enhancing Android operating
     {
       command: 'ls ./skills/',
       output: (
-        <SkillsGrid>
+        <TerminalOutput>
+          <CommandPrompt>ls -l ~/skills</CommandPrompt>
           {skills.map((skill, index) => (
-            <SkillCard
-              key={index}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: index * 0.1 }}
-            >
-              <span className="icon">{skill.icon}</span>
-              <div className="skill-info">
-                <div className="skill-name">{skill.name}</div>
-                <div className="skill-description">{skill.description}</div>
+            <SkillItem key={index}>
+              <div className="skill-name">
+                <span className="icon">{skill.icon}</span>
+                {skill.name}
               </div>
-            </SkillCard>
+              <div className="skill-desc">{skill.description}</div>
+            </SkillItem>
           ))}
-        </SkillsGrid>
+        </TerminalOutput>
       )
     }
   ];
@@ -238,17 +236,17 @@ As a custom ROM maintainer, I work on optimizing and enhancing Android operating
 
   return (
     <AboutContainer id="about">
-      <Terminal
+      <TerminalWrapper
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8 }}
         viewport={{ once: true }}
       >
         <TerminalHeader>
-          <TerminalTitle>
-            <i className="fas fa-terminal"></i>
-            about@amrutesh:~
-          </TerminalTitle>
+          <TerminalButton color="#ff5f56"/>
+          <TerminalButton color="#ffbd2e"/>
+          <TerminalButton color="#27c93f"/>
+          <TerminalTitle>user@portfolio: ~/skills</TerminalTitle>
         </TerminalHeader>
         
         <TerminalContent>
@@ -277,7 +275,7 @@ As a custom ROM maintainer, I work on optimizing and enhancing Android operating
             </motion.span>
           </Command>
         </TerminalContent>
-      </Terminal>
+      </TerminalWrapper>
     </AboutContainer>
   );
 }
