@@ -170,7 +170,10 @@ export default function ThemeSwitcher() {
     neon: "bolt",
     cyberpunk: "microchip",
     matrix: "terminal",
-    synthwave: "wave-square"
+    synthwave: "wave-square",
+    retro: "gamepad",
+    nord: "snowflake",
+    mint: "leaf"
   };
 
   return (
