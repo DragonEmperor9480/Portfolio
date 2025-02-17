@@ -13,13 +13,7 @@ export const themes = {
   dark: {
     name: "Dark Theme",
     colors: {
-      ...baseTheme.colors,
-      text: '#FFFFFF',
-      textSecondary: '#E6E6E6',
-      background: "#0a192f",
-      primary: "#64ffda",
-      glass: "rgba(10, 25, 47, 0.7)",
-      border: "rgba(100, 255, 218, 0.1)"
+      ...baseTheme.colors
     }
   },
   black: {
@@ -92,6 +86,42 @@ export const themes = {
       primary: "#f97e72",
       glass: "rgba(36, 27, 47, 0.7)",
       border: "rgba(249, 126, 114, 0.1)"
+    }
+  },
+  retro: {
+    name: "Retro Theme",
+    colors: {
+      ...baseTheme.colors,
+      text: '#FFFFFF',
+      textSecondary: '#E6E6E6',
+      background: "#2d132c",
+      primary: "#faef5d",
+      glass: "rgba(45, 19, 44, 0.7)",
+      border: "rgba(250, 239, 93, 0.1)"
+    }
+  },
+  nord: {
+    name: "Nord Theme",
+    colors: {
+      ...baseTheme.colors,
+      text: '#FFFFFF',
+      textSecondary: '#E6E6E6',
+      background: "#2e3440",
+      primary: "#88c0d0",
+      glass: "rgba(46, 52, 64, 0.7)",
+      border: "rgba(136, 192, 208, 0.1)"
+    }
+  },
+  mint: {
+    name: "Mint Theme",
+    colors: {
+      ...baseTheme.colors,
+      text: '#FFFFFF',
+      textSecondary: '#E6E6E6',
+      background: "#1a1d1d",
+      primary: "#98ff98",
+      glass: "rgba(26, 29, 29, 0.7)",
+      border: "rgba(152, 255, 152, 0.1)"
     }
   }
 };
