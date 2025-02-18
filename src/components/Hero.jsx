@@ -162,6 +162,23 @@ const Name = styled(motion.h1)`
 
 const TypewriterContainer = styled.div`
   font-size: 2rem;
+  display: flex;
+  align-items: center;
+
+  .cursor {
+    color: ${({ theme }) => theme.colors.primary};
+    animation: blink 1s step-start infinite;
+    margin-left: 2px;
+  }
+
+  @keyframes blink {
+    0%, 100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0;
+    }
+  }
 
   @media (max-width: 768px) {
     font-size: 1.5rem;
@@ -375,13 +392,15 @@ export default function Hero() {
               <motion.span>{text}</motion.span>
               <span className="cursor">|</span>
             </TypewriterContainer>
-<Bio
-  initial={{ opacity: 0, y: 20 }}
-  animate={{ opacity: 1, y: 0 }}
-  transition={{ delay: 0.4 }}
->
-  A curious computer science student with an insatiable drive for innovation. I explore emerging technologies and specialize in AI development, constantly seeking to push the boundaries of what's possible in our digital future.
-</Bio>
+
+            <Bio
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.4 }}
+            >
+              A curious computer science student with an insatiable drive for innovation. I explore emerging technologies and specialize in AI development, constantly seeking to push the boundaries of what's possible in our digital future.
+            </Bio>
+
             <SocialLinks
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
