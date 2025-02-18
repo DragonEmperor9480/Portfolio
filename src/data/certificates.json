@@ -6,70 +6,70 @@
       "duration": "10-week course",
       "link": "https://media.geeksforgeeks.org/courses/certificates/776d7f46c2c14e8a40ac7028953b7159.pdf",
       "icon": "fas fa-code",
-      "thumbnail": "/src/assets/certificates/gfg_fsd.png"
+      "thumbnail": "./assets/certificates/gfg_fsd.png"
     },
     {
       "name": "Docker Training Course for the Absolute Beginner",
       "provider": "KodeKloud",
       "link": "https://learn.kodekloud.com/certificate/b96f5460-bd56-43cf-a721-40252eac3788",
       "icon": "fab fa-docker",
-      "thumbnail": "/src/assets/certificates/kk_docker_basics.png"
+      "thumbnail": "./assets/certificates/kk_docker_basics.png"
     },
     {
       "name": "Docker - SWARM | SERVICES | STACKS - Hands-on",
       "provider": "KodeKloud",
       "link": "https://learn.kodekloud.com/certificate/8dc069e3-39cb-44eb-a306-d3017d03d996",
       "icon": "fab fa-docker",
-      "thumbnail": "/src/assets/certificates/kk_docker_Advanced.png"
+      "thumbnail": "./assets/certificates/kk_docker_Advanced.png"
     },
     {
       "name": "Introduction to Linux",
       "provider": "LinkedIn Learning",
       "link": "https://www.linkedin.com/learning/certificates/5fda272e8f080673457ef3040d44f105223752b3a553c62f21d8177a153ccf6e",
       "icon": "fab fa-linux",
-      "thumbnail": "/src/assets/certificates/ll_intro_to_linux.png"
+      "thumbnail": "./assets/certificates/ll_intro_to_linux.png"
     },
     {
       "name": "Git Essential Training: The basics",
       "provider": "LinkedIn Learning",
       "link": "https://www.linkedin.com/learning/certificates/cbd6df75c24cfd8cbd2e84bc855ef162f9579b015ca83d1bb013df861b9da739",
       "icon": "fab fa-git-alt",
-      "thumbnail": "/src/assets/certificates/ll_git_basics.png"
+      "thumbnail": "./assets/certificates/ll_git_basics.png"
     },
     {
       "name": "Beginning Bash scripting",
       "provider": "Udemy",
       "link": "https://www.udemy.com/certificate/UC-7897ac55-286d-4937-b61b-8c26865ce6d4/",
       "icon": "fas fa-terminal",
-      "thumbnail": "/src/assets/certificates/ud_bash_scripting.png"
+      "thumbnail": "./assets/certificates/ud_bash_scripting.png"
     },
     {
       "name": "Java object oriented programming",
       "provider": "LinkedIn Learning",
       "link": "https://www.linkedin.com/learning/certificates/1a16ef7dcc842c979333ada4665b9a93663e55f6389f595fde142310abc7b207",
       "icon": "fab fa-java",
-      "thumbnail": "/src/assets/certificates/ll_java_oop.png"
+      "thumbnail": "./assets/certificates/ll_java_oop.png"
     },
     {
       "name": "Cybersecurity Awareness: Cybersecurity Terminology",
       "provider": "LinkedIn Learning",
       "link": "https://www.linkedin.com/learning/certificates/9fc6d9864c4429978825c01869fba16396bc3a557dc08adb816668162807f728",
       "icon": "fas fa-shield-alt",
-      "thumbnail": "/src/assets/certificates/ll_cybersec_Awareness.png"
+      "thumbnail": "./assets/certificates/ll_cybersec_Awareness.png"
     },
     {
       "name": "Learning C++",
       "provider": "LinkedIn Learning",
       "link": "https://www.linkedin.com/learning/certificates/5f28c34865cacc6e5aaf327b2130b82e179100a7812b55ddfc5dea76f4622a8f",
       "icon": "fas fa-code",
-      "thumbnail": "/src/assets/certificates/ll_c++.png"
+      "thumbnail": "./assets/certificates/ll_c++.png"
     },
     {
       "name": "Fundamentals of Docker & Kubernetes",
       "provider": "Scaler",
       "link": "https://www.linkedin.com/learning/certificates/5f28c34865cacc6e5aaf327b2130b82e179100a7812b55ddfc5dea76f4622a8f",
       "icon": "fab fa-docker",
-      "thumbnail": "/src/assets/certificates/scaler_fundamentals_docker_kubernetes.png"
+      "thumbnail": "./assets/certificates/scaler_fundamentals_docker_kubernetes.png"
     }
   ]
 }
