@@ -122,7 +122,7 @@ export default function SkeletonLoader() {
         </TerminalHeader>
         <Command>
           <span className="prompt">[SYSTEM]</span>
-          <span className="command-text">Initializing portfolio v2.0.0</span>
+          <span className="command-text">Initializing portfolio v2.1.0</span>
         </Command>
         <ProgressBar>
           <Progress
