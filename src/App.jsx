@@ -19,9 +19,11 @@ function ThemedApp() {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
+    // Wait for the enhanced SkeletonLoader to finish
+    // 4.5 seconds progress + 300ms buffer = 4.8 seconds
     const timer = setTimeout(() => {
       setIsLoading(false);
-    }, 1800);
+    }, 4800);
 
     return () => clearTimeout(timer);
   }, []);
