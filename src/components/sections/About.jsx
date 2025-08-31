@@ -1,281 +1,385 @@
 import styled from 'styled-components';
 import { motion } from 'framer-motion';
-import { useState, useEffect } from 'react';
 
 const AboutContainer = styled.section`
-  display: flex;
-  align-items: center;
-  justify-content: center;
   min-height: 100vh;
   width: 100%;
   position: relative;
   z-index: 1;
-  padding: 70px 20px;
+  padding: 100px 20px;
   margin: 0 auto;
-  max-width: 1280px;
+  max-width: 1400px;
 `;
 
-const TerminalWrapper = styled(motion.div)`
-  background: ${({ theme }) => theme.colors.glass};
-  backdrop-filter: blur(10px);
-  border-radius: 10px;
-  width: 100%;
-  max-width: 1200px;
-  height: auto;
-  min-height: 650px;
-  display: flex;
-  flex-direction: column;
-  position: relative;
-  overflow: hidden;
-  border: 1px solid ${({ theme }) => theme.colors.border};
-  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
-  font-family: 'JetBrains Mono', monospace;
-  margin: 0 auto;
+const SectionHeader = styled.div`
+  text-align: center;
+  margin-bottom: 80px;
 `;
 
-const TerminalHeader = styled.div`
-  background: ${({ theme }) => theme.colors.terminalHeader};
-  padding: 12px 15px;
-  border-top-left-radius: 10px;
-  border-top-right-radius: 10px;
-  border-bottom: 1px solid ${({ theme }) => theme.colors.border};
-  display: flex;
-  align-items: center;
-`;
-
-const TerminalButton = styled.div`
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-  margin-right: 8px;
-  background: ${props => props.color};
-`;
-
-const TerminalTitle = styled.div`
-  color: ${({ theme }) => theme.colors.text};
-  margin-left: auto;
-  margin-right: auto;
-  opacity: 0.75;
-  font-size: 14px;
-`;
-
-const TerminalContent = styled.div`
-  padding: 30px;
-  color: ${({ theme }) => theme.colors.text};
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  justify-content: flex-start;
-  gap: 20px;
-`;
-
-const Command = styled.div`
+const SectionTitle = styled(motion.h2)`
+  font-size: 4rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, ${({ theme }) => theme.colors.primary}, #00ff88);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
   margin-bottom: 20px;
-  display: flex;
-  align-items: center;
   
-  .prompt {
-    color: #64ffda;
-    margin-right: 10px;
-    display: flex;
-    align-items: center;
-    gap: 5px;
+  @media (max-width: 768px) {
+    font-size: 3rem;
+  }
+`;
+
+const SectionSubtitle = styled(motion.p)`
+  font-size: 1.3rem;
+  color: ${({ theme }) => theme.colors.text};
+  opacity: 0.7;
+  max-width: 600px;
+  margin: 0 auto;
+`;
+
+const MainContent = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 80px;
+  align-items: start;
+  
+  @media (max-width: 1024px) {
+    grid-template-columns: 1fr;
+    gap: 60px;
+  }
+`;
+
+const ProfileCard = styled(motion.div)`
+  background: ${({ theme }) => theme.colors.glass};
+  backdrop-filter: blur(20px);
+  border-radius: 24px;
+  padding: 40px;
+  border: 1px solid ${({ theme }) => theme.colors.border};
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+  position: sticky;
+  top: 100px;
+  
+  @media (max-width: 1024px) {
+    position: static;
+  }
+`;
+
+const ProfileHeader = styled.div`
+  text-align: center;
+  margin-bottom: 30px;
+`;
+
+const ProfileTitle = styled.h3`
+  font-size: 1.5rem;
+  color: ${({ theme }) => theme.colors.primary};
+  margin-bottom: 10px;
+  font-weight: 600;
+`;
+
+const ProfileRoles = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+`;
+
+const Role = styled.div`
+  background: rgba(100, 255, 218, 0.1);
+  color: #00ff88;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  border: 1px solid rgba(100, 255, 218, 0.2);
+`;
+
+const ProfileStats = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  margin-top: 30px;
+`;
+
+const Stat = styled.div`
+  text-align: center;
+  
+  .number {
+    font-size: 2rem;
+    font-weight: 700;
+    color: ${({ theme }) => theme.colors.primary};
+    display: block;
+  }
+  
+  .label {
+    font-size: 0.9rem;
+    color: ${({ theme }) => theme.colors.text};
+    opacity: 0.7;
+  }
+`;
+
+const ContentSection = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 50px;
+`;
+
+const AboutSection = styled(motion.div)`
+  background: ${({ theme }) => theme.colors.glass};
+  backdrop-filter: blur(20px);
+  border-radius: 20px;
+  padding: 40px;
+  border: 1px solid ${({ theme }) => theme.colors.border};
+  
+  h3 {
+    font-size: 1.8rem;
+    color: ${({ theme }) => theme.colors.primary};
+    margin-bottom: 20px;
+    font-weight: 600;
+  }
+  
+  p {
+    color: ${({ theme }) => theme.colors.text};
+    line-height: 1.8;
+    font-size: 1.1rem;
+    margin-bottom: 20px;
     
-    i {
-      font-size: 12px;
+    &:last-child {
+      margin-bottom: 0;
     }
   }
   
-  .command-text {
-    color: ${({ theme }) => theme.colors.text};
-    font-weight: 500;
-  }
-`;
-
-const Output = styled(motion.div)`
-  margin: 10px 0 30px 25px;
-  color: ${({ theme }) => theme.colors.text};
-  opacity: 0.9;
-  line-height: 1.8;
-  font-size: 0.95rem;
-  letter-spacing: 0.3px;
-  text-align: justify;
-  
-  @media (max-width: 768px) {
-    text-align: justify;
-    padding-right: 25px;
-    hyphens: auto;
-    word-break: break-word;
-  }
-`;
-
-const TerminalOutput = styled.div`
-  padding: 20px 25px;
-  color: ${({ theme }) => theme.colors.text};
-  font-family: 'JetBrains Mono', monospace;
-  line-height: 1.6;
-`;
-
-const CommandPrompt = styled.div`
-  color: ${({ theme }) => theme.colors.primary};
-  margin-bottom: 15px;
-  display: flex;
-  align-items: center;
-  
-  &::before {
-    content: '[user@portfolio] ~';
-    color: ${({ theme }) => theme.colors.secondary};
-    margin-right: 10px;
-  }
-`;
-
-const SkillItem = styled.div`
-  margin: 15px 0;
-  padding-left: 25px;
-  border-left: 1px dashed ${({ theme }) => theme.colors.border};
-  
-  .skill-name {
+  .highlight {
     color: ${({ theme }) => theme.colors.primary};
+    font-weight: 600;
+  }
+  
+  .tech {
+    font-family: 'JetBrains Mono', monospace;
+    color: #00ff88;
     font-weight: 500;
+    background: rgba(0, 255, 136, 0.1);
+    padding: 2px 6px;
+    border-radius: 4px;
+  }
+`;
+
+const SkillsSection = styled(motion.div)`
+  background: ${({ theme }) => theme.colors.glass};
+  backdrop-filter: blur(20px);
+  border-radius: 20px;
+  padding: 40px;
+  border: 1px solid ${({ theme }) => theme.colors.border};
+  
+  h3 {
+    font-size: 1.8rem;
+    color: ${({ theme }) => theme.colors.primary};
+    margin-bottom: 30px;
+    font-weight: 600;
+  }
+`;
+
+const SkillsGrid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;
+`;
+
+const SkillCard = styled(motion.div)`
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid ${({ theme }) => theme.colors.border};
+  border-radius: 16px;
+  padding: 24px;
+  transition: all 0.3s ease;
+  
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+    border-color: ${({ theme }) => theme.colors.primary};
+  }
+  
+  .skill-header {
     display: flex;
     align-items: center;
+    margin-bottom: 12px;
     
-    .icon {
-      margin-right: 10px;
-      font-size: 1.2em;
+    .skill-icon {
+      width: 12px;
+      height: 12px;
+      background: ${({ theme }) => theme.colors.primary};
+      border-radius: 50%;
+      margin-right: 12px;
+    }
+    
+    .skill-name {
+      color: ${({ theme }) => theme.colors.text};
+      font-weight: 600;
+      font-size: 1rem;
     }
   }
   
   .skill-desc {
-    padding: 5px 0 5px 28px;
     color: ${({ theme }) => theme.colors.text};
     opacity: 0.8;
-    position: relative;
+    line-height: 1.6;
+    margin-bottom: 16px;
+    font-size: 0.95rem;
+  }
+  
+  .tech-stack {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
     
-    &::before {
-      content: '└─';
-      position: absolute;
-      left: 0;
-      color: ${({ theme }) => theme.colors.secondary};
+    .tech-tag {
+      background: rgba(100, 255, 218, 0.1);
+      color: #00ff88;
+      padding: 4px 8px;
+      border-radius: 12px;
+      font-size: 0.8rem;
+      font-family: 'JetBrains Mono', monospace;
+      border: 1px solid rgba(100, 255, 218, 0.2);
     }
   }
 `;
 
 const skills = [
   {
-    name: 'Android Development',
-    icon: '📱',
-    description: 'Custom ROM & Android app development'
+    name: 'Cloud Engineering',
+    description: 'Designing and implementing scalable cloud infrastructure and services',
+    techStack: ['AWS', 'Azure', 'GCP', 'Terraform', 'CloudFormation']
   },
   {
-    name: 'System Programming',
-    icon: '🔧',
-    description: 'Low-level system optimization'
+    name: 'Containerization',
+    description: 'Basic containerization knowledge and Docker fundamentals',
+    techStack: ['Docker', 'Docker Compose']
   },
   {
-    name: 'AI & Machine Learning',
-    icon: '🤖',
-    description: 'ML models & AI applications'
+    name: 'Backend Development',
+    description: 'Building robust APIs and microservices architecture',
+    techStack: ['Node.js', 'Python', 'Go', 'PostgreSQL', 'MongoDB']
   },
   {
-    name: 'Problem Solving',
-    icon: '🚀',
-    description: 'Algorithmic & analytical thinking'
+    name: 'Linux Systems',
+    description: 'System administration and optimization on Linux environments',
+    techStack: ['Arch Linux', 'KDE', 'Bash', 'SystemD', 'Networking']
   },
   {
-    name: 'Custom ROM Development',
-    icon: '💻',
-    description: 'Android system customization'
+    name: 'Android Tinkering',
+    description: 'Custom ROM development and Android system customization as a hobby',
+    techStack: ['AOSP', 'ADB', 'Fastboot', 'Magisk', 'Custom Recovery']
   }
 ];
 
 export default function About() {
-  const [commands, setCommands] = useState([]);
-  const [currentCommand, setCurrentCommand] = useState(0);
-
-  const terminalCommands = [
-    {
-      command: 'whoami',
-      output: 'Amrutesh Naregal - Tech Enthusiast & ROM Developer'
-    },
-    {
-      command: 'cat about.txt',
-      output: `I am a passionate tech enthusiast and custom ROM maintainer. My journey in the world of technology has led me to explore the intricate details of Android development and system customization.
-
-As a custom ROM maintainer, I work on optimizing and enhancing Android operating systems, providing users with improved performance, additional features, and a more personalized mobile experience.`
-    },
-    {
-      command: 'ls ./skills/',
-      output: (
-        <TerminalOutput>
-          <CommandPrompt>ls -l ~/skills</CommandPrompt>
-          {skills.map((skill, index) => (
-            <SkillItem key={index}>
-              <div className="skill-name">
-                <span className="icon">{skill.icon}</span>
-                {skill.name}
-              </div>
-              <div className="skill-desc">{skill.description}</div>
-            </SkillItem>
-          ))}
-        </TerminalOutput>
-      )
-    }
-  ];
-
-  useEffect(() => {
-    if (currentCommand < terminalCommands.length) {
-      const timer = setTimeout(() => {
-        setCommands(prev => [...prev, terminalCommands[currentCommand]]);
-        setCurrentCommand(prev => prev + 1);
-      }, 1000);
-      return () => clearTimeout(timer);
-    }
-  }, [currentCommand]);
-
   return (
     <AboutContainer id="about">
-      <TerminalWrapper
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8 }}
-        viewport={{ once: true }}
-      >
-        <TerminalHeader>
-          <TerminalButton color="#ff5f56"/>
-          <TerminalButton color="#ffbd2e"/>
-          <TerminalButton color="#27c93f"/>
-          <TerminalTitle>user@portfolio: ~/skills</TerminalTitle>
-        </TerminalHeader>
-        
-        <TerminalContent>
-          {commands.map((cmd, index) => (
-            <motion.div
-              key={index}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.3 }}
-            >
-              <Command>
-                <span className="prompt">➜</span>
-                <span className="command-text">{cmd.command}</span>
-              </Command>
-              <Output>{cmd.output}</Output>
-            </motion.div>
-          ))}
-          <Command>
-            <span className="prompt">➜</span>
-            <motion.span 
-              className="cursor"
-              animate={{ opacity: [0, 1] }}
-              transition={{ duration: 0.8, repeat: Infinity }}
-            >
-              █
-            </motion.span>
-          </Command>
-        </TerminalContent>
-      </TerminalWrapper>
+      <SectionHeader>
+        <SectionTitle
+          initial={{ opacity: 0, y: -30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+          viewport={{ once: true }}
+        >
+          About Me
+        </SectionTitle>
+        <SectionSubtitle
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.2 }}
+          viewport={{ once: true }}
+        >
+          Cloud Engineer • Backend Developer • Custom ROM Enthusiast
+        </SectionSubtitle>
+      </SectionHeader>
+
+      <MainContent>
+        <ProfileCard
+          initial={{ opacity: 0, x: -50 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.8, delay: 0.4 }}
+          viewport={{ once: true }}
+        >
+          <ProfileHeader>
+            <ProfileTitle>Amrutesh Naregal</ProfileTitle>
+            <ProfileRoles>
+              <Role>Cloud Engineer</Role>
+              <Role>Backend Developer</Role>
+              <Role>ROM Developer</Role>
+            </ProfileRoles>
+          </ProfileHeader>
+
+          <ProfileStats>
+            <Stat>
+              <span className="number">5+</span>
+              <span className="label">Years ROM Building</span>
+            </Stat>
+            <Stat>
+              <span className="number">100+</span>
+              <span className="label">ROMs Released</span>
+            </Stat>
+          </ProfileStats>
+        </ProfileCard>
+
+        <ContentSection>
+          <AboutSection
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.6 }}
+            viewport={{ once: true }}
+          >
+            <h3>My Journey</h3>
+            <p>
+              I'm a passionate <span className="highlight">Cloud Engineer</span> with expertise in
+              <span className="tech">backend development</span>. I architect scalable cloud solutions
+              and build robust, high-performance applications that serve users reliably.
+            </p>
+            <p>
+              My professional stack spans <span className="tech">cloud platforms</span> and
+              <span className="tech">backend technologies</span>. I'm passionate about building efficient systems
+              that scale seamlessly while maintaining <span className="highlight">reliability</span> and
+              <span className="highlight">security best practices</span>.
+            </p>
+            <p>
+              Outside of work, I'm an <span className="tech">Arch Linux</span> enthusiast running
+              <span className="tech">KDE Plasma</span> who loves to tinker with Android. I build
+              <span className="highlight">custom ROMs for fun</span>, exploring the depths of Android
+              customization and system optimization as a hobby project.
+            </p>
+          </AboutSection>
+
+          <SkillsSection
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.8 }}
+            viewport={{ once: true }}
+          >
+            <h3>Technical Expertise</h3>
+            <SkillsGrid>
+              {skills.map((skill, index) => (
+                <SkillCard
+                  key={index}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6, delay: 1 + index * 0.1 }}
+                  viewport={{ once: true }}
+                  whileHover={{ y: -4 }}
+                >
+                  <div className="skill-header">
+                    <div className="skill-icon"></div>
+                    <div className="skill-name">{skill.name}</div>
+                  </div>
+                  <div className="skill-desc">{skill.description}</div>
+                  <div className="tech-stack">
+                    {skill.techStack.map((tech, techIndex) => (
+                      <span key={techIndex} className="tech-tag">{tech}</span>
+                    ))}
+                  </div>
+                </SkillCard>
+              ))}
+            </SkillsGrid>
+          </SkillsSection>
+        </ContentSection>
+      </MainContent>
     </AboutContainer>
   );
 }
