@@ -569,7 +569,7 @@ export default function About() {
           <SkillsSection
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.8 }}
+            transition={{ duration: 0.6, delay: 0.3 }}
             viewport={{ once: true }}
           >
             <h3>Technical Expertise</h3>
@@ -579,7 +579,7 @@ export default function About() {
                   key={index}
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.6, delay: 1 + index * 0.1 }}
+                  transition={{ duration: 0.5, delay: 0.5 + index * 0.05 }}
                   viewport={{ once: true }}
                   whileHover={{ y: -4 }}
                 >

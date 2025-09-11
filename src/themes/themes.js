@@ -10,12 +10,6 @@ const baseTheme = {
 };
 
 export const themes = {
-  dark: {
-    name: "Dark Theme",
-    colors: {
-      ...baseTheme.colors
-    }
-  },
   black: {
     name: "Black Theme",
     colors: {
@@ -26,6 +20,12 @@ export const themes = {
       primary: "#64ffda",
       glass: "rgba(0, 0, 0, 0.7)",
       border: "rgba(100, 255, 218, 0.1)"
+    }
+  },
+  dark: {
+    name: "Dark Theme",
+    colors: {
+      ...baseTheme.colors
     }
   },
   light: {
