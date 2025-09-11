@@ -549,7 +549,7 @@ export default function About() {
             <p>
               Spent my childhood playing games like <span className="tech">GTA Vice City</span>, <span className="tech">AxySnake</span>, 
               <span className="tech">Mario Forever</span> etc. Broke some game key requirements and experimented with 
-              <span className="tech">GTA</span> with my own weird mods. Tried <span className="tech">Ubuntu</span> for the first time 
+              <span className="tech">GTA</span> with my own weird mods. Tried <span className="tech">Ubuntu</span> linux for the first time 
               in 8th class and built computers at home. Printed <span className="highlight">Hello World</span> in 2017.
             </p>
             <p>
