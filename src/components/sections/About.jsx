@@ -57,9 +57,11 @@ const TerminalLine = styled(motion.div)`
   font-family: 'JetBrains Mono', 'Courier New', monospace;
   font-size: 1rem;
   color: ${({ theme }) => theme.colors.primary};
-  background: rgba(0, 0, 0, 0.2);
+  background: rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   padding: 12px 20px;
-  border-radius: 8px;
+  border-radius: 12px;
   border-left: 3px solid ${({ theme }) => theme.colors.primary};
   max-width: 500px;
   margin: 0 auto;
