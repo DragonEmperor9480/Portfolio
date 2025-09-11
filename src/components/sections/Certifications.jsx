@@ -392,6 +392,22 @@ export default function Certifications() {
     }
   };
 
+  // Handle mouse wheel scroll on tab bar
+  const handleTabBarScroll = (e) => {
+    const tabBar = e.currentTarget;
+    const hasHorizontalScroll = tabBar.scrollWidth > tabBar.clientWidth;
+    
+    // Always prevent default when over tab bar to stop website scrolling
+    e.preventDefault();
+    e.stopPropagation();
+    
+    // Only actually scroll the tabs if there's overflow
+    if (hasHorizontalScroll) {
+      const scrollAmount = e.deltaY * 0.5; // Reduce scroll sensitivity
+      tabBar.scrollLeft += scrollAmount;
+    }
+  };
+
   const activeCert = openTabs.find(tab => tab.id === activeTab)?.cert;
 
   return (
@@ -437,7 +453,7 @@ export default function Certifications() {
           </Sidebar>
 
           <EditorArea>
-            <TabBar>
+            <TabBar onWheel={handleTabBarScroll}>
               {openTabs.map((tab) => (
                 <Tab
                   key={tab.id}
