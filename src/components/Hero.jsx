@@ -409,7 +409,7 @@ export default function Hero() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.4 }}
             >
-              Passionate Cloud Engineer with expertise in backend development and a love for building custom Android ROMs. I architect scalable cloud solutions while exploring the depths of Linux systems and mobile customization as a hobby.
+              Just a guy who likes to code and build things. Loves to Tinker with Android. Gamer4life. Arch Linux User.
             </Bio>
 
             <SocialLinks
@@ -464,7 +464,7 @@ export default function Hero() {
                   <i className="fab fa-telegram-plane"></i>
                 </span>
                 <span className="platform-name">Telegram</span>
-                <span className="username">@yourusername</span>
+                <span className="username">@Kamisato_Amrut</span>
               </SocialLink>
             </SocialLinks>
           </RightSection>
