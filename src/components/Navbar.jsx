@@ -37,9 +37,18 @@ const Nav = styled(motion.nav)`
     opacity: 0.6;
   }
 
+  @media (max-width: 1024px) {
+    padding: 0 30px;
+  }
+
   @media (max-width: 768px) {
     padding: 0 20px;
     height: 70px;
+  }
+
+  @media (max-width: 480px) {
+    padding: 0 15px;
+    height: 65px;
   }
 `;
 
@@ -52,6 +61,7 @@ const NavLinks = styled.div`
     flex-direction: column;
     align-items: stretch;
     gap: 8px;
+    width: 100%;
   }
 `;
 
@@ -217,6 +227,10 @@ const LogoButton = styled.a`
   @media (max-width: 768px) {
     font-size: 1.5rem;
   }
+
+  @media (max-width: 480px) {
+    font-size: 1.3rem;
+  }
 `;
 
 const SystemInfo = styled.div`
@@ -228,7 +242,7 @@ const SystemInfo = styled.div`
   color: ${({ theme }) => theme.colors.secondary};
   opacity: 0.7;
   
-  @media (max-width: 968px) {
+  @media (max-width: 1024px) {
     display: none;
   }
 `;
@@ -288,10 +302,16 @@ const RightSection = styled.div`
   align-items: center;
   gap: 2rem;
 
-  @media (max-width: 1060px) {
+  @media (max-width: 1024px) {
+    gap: 1rem;
+    
     .desktop-nav {
       display: none;
     }
+  }
+
+  @media (max-width: 768px) {
+    gap: 0.5rem;
   }
 `;
 
@@ -316,8 +336,14 @@ const MenuButton = styled(motion.button)`
     box-shadow: 0 0 10px ${({ theme }) => `${theme.colors.primary}30`};
   }
 
-  @media (min-width: 1061px) {
+  @media (min-width: 1025px) {
     display: none;
+  }
+
+  @media (max-width: 480px) {
+    width: 35px;
+    height: 35px;
+    font-size: 0.9rem;
   }
 `;
 
@@ -333,7 +359,7 @@ export default function Navbar() {
   const menuRef = useRef(null);
   const buttonRef = useRef(null);
 
-  const shouldShowMobileMenu = width <= 1060 || height <= 883;
+  const shouldShowMobileMenu = width <= 1024;
 
   useEffect(() => {
     if (!shouldShowMobileMenu && isMenuOpen) {

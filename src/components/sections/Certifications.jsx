@@ -11,6 +11,19 @@ const CertificationsContainer = styled.section`
   justify-content: center;
   min-height: 100vh;
   align-items: center;
+
+  @media (max-width: 1024px) {
+    padding: 1.5rem;
+  }
+
+  @media (max-width: 768px) {
+    padding: 1rem;
+    min-height: auto;
+  }
+
+  @media (max-width: 480px) {
+    padding: 0.5rem;
+  }
 `;
 
 const VSCodeWindow = styled(motion.div)`
@@ -24,6 +37,20 @@ const VSCodeWindow = styled(motion.div)`
   height: 700px;
   display: flex;
   flex-direction: column;
+
+  @media (max-width: 1024px) {
+    height: 600px;
+  }
+
+  @media (max-width: 768px) {
+    height: 500px;
+    border-radius: 6px;
+  }
+
+  @media (max-width: 480px) {
+    height: 400px;
+    border-radius: 4px;
+  }
 `;
 
 const TitleBar = styled.div`
@@ -70,6 +97,14 @@ const Sidebar = styled.div`
   border-right: 1px solid ${({ theme }) => theme.colors.border};
   display: flex;
   flex-direction: column;
+
+  @media (max-width: 768px) {
+    width: 250px;
+  }
+
+  @media (max-width: 480px) {
+    width: 200px;
+  }
 `;
 
 const SidebarHeader = styled.div`
@@ -133,6 +168,14 @@ const EditorArea = styled.div`
   position: relative;
   width: calc(100% - 300px);
   min-width: 0;
+
+  @media (max-width: 768px) {
+    width: calc(100% - 250px);
+  }
+
+  @media (max-width: 480px) {
+    width: calc(100% - 200px);
+  }
 `;
 
 const TabBar = styled.div`
@@ -211,6 +254,32 @@ const Tab = styled.div`
       opacity: 1;
     }
   }
+
+  @media (max-width: 768px) {
+    min-width: 150px;
+    padding: 0 12px;
+  }
+
+  @media (max-width: 480px) {
+    min-width: 120px;
+    padding: 0 8px;
+
+    .tab-icon {
+      width: 14px;
+      height: 14px;
+      margin-right: 6px;
+    }
+
+    .tab-name {
+      font-size: 0.75rem;
+    }
+
+    .close-button {
+      width: 14px;
+      height: 14px;
+      margin-left: 6px;
+    }
+  }
 `;
 
 const Editor = styled.div`
@@ -222,6 +291,14 @@ const Editor = styled.div`
   width: 100%;
   display: flex;
   flex-direction: column;
+
+  @media (max-width: 768px) {
+    padding: 12px;
+  }
+
+  @media (max-width: 480px) {
+    padding: 8px;
+  }
 `;
 
 const CertificatePreview = styled.div`
@@ -325,6 +402,15 @@ const CertificateImage = styled.img`
   border-radius: 8px;
   border: 1px solid ${({ theme }) => theme.colors.border};
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+
+  @media (max-width: 768px) {
+    max-width: 100%;
+    border-radius: 6px;
+  }
+
+  @media (max-width: 480px) {
+    border-radius: 4px;
+  }
 `;
 
 

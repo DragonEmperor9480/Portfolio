@@ -13,6 +13,18 @@ const AchievementsContainer = styled.section`
   padding: 70px 20px;
   margin: 0 auto;
   max-width: 1280px;
+
+  @media (max-width: 1024px) {
+    padding: 60px 20px;
+  }
+
+  @media (max-width: 768px) {
+    padding: 50px 15px;
+  }
+
+  @media (max-width: 480px) {
+    padding: 40px 10px;
+  }
 `;
 
 const IDE = styled(motion.div)`
@@ -31,6 +43,16 @@ const IDE = styled(motion.div)`
   box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
   font-family: 'JetBrains Mono', monospace;
   margin: 0 auto;
+
+  @media (max-width: 768px) {
+    min-height: 500px;
+    border-radius: 8px;
+  }
+
+  @media (max-width: 480px) {
+    min-height: 400px;
+    border-radius: 6px;
+  }
 `;
 
 const TabBar = styled.div`
@@ -94,6 +116,14 @@ const EditorContent = styled.div`
   padding: 20px;
   color: ${({ theme }) => theme.colors.text};
   flex: 1;
+
+  @media (max-width: 768px) {
+    padding: 15px;
+  }
+
+  @media (max-width: 480px) {
+    padding: 10px;
+  }
 `;
 
 const BadgeSection = styled.div`

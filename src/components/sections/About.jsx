@@ -9,12 +9,32 @@ const AboutContainer = styled.section`
   padding: 120px 20px;
   margin: 0 auto;
   max-width: 1200px;
+
+  @media (max-width: 1024px) {
+    padding: 100px 20px;
+  }
+
+  @media (max-width: 768px) {
+    padding: 80px 15px;
+  }
+
+  @media (max-width: 480px) {
+    padding: 70px 10px;
+  }
 `;
 
 const SectionHeader = styled.div`
   text-align: center;
   margin-bottom: 100px;
   position: relative;
+
+  @media (max-width: 768px) {
+    margin-bottom: 60px;
+  }
+
+  @media (max-width: 480px) {
+    margin-bottom: 40px;
+  }
 `;
 
 const SectionTitle = styled(motion.h2)`
@@ -43,6 +63,10 @@ const SectionTitle = styled(motion.h2)`
   @media (max-width: 768px) {
     font-size: 2.5rem;
   }
+
+  @media (max-width: 480px) {
+    font-size: 2rem;
+  }
 `;
 
 const SectionSubtitle = styled(motion.p)`
@@ -51,6 +75,16 @@ const SectionSubtitle = styled(motion.p)`
   max-width: 700px;
   margin: 0 auto 30px;
   line-height: 1.6;
+
+  @media (max-width: 768px) {
+    font-size: 1rem;
+    margin: 0 auto 20px;
+  }
+
+  @media (max-width: 480px) {
+    font-size: 0.9rem;
+    margin: 0 auto 15px;
+  }
 `;
 
 const TerminalLine = styled(motion.div)`
@@ -74,6 +108,17 @@ const TerminalLine = styled(motion.div)`
   .command {
     color: ${({ theme }) => theme.colors.text};
   }
+
+  @media (max-width: 768px) {
+    font-size: 0.9rem;
+    padding: 10px 15px;
+    max-width: 100%;
+  }
+
+  @media (max-width: 480px) {
+    font-size: 0.8rem;
+    padding: 8px 12px;
+  }
 `;
 
 const MainContent = styled.div`
@@ -85,6 +130,14 @@ const MainContent = styled.div`
   @media (max-width: 1024px) {
     grid-template-columns: 1fr;
     gap: 50px;
+  }
+
+  @media (max-width: 768px) {
+    gap: 40px;
+  }
+
+  @media (max-width: 480px) {
+    gap: 30px;
   }
 `;
 
@@ -112,6 +165,16 @@ const ProfileCard = styled(motion.div)`
   
   @media (max-width: 1024px) {
     position: static;
+  }
+
+  @media (max-width: 768px) {
+    padding: 24px;
+    border-radius: 15px;
+  }
+
+  @media (max-width: 480px) {
+    padding: 20px;
+    border-radius: 12px;
   }
 `;
 
@@ -341,6 +404,15 @@ const SkillsGrid = styled.div`
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 18px;
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+
+  @media (max-width: 480px) {
+    gap: 12px;
+  }
 `;
 
 const SkillCard = styled(motion.div)`

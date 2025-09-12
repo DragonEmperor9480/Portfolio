@@ -14,6 +14,16 @@ const HeroContainer = styled.section`
   padding-top: 70px;
   margin: 0 auto;
   max-width: 1280px;
+
+  @media (max-width: 768px) {
+    padding-top: 80px;
+    min-height: calc(100vh - 20px);
+  }
+
+  @media (max-width: 480px) {
+    padding-top: 75px;
+    min-height: calc(100vh - 10px);
+  }
 `;
 
 const GlassCard = styled(motion.div)`
@@ -31,9 +41,21 @@ const GlassCard = styled(motion.div)`
   border: 1px solid ${({ theme }) => theme.colors.border};
   box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
 
+  @media (max-width: 1024px) {
+    width: 98%;
+    margin-top: 3rem;
+  }
+
   @media (max-width: 768px) {
     margin-top: 2rem;
     min-height: auto;
+    width: 100%;
+    border-radius: 15px;
+  }
+
+  @media (max-width: 480px) {
+    margin-top: 1rem;
+    border-radius: 12px;
   }
 `;
 
@@ -91,9 +113,19 @@ const ContentWrapper = styled.div`
   align-items: center;
   padding: 0 20px;
 
+  @media (max-width: 1024px) {
+    padding: 0 15px;
+  }
+
   @media (max-width: 768px) {
     flex-direction: column;
-    margin-top: 20px;
+    margin-top: 30px;
+    padding: 0 15px;
+  }
+
+  @media (max-width: 480px) {
+    padding: 0 10px;
+    margin-top: 25px;
   }
 `;
 
@@ -103,7 +135,12 @@ const LeftSection = styled.div`
   align-items: center;
 
   @media (max-width: 768px) {
-    margin-top: 80px;
+    margin-top: 40px;
+    order: 1;
+  }
+
+  @media (max-width: 480px) {
+    margin-top: 30px;
   }
 `;
 
@@ -114,9 +151,20 @@ const RightSection = styled.div`
   flex-direction: column;
   justify-content: center;
 
+  @media (max-width: 1024px) {
+    padding: 2rem;
+  }
+
   @media (max-width: 768px) {
     padding: 1.5rem;
     text-align: center;
+    order: 2;
+    margin-top: 2rem;
+  }
+
+  @media (max-width: 480px) {
+    padding: 1rem;
+    margin-top: 1.5rem;
   }
 `;
 
@@ -159,6 +207,7 @@ const TypewriterContainer = styled.div`
   font-size: 2rem;
   display: flex;
   align-items: center;
+  justify-content: center;
   color: ${({ theme }) => theme.colors.text};
   opacity: 0.9;
   margin-bottom: 20px;
@@ -181,10 +230,14 @@ const TypewriterContainer = styled.div`
 
   @media (max-width: 768px) {
     font-size: 1.5rem;
+    justify-content: center;
+    text-align: center;
   }
 
   @media (max-width: 480px) {
     font-size: 1.2rem;
+    justify-content: center;
+    text-align: center;
   }
 `;
 
@@ -207,9 +260,19 @@ const SocialLinks = styled(motion.div)`
   gap: 1rem;
   margin-top: 2rem;
   
+  @media (max-width: 1024px) {
+    gap: 0.8rem;
+  }
+  
   @media (max-width: 768px) {
     justify-items: center;
     gap: 0.8rem;
+    grid-template-columns: 1fr;
+  }
+
+  @media (max-width: 480px) {
+    gap: 0.6rem;
+    margin-top: 1.5rem;
   }
 `;
 
@@ -299,6 +362,23 @@ const SocialLink = styled(motion.a)`
     
     &:hover, &:active {
       width: 250px;
+    }
+  }
+
+  @media (max-width: 480px) {
+    width: 180px;
+    height: 45px;
+    
+    &:hover, &:active {
+      width: 220px;
+    }
+
+    .platform-name {
+      font-size: 0.8rem;
+    }
+
+    .username {
+      font-size: 0.75rem;
     }
   }
 `;
