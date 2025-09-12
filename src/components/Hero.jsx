@@ -193,6 +193,7 @@ const Name = styled(motion.h1)`
   color: ${({ theme }) => theme.colors.text};
   margin-bottom: 10px;
   font-weight: 700;
+  text-align: center;
   
   @media (max-width: 768px) {
     font-size: 2.5rem;
@@ -247,6 +248,7 @@ const Bio = styled(motion.p)`
   color: ${({ theme }) => theme.colors.text};
   opacity: 0.8;
   margin-bottom: 30px;
+  text-align: center;
 
   @media (max-width: 768px) {
     font-size: 1rem;

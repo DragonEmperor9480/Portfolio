@@ -643,10 +643,6 @@ export default function Certifications() {
                         <i className="fas fa-external-link-alt" style={{ marginRight: '6px' }}></i>
                         View Original
                       </button>
-                      <button className="secondary">
-                        <i className="fas fa-download" style={{ marginRight: '6px' }}></i>
-                        Download
-                      </button>
                     </ActionButtons>
                   </PreviewHeader>
                   
