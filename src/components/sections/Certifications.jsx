@@ -5,24 +5,29 @@ import certificates from '../../data/certificates.json';
 
 const CertificationsContainer = styled.section`
   width: 100%;
-  max-width: 1400px;
+  max-width: 1200px;
   padding: 2rem;
   display: flex;
   justify-content: center;
   min-height: 100vh;
   align-items: center;
+  overflow: hidden;
+  box-sizing: border-box;
 
   @media (max-width: 1024px) {
     padding: 1.5rem;
+    max-width: calc(100vw - 2rem);
   }
 
   @media (max-width: 768px) {
     padding: 1rem;
     min-height: auto;
+    max-width: calc(100vw - 1rem);
   }
 
   @media (max-width: 480px) {
     padding: 0.5rem;
+    max-width: calc(100vw - 0.5rem);
   }
 `;
 
@@ -34,22 +39,27 @@ const VSCodeWindow = styled(motion.div)`
   overflow: hidden;
   box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
   width: 100%;
+  max-width: 100%;
   height: 700px;
   display: flex;
   flex-direction: column;
+  box-sizing: border-box;
 
   @media (max-width: 1024px) {
     height: 600px;
+    max-width: calc(100vw - 4rem);
   }
 
   @media (max-width: 768px) {
     height: 500px;
     border-radius: 6px;
+    max-width: calc(100vw - 2rem);
   }
 
   @media (max-width: 480px) {
     height: 400px;
     border-radius: 4px;
+    max-width: calc(100vw - 1rem);
   }
 `;
 
@@ -88,7 +98,10 @@ const MainContent = styled.div`
   flex: 1;
   overflow: hidden;
   width: 100%;
+  max-width: 100%;
   position: relative;
+  box-sizing: border-box;
+  min-width: 0;
 `;
 
 const Sidebar = styled.div`
@@ -167,14 +180,19 @@ const EditorArea = styled.div`
   background: ${({ theme }) => theme.colors.background};
   position: relative;
   width: calc(100% - 300px);
+  max-width: calc(100% - 300px);
   min-width: 0;
+  overflow: hidden;
+  box-sizing: border-box;
 
   @media (max-width: 768px) {
     width: calc(100% - 250px);
+    max-width: calc(100% - 250px);
   }
 
   @media (max-width: 480px) {
     width: calc(100% - 200px);
+    max-width: calc(100% - 200px);
   }
 `;
 
@@ -183,8 +201,13 @@ const TabBar = styled.div`
   background: ${({ theme }) => theme.colors.glass};
   border-bottom: 1px solid ${({ theme }) => theme.colors.border};
   min-height: 35px;
+  max-height: 35px;
   overflow-x: auto;
   overflow-y: hidden;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  flex-shrink: 0;
   
   &::-webkit-scrollbar {
     height: 6px;
@@ -214,6 +237,9 @@ const Tab = styled.div`
   position: relative;
   flex-shrink: 0;
   min-width: 200px;
+  max-width: 200px;
+  width: 200px;
+  box-sizing: border-box;
   
   &:hover {
     background: ${props => props.isActive ? props.theme.colors.background : `${props.theme.colors.border}50`};
@@ -236,6 +262,7 @@ const Tab = styled.div`
     overflow: hidden;
     text-overflow: ellipsis;
     flex: 1;
+    max-width: 120px;
   }
   
   .close-button {
@@ -257,11 +284,19 @@ const Tab = styled.div`
 
   @media (max-width: 768px) {
     min-width: 150px;
+    max-width: 150px;
+    width: 150px;
     padding: 0 12px;
+    
+    .tab-name {
+      max-width: 80px;
+    }
   }
 
   @media (max-width: 480px) {
     min-width: 120px;
+    max-width: 120px;
+    width: 120px;
     padding: 0 8px;
 
     .tab-icon {
@@ -272,6 +307,7 @@ const Tab = styled.div`
 
     .tab-name {
       font-size: 0.75rem;
+      max-width: 60px;
     }
 
     .close-button {
