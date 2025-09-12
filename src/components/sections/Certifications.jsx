@@ -11,7 +11,7 @@ const CertificationsContainer = styled.section`
   justify-content: center;
   min-height: 100vh;
   align-items: center;
-  overflow: hidden;
+  margin: 0 auto;
   box-sizing: border-box;
 
   @media (max-width: 1024px) {
@@ -110,13 +110,18 @@ const Sidebar = styled.div`
   border-right: 1px solid ${({ theme }) => theme.colors.border};
   display: flex;
   flex-direction: column;
+  flex-shrink: 0;
 
-  @media (max-width: 768px) {
+  @media (max-width: 1024px) {
     width: 250px;
   }
 
-  @media (max-width: 480px) {
+  @media (max-width: 768px) {
     width: 200px;
+  }
+
+  @media (max-width: 480px) {
+    width: 150px;
   }
 `;
 
@@ -180,19 +185,20 @@ const EditorArea = styled.div`
   background: ${({ theme }) => theme.colors.background};
   position: relative;
   width: calc(100% - 300px);
-  max-width: calc(100% - 300px);
   min-width: 0;
   overflow: hidden;
   box-sizing: border-box;
 
-  @media (max-width: 768px) {
+  @media (max-width: 1024px) {
     width: calc(100% - 250px);
-    max-width: calc(100% - 250px);
+  }
+
+  @media (max-width: 768px) {
+    width: calc(100% - 200px);
   }
 
   @media (max-width: 480px) {
-    width: calc(100% - 200px);
-    max-width: calc(100% - 200px);
+    width: calc(100% - 150px);
   }
 `;
 
@@ -236,9 +242,9 @@ const Tab = styled.div`
   cursor: pointer;
   position: relative;
   flex-shrink: 0;
-  min-width: 200px;
+  min-width: 160px;
   max-width: 200px;
-  width: 200px;
+  width: 180px;
   box-sizing: border-box;
   
   &:hover {
@@ -262,7 +268,6 @@ const Tab = styled.div`
     overflow: hidden;
     text-overflow: ellipsis;
     flex: 1;
-    max-width: 120px;
   }
   
   .close-button {
@@ -282,38 +287,56 @@ const Tab = styled.div`
     }
   }
 
-  @media (max-width: 768px) {
-    min-width: 150px;
-    max-width: 150px;
-    width: 150px;
+  @media (max-width: 1024px) {
+    min-width: 140px;
+    max-width: 180px;
+    width: 160px;
     padding: 0 12px;
-    
-    .tab-name {
-      max-width: 80px;
-    }
   }
 
-  @media (max-width: 480px) {
+  @media (max-width: 768px) {
     min-width: 120px;
-    max-width: 120px;
-    width: 120px;
+    max-width: 140px;
+    width: 130px;
     padding: 0 8px;
-
+    
     .tab-icon {
       width: 14px;
       height: 14px;
       margin-right: 6px;
     }
-
+    
     .tab-name {
       font-size: 0.75rem;
-      max-width: 60px;
     }
-
+    
     .close-button {
       width: 14px;
       height: 14px;
       margin-left: 6px;
+    }
+  }
+
+  @media (max-width: 480px) {
+    min-width: 100px;
+    max-width: 120px;
+    width: 110px;
+    padding: 0 6px;
+
+    .tab-icon {
+      width: 12px;
+      height: 12px;
+      margin-right: 4px;
+    }
+
+    .tab-name {
+      font-size: 0.7rem;
+    }
+
+    .close-button {
+      width: 12px;
+      height: 12px;
+      margin-left: 4px;
     }
   }
 `;
