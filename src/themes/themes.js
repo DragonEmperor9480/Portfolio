@@ -123,5 +123,18 @@ export const themes = {
       glass: "rgba(26, 29, 29, 0.7)",
       border: "rgba(152, 255, 152, 0.1)"
     }
+  },
+  lavender: {
+    name: "Lavender Theme",
+    colors: {
+      ...baseTheme.colors,
+      text: '#e0ddef',
+      textSecondary: '#a09aad',
+      background: "#1a1823",
+      primary: "#a995c9",
+      secondary: "#5a5370",
+      glass: "rgba(35, 32, 48, 0.7)",
+      border: "rgba(48, 44, 64, 0.5)"
+    }
   }
 };
