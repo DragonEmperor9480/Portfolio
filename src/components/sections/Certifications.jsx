@@ -5,7 +5,7 @@ import certificates from '../../data/certificates.json';
 
 const CertificationsContainer = styled.section`
   width: 100%;
-  max-width: 1200px;
+  max-width: 1400px;
   padding: 2rem;
   display: flex;
   justify-content: center;
@@ -35,30 +35,30 @@ const VSCodeWindow = styled(motion.div)`
   background: ${({ theme }) => theme.colors.glass};
   backdrop-filter: blur(20px);
   border: 1px solid ${({ theme }) => theme.colors.border};
-  border-radius: 8px;
+  border-radius: 12px;
   overflow: hidden;
   box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
   width: 100%;
   max-width: 100%;
-  height: 700px;
+  height: 900px;
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
 
   @media (max-width: 1024px) {
-    height: 600px;
+    height: 800px;
     max-width: calc(100vw - 4rem);
   }
 
   @media (max-width: 768px) {
-    height: 500px;
-    border-radius: 6px;
+    height: 700px;
+    border-radius: 8px;
     max-width: calc(100vw - 2rem);
   }
 
   @media (max-width: 480px) {
-    height: 400px;
-    border-radius: 4px;
+    height: 550px;
+    border-radius: 6px;
     max-width: calc(100vw - 1rem);
   }
 `;
@@ -105,7 +105,7 @@ const MainContent = styled.div`
 `;
 
 const Sidebar = styled.div`
-  width: 300px;
+  width: 350px;
   background: ${({ theme }) => theme.colors.background};
   border-right: 1px solid ${({ theme }) => theme.colors.border};
   display: flex;
@@ -113,15 +113,15 @@ const Sidebar = styled.div`
   flex-shrink: 0;
 
   @media (max-width: 1024px) {
-    width: 250px;
+    width: 280px;
   }
 
   @media (max-width: 768px) {
-    width: 200px;
+    width: 220px;
   }
 
   @media (max-width: 480px) {
-    width: 150px;
+    width: 160px;
   }
 `;
 
@@ -184,21 +184,21 @@ const EditorArea = styled.div`
   flex-direction: column;
   background: ${({ theme }) => theme.colors.background};
   position: relative;
-  width: calc(100% - 300px);
+  width: calc(100% - 350px);
   min-width: 0;
   overflow: hidden;
   box-sizing: border-box;
 
   @media (max-width: 1024px) {
-    width: calc(100% - 250px);
+    width: calc(100% - 280px);
   }
 
   @media (max-width: 768px) {
-    width: calc(100% - 200px);
+    width: calc(100% - 220px);
   }
 
   @media (max-width: 480px) {
-    width: calc(100% - 150px);
+    width: calc(100% - 160px);
   }
 `;
 
@@ -456,19 +456,19 @@ const CertificateImageContainer = styled.div`
 
 const CertificateImage = styled.img`
   width: 100%;
-  max-width: 600px;
+  max-width: 900px;
   height: auto;
-  border-radius: 8px;
+  border-radius: 12px;
   border: 1px solid ${({ theme }) => theme.colors.border};
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 
   @media (max-width: 768px) {
     max-width: 100%;
-    border-radius: 6px;
+    border-radius: 8px;
   }
 
   @media (max-width: 480px) {
-    border-radius: 4px;
+    border-radius: 6px;
   }
 `;
 
