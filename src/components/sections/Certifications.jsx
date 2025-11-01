@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import styled from 'styled-components';
+import styled, { keyframes } from 'styled-components';
 import { motion } from 'framer-motion';
 import certificates from '../../data/certificates.json';
 
@@ -454,6 +454,64 @@ const CertificateImageContainer = styled.div`
   right: 0;
 `;
 
+const shimmer = keyframes`
+  0% {
+    background-position: -1000px 0;
+  }
+  100% {
+    background-position: 1000px 0;
+  }
+`;
+
+const ImageSkeleton = styled.div`
+  width: 100%;
+  max-width: 900px;
+  height: 600px;
+  border-radius: 12px;
+  background: linear-gradient(
+    90deg,
+    ${({ theme }) => theme.colors.glass} 0%,
+    rgba(100, 255, 218, 0.1) 50%,
+    ${({ theme }) => theme.colors.glass} 100%
+  );
+  background-size: 1000px 100%;
+  animation: ${shimmer} 2s infinite linear;
+  border: 1px solid ${({ theme }) => theme.colors.border};
+  position: relative;
+  overflow: hidden;
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 60px;
+    height: 60px;
+    border: 3px solid ${({ theme }) => theme.colors.border};
+    border-top-color: ${({ theme }) => theme.colors.primary};
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+  }
+
+  @keyframes spin {
+    to {
+      transform: translate(-50%, -50%) rotate(360deg);
+    }
+  }
+
+  @media (max-width: 768px) {
+    max-width: 100%;
+    height: 400px;
+    border-radius: 8px;
+  }
+
+  @media (max-width: 480px) {
+    height: 300px;
+    border-radius: 6px;
+  }
+`;
+
 const CertificateImage = styled.img`
   width: 100%;
   max-width: 900px;
@@ -461,6 +519,8 @@ const CertificateImage = styled.img`
   border-radius: 12px;
   border: 1px solid ${({ theme }) => theme.colors.border};
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  display: ${({ $loaded }) => ($loaded ? 'block' : 'none')};
+  transition: opacity 0.3s ease-in;
 
   @media (max-width: 768px) {
     max-width: 100%;
@@ -518,13 +578,20 @@ const getFileIconColor = (provider) => {
 export default function Certifications() {
   const [activeTab, setActiveTab] = useState(null);
   const [openTabs, setOpenTabs] = useState([]);
+  const [imageLoaded, setImageLoaded] = useState({});
 
   const openCertificate = (cert, index) => {
     const tabId = `cert-${index}`;
     if (!openTabs.find(tab => tab.id === tabId)) {
       setOpenTabs([...openTabs, { id: tabId, cert, index }]);
+      // Reset image loaded state for new tab
+      setImageLoaded(prev => ({ ...prev, [tabId]: false }));
     }
     setActiveTab(tabId);
+  };
+
+  const handleImageLoad = (tabId) => {
+    setImageLoaded(prev => ({ ...prev, [tabId]: true }));
   };
 
   const closeTab = (tabId, e) => {
@@ -648,9 +715,13 @@ export default function Certifications() {
                   
                   <PreviewContent>
                     <CertificateImageContainer>
+                      {!imageLoaded[activeTab] && <ImageSkeleton />}
                       <CertificateImage 
                         src={activeCert.thumbnail} 
                         alt={activeCert.name}
+                        $loaded={imageLoaded[activeTab]}
+                        onLoad={() => handleImageLoad(activeTab)}
+                        onError={() => handleImageLoad(activeTab)}
                       />
                     </CertificateImageContainer>
                   </PreviewContent>
