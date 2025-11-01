@@ -71,8 +71,9 @@ const TitleBar = styled.div`
   align-items: center;
   padding: 0 15px;
   color: ${({ theme }) => theme.colors.primary};
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 0.9rem;
+  font-family: 'Fira Code', 'IBM Plex Mono', monospace;
+  font-size: 0.95rem;
+  font-weight: 600;
   justify-content: space-between;
   border-bottom: 1px solid ${({ theme }) => theme.colors.border};
 `;
@@ -189,35 +190,40 @@ const ProfileImage = styled(motion.img)`
 `;
 
 const Name = styled(motion.h1)`
-  font-size: 3rem;
+  font-size: 3.5rem;
   color: ${({ theme }) => theme.colors.text};
-  margin-bottom: 10px;
-  font-weight: 700;
+  margin-bottom: 15px;
+  font-weight: 800;
   text-align: center;
+  font-family: 'Orbitron', 'Audiowide', sans-serif;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
   
   @media (max-width: 768px) {
-    font-size: 2.5rem;
+    font-size: 2.8rem;
   }
 
   @media (max-width: 480px) {
-    font-size: 2rem;
+    font-size: 2.2rem;
   }
 `;
 
 const TypewriterContainer = styled.div`
-  font-size: 2rem;
+  font-size: 2.2rem;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: ${({ theme }) => theme.colors.text};
-  opacity: 0.9;
-  margin-bottom: 20px;
-  font-weight: 500;
+  color: ${({ theme }) => theme.colors.primary};
+  opacity: 1;
+  margin-bottom: 25px;
+  font-weight: 600;
+  font-family: 'Rajdhani', 'Orbitron', sans-serif;
+  letter-spacing: 0.03em;
 
   .cursor {
     color: ${({ theme }) => theme.colors.primary};
     animation: blink 1s step-start infinite;
-    margin-left: 2px;
+    margin-left: 4px;
   }
 
   @keyframes blink {
@@ -230,28 +236,31 @@ const TypewriterContainer = styled.div`
   }
 
   @media (max-width: 768px) {
-    font-size: 1.5rem;
+    font-size: 1.7rem;
     justify-content: center;
     text-align: center;
   }
 
   @media (max-width: 480px) {
-    font-size: 1.2rem;
+    font-size: 1.4rem;
     justify-content: center;
     text-align: center;
   }
 `;
 
 const Bio = styled(motion.p)`
-  font-size: 1.2rem;
-  line-height: 1.6;
+  font-size: 1.3rem;
+  line-height: 1.7;
   color: ${({ theme }) => theme.colors.text};
-  opacity: 0.8;
-  margin-bottom: 30px;
+  opacity: 0.9;
+  margin-bottom: 35px;
   text-align: center;
+  font-family: 'Rajdhani', sans-serif;
+  font-weight: 500;
+  letter-spacing: 0.02em;
 
   @media (max-width: 768px) {
-    font-size: 1rem;
+    font-size: 1.1rem;
     margin: 1.5rem 0;
   }
 `;
@@ -304,16 +313,20 @@ const SocialLink = styled(motion.a)`
   }
 
   .platform-name {
-    font-size: 0.9rem;
-    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.95rem;
+    font-family: 'Rajdhani', 'Fira Code', monospace;
+    font-weight: 600;
+    letter-spacing: 0.02em;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     position: absolute;
     left: 55px;
   }
 
   .username {
-    font-size: 0.85rem;
-    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.9rem;
+    font-family: 'Rajdhani', 'Fira Code', monospace;
+    font-weight: 600;
+    letter-spacing: 0.02em;
     position: absolute;
     left: 55px;
     opacity: 0;
