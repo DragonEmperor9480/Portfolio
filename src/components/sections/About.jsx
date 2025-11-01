@@ -21,35 +21,61 @@ const AboutContainer = styled.section`
 
 const Header = styled.div`
   text-align: center;
-  margin-bottom: 80px;
+  margin-bottom: 60px;
+  background: ${({ theme }) => theme.colors.glass};
+  backdrop-filter: blur(20px);
+  border: 1px solid ${({ theme }) => theme.colors.border};
+  border-radius: 20px;
+  padding: 50px 40px 40px;
+  position: relative;
+  overflow: hidden;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, ${({ theme }) => theme.colors.primary}, transparent);
+    opacity: 0.6;
+  }
 
   @media (max-width: 768px) {
-    margin-bottom: 50px;
+    margin-bottom: 40px;
+    padding: 40px 30px 30px;
+  }
+
+  @media (max-width: 480px) {
+    padding: 30px 20px 20px;
   }
 `;
 
 const Title = styled(motion.h2)`
-  font-size: 3.5rem;
-  font-weight: 700;
+  font-size: 4rem;
+  font-weight: 800;
   background: linear-gradient(135deg, ${({ theme }) => theme.colors.primary}, #00ff88);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  margin-bottom: 16px;
+  margin-bottom: 20px;
   font-family: 'JetBrains Mono', monospace;
+  letter-spacing: -0.02em;
 
   @media (max-width: 768px) {
-    font-size: 2.5rem;
+    font-size: 2.8rem;
   }
 `;
 
 const Subtitle = styled(motion.p)`
-  font-size: 1.3rem;
-  color: ${({ theme }) => theme.colors.textSecondary};
-  font-weight: 400;
+  font-size: 1.5rem;
+  color: ${({ theme }) => theme.colors.text};
+  font-weight: 500;
+  font-family: 'JetBrains Mono', monospace;
+  opacity: 0.9;
 
   @media (max-width: 768px) {
-    font-size: 1.1rem;
+    font-size: 1.2rem;
   }
 `;
 
@@ -57,12 +83,17 @@ const Layout = styled.div`
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 40px;
-  margin-bottom: 50px;
+  margin-bottom: 40px;
 
   @media (max-width: 1024px) {
     grid-template-columns: 1fr;
     gap: 30px;
   }
+`;
+
+const FullWidthSection = styled.div`
+  width: 100%;
+  margin-bottom: 50px;
 `;
 
 const Card = styled(motion.div)`
@@ -90,18 +121,21 @@ const Card = styled(motion.div)`
 `;
 
 const CardTitle = styled.h3`
-  font-size: 1.4rem;
+  font-size: 1.6rem;
   color: ${({ theme }) => theme.colors.text};
   font-family: 'JetBrains Mono', monospace;
-  margin-bottom: 24px;
+  font-weight: 700;
+  margin-bottom: 28px;
   display: flex;
   align-items: center;
   gap: 10px;
+  letter-spacing: -0.01em;
 
   &::before {
     content: '//';
     color: ${({ theme }) => theme.colors.primary};
-    opacity: 0.6;
+    opacity: 0.8;
+    font-size: 1.4rem;
   }
 `;
 
@@ -126,24 +160,26 @@ const InfoRow = styled.div`
 const InfoLabel = styled.span`
   font-family: 'JetBrains Mono', monospace;
   color: ${({ theme }) => theme.colors.primary};
-  font-size: 0.9rem;
-  min-width: 120px;
-  font-weight: 600;
+  font-size: 1.05rem;
+  min-width: 140px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
 
   @media (max-width: 768px) {
-    min-width: 100px;
-    font-size: 0.85rem;
+    min-width: 110px;
+    font-size: 0.95rem;
   }
 `;
 
 const InfoValue = styled.span`
   color: ${({ theme }) => theme.colors.text};
-  font-size: 1rem;
-  line-height: 1.6;
+  font-size: 1.1rem;
+  line-height: 1.7;
   flex: 1;
+  font-weight: 400;
 
   @media (max-width: 768px) {
-    font-size: 0.95rem;
+    font-size: 1rem;
   }
 `;
 
@@ -177,13 +213,13 @@ const TechStackSection = styled(motion.div)`
 `;
 
 const TechGrid = styled.div`
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
   gap: 24px;
   margin-top: 24px;
 
   @media (max-width: 768px) {
-    grid-template-columns: 1fr;
     gap: 20px;
   }
 `;
@@ -192,43 +228,51 @@ const TechCategory = styled.div`
   display: flex;
   flex-direction: column;
   gap: 12px;
+  flex: 1;
+  min-width: 240px;
+  max-width: 280px;
 `;
 
 const CategoryTitle = styled.h4`
   font-family: 'JetBrains Mono', monospace;
   color: ${({ theme }) => theme.colors.text};
-  font-size: 1rem;
-  font-weight: 600;
+  font-size: 1.15rem;
+  font-weight: 700;
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
+  letter-spacing: 0.01em;
 
   &::before {
     content: '▸';
     color: ${({ theme }) => theme.colors.primary};
+    font-size: 1.3rem;
   }
 `;
 
 const TechList = styled.div`
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: 10px;
 `;
 
 const TechTag = styled.span`
-  background: rgba(100, 255, 218, 0.08);
+  background: rgba(100, 255, 218, 0.1);
   color: ${({ theme }) => theme.colors.primary};
-  padding: 6px 12px;
+  padding: 8px 14px;
   border-radius: 8px;
-  font-size: 0.85rem;
+  font-size: 0.95rem;
   font-family: 'JetBrains Mono', monospace;
-  border: 1px solid rgba(100, 255, 218, 0.2);
+  font-weight: 600;
+  border: 1px solid rgba(100, 255, 218, 0.3);
   transition: all 0.2s ease;
+  letter-spacing: 0.02em;
 
   &:hover {
-    background: rgba(100, 255, 218, 0.15);
+    background: rgba(100, 255, 218, 0.2);
     border-color: ${({ theme }) => theme.colors.primary};
     transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(100, 255, 218, 0.2);
   }
 `;
 
@@ -236,7 +280,7 @@ const StatsBar = styled(motion.div)`
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 20px;
-  margin-bottom: 50px;
+  margin-top: 40px;
 
   @media (max-width: 1024px) {
     grid-template-columns: repeat(2, 1fr);
@@ -248,8 +292,8 @@ const StatsBar = styled(motion.div)`
 `;
 
 const StatCard = styled(motion.div)`
-  background: ${({ theme }) => theme.colors.glass};
-  backdrop-filter: blur(20px);
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(10px);
   border: 1px solid ${({ theme }) => theme.colors.border};
   border-radius: 12px;
   padding: 24px;
@@ -259,22 +303,26 @@ const StatCard = styled(motion.div)`
   &:hover {
     transform: translateY(-4px);
     border-color: ${({ theme }) => theme.colors.primary};
-    box-shadow: 0 8px 24px rgba(100, 255, 218, 0.1);
+    box-shadow: 0 8px 24px rgba(100, 255, 218, 0.15);
+    background: rgba(100, 255, 218, 0.05);
   }
 `;
 
 const StatNumber = styled.div`
-  font-size: 2.5rem;
-  font-weight: 700;
+  font-size: 3rem;
+  font-weight: 800;
   color: ${({ theme }) => theme.colors.primary};
   font-family: 'JetBrains Mono', monospace;
-  margin-bottom: 8px;
+  margin-bottom: 10px;
+  letter-spacing: -0.02em;
 `;
 
 const StatLabel = styled.div`
-  font-size: 0.9rem;
-  color: ${({ theme }) => theme.colors.textSecondary};
-  font-weight: 500;
+  font-size: 1rem;
+  color: ${({ theme }) => theme.colors.text};
+  font-weight: 600;
+  font-family: 'JetBrains Mono', monospace;
+  opacity: 0.9;
 `;
 
 const techStack = {
@@ -305,31 +353,31 @@ export default function About() {
         >
           Backend Engineer • Cloud Architect • Open Source Contributor
         </Subtitle>
-      </Header>
 
-      <StatsBar
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, delay: 0.3 }}
-        viewport={{ once: true }}
-      >
-        <StatCard whileHover={{ y: -4 }}>
-          <StatNumber>10+</StatNumber>
-          <StatLabel>Years Linux</StatLabel>
-        </StatCard>
-        <StatCard whileHover={{ y: -4 }}>
-          <StatNumber>5+</StatNumber>
-          <StatLabel>Years ROM Dev</StatLabel>
-        </StatCard>
-        <StatCard whileHover={{ y: -4 }}>
-          <StatNumber>100+</StatNumber>
-          <StatLabel>ROMs Released</StatLabel>
-        </StatCard>
-        <StatCard whileHover={{ y: -4 }}>
-          <StatNumber>2017</StatNumber>
-          <StatLabel>Started Coding</StatLabel>
-        </StatCard>
-      </StatsBar>
+        <StatsBar
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.3 }}
+          viewport={{ once: true }}
+        >
+          <StatCard whileHover={{ y: -4 }}>
+            <StatNumber>10+</StatNumber>
+            <StatLabel>Years Linux</StatLabel>
+          </StatCard>
+          <StatCard whileHover={{ y: -4 }}>
+            <StatNumber>5+</StatNumber>
+            <StatLabel>Years ROM Dev</StatLabel>
+          </StatCard>
+          <StatCard whileHover={{ y: -4 }}>
+            <StatNumber>100+</StatNumber>
+            <StatLabel>ROMs Released</StatLabel>
+          </StatCard>
+          <StatCard whileHover={{ y: -4 }}>
+            <StatNumber>2017</StatNumber>
+            <StatLabel>Started Coding</StatLabel>
+          </StatCard>
+        </StatsBar>
+      </Header>
 
       <Layout>
         <Card
@@ -387,26 +435,28 @@ export default function About() {
         </Card>
       </Layout>
 
-      <TechStackSection
-        initial={{ opacity: 0, y: 30 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, delay: 0.6 }}
-        viewport={{ once: true }}
-      >
-        <CardTitle>Tech Stack</CardTitle>
-        <TechGrid>
-          {Object.entries(techStack).map(([category, technologies], index) => (
-            <TechCategory key={index}>
-              <CategoryTitle>{category}</CategoryTitle>
-              <TechList>
-                {technologies.map((tech, techIndex) => (
-                  <TechTag key={techIndex}>{tech}</TechTag>
-                ))}
-              </TechList>
-            </TechCategory>
-          ))}
-        </TechGrid>
-      </TechStackSection>
+      <FullWidthSection>
+        <TechStackSection
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.6 }}
+          viewport={{ once: true }}
+        >
+          <CardTitle>Tech Stack</CardTitle>
+          <TechGrid>
+            {Object.entries(techStack).map(([category, technologies], index) => (
+              <TechCategory key={index}>
+                <CategoryTitle>{category}</CategoryTitle>
+                <TechList>
+                  {technologies.map((tech, techIndex) => (
+                    <TechTag key={techIndex}>{tech}</TechTag>
+                  ))}
+                </TechList>
+              </TechCategory>
+            ))}
+          </TechGrid>
+        </TechStackSection>
+      </FullWidthSection>
     </AboutContainer>
   );
 }
