@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 import { motion } from 'framer-motion';
 import { useState, useEffect } from 'react';
+import { ShaderAnimation } from './ui/shader-lines';
 
 const SkeletonContainer = styled(motion.div)`
   position: fixed;
@@ -14,10 +15,11 @@ const SkeletonContainer = styled(motion.div)`
   justify-content: center;
   z-index: 9999;
   font-family: 'JetBrains Mono', monospace;
+  overflow: hidden;
 `;
 
 const Terminal = styled(motion.div)`
-  background: #0d1117;
+  background: rgba(13, 17, 23, 0.85);
   backdrop-filter: blur(10px);
   border-radius: 10px;
   width: 90%;
@@ -26,6 +28,8 @@ const Terminal = styled(motion.div)`
   border: 1px solid #30363d;
   color: #00ff41;
   box-shadow: 0 8px 32px 0 rgba(0, 255, 65, 0.1);
+  position: relative;
+  z-index: 10;
 `;
 
 const TerminalHeader = styled.div`
@@ -164,6 +168,9 @@ export default function SkeletonLoader() {
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
     >
+      {/* Shader Animation Background */}
+      <ShaderAnimation />
+      
       <Terminal>
         <TerminalHeader>
           <Circle color="#ff5f56" />

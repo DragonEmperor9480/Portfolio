@@ -24,27 +24,6 @@ const GlobalStyles = createGlobalStyle`
     padding: 0;
     -webkit-text-size-adjust: 100%;
     -ms-text-size-adjust: 100%;
-    cursor: none;
-
-    @media (max-width: 768px) {
-      cursor: auto;
-    }
-  }
-
-  * {
-    cursor: none;
-
-    @media (max-width: 768px) {
-      cursor: auto;
-    }
-  }
-
-  a, button {
-    cursor: none !important;
-
-    @media (max-width: 768px) {
-      cursor: pointer !important;
-    }
   }
 
   /* Add smooth transitions for theme changes */
