@@ -180,7 +180,7 @@ export default function SkeletonLoader() {
         
         <Command>
           <span className="prompt">[SYSTEM]</span>
-          <span className="command-text">Portfolio OS v2.1.0 - Terminal Interface</span>
+          <span className="command-text">Portfolio OS v3.0.0 - Terminal Interface</span>
         </Command>
         
         <Command>
