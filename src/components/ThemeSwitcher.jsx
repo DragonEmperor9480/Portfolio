@@ -173,7 +173,8 @@ export default function ThemeSwitcher() {
     synthwave: "wave-square",
     retro: "gamepad",
     nord: "snowflake",
-    mint: "leaf"
+    mint: "leaf",
+    lavender: "spa"
   };
 
   return (

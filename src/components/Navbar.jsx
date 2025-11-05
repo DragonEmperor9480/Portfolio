@@ -37,9 +37,18 @@ const Nav = styled(motion.nav)`
     opacity: 0.6;
   }
 
+  @media (max-width: 1024px) {
+    padding: 0 30px;
+  }
+
   @media (max-width: 768px) {
     padding: 0 20px;
     height: 70px;
+  }
+
+  @media (max-width: 480px) {
+    padding: 0 15px;
+    height: 65px;
   }
 `;
 
@@ -52,45 +61,50 @@ const NavLinks = styled.div`
     flex-direction: column;
     align-items: stretch;
     gap: 8px;
+    width: 100%;
   }
 `;
 
 const NavLink = styled(motion.a)`
-  font-family: 'JetBrains Mono', monospace;
+  font-family: 'Inter', 'Segoe UI', sans-serif;
   color: ${({ theme }) => theme.colors.text};
   text-decoration: none;
-  font-size: 0.9rem;
+  font-size: 0.95rem;
+  font-weight: 500;
+  letter-spacing: -0.01em;
   padding: 12px 20px;
   position: relative;
   display: flex;
   align-items: center;
   transition: all 0.3s ease;
-  border-radius: 0;
+  border-radius: 8px;
   
   &::after {
     content: '';
     position: absolute;
-    bottom: 0;
+    bottom: 8px;
     left: 50%;
     width: 0;
     height: 2px;
     background: linear-gradient(90deg, ${({ theme }) => theme.colors.primary}, ${({ theme }) => theme.colors.secondary});
     transition: all 0.3s ease;
     transform: translateX(-50%);
+    border-radius: 2px;
   }
 
   &:hover {
     color: ${({ theme }) => theme.colors.primary};
+    background: ${({ theme }) => `${theme.colors.primary}08`};
     
     &::after {
-      width: 80%;
+      width: 60%;
     }
   }
 
   @media (max-width: 767px) {
     padding: 16px 20px;
-    font-size: 1rem;
-    border-radius: 8px;
+    font-size: 1.05rem;
+    border-radius: 12px;
     
     &::after {
       display: none;
@@ -107,10 +121,12 @@ const ResumeButton = styled(motion.a)`
   color: ${({ theme }) => theme.colors.primary};
   background: transparent;
   border: 1px solid ${({ theme }) => theme.colors.primary};
-  border-radius: 4px;
+  border-radius: 25px;
   padding: 10px 20px;
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 0.85rem;
+  font-family: 'Inter', 'Segoe UI', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
   cursor: pointer;
   text-decoration: none;
   display: flex;
@@ -136,6 +152,7 @@ const ResumeButton = styled(motion.a)`
     color: ${({ theme }) => theme.colors.background};
     background: ${({ theme }) => theme.colors.primary};
     box-shadow: 0 0 20px ${({ theme }) => `${theme.colors.primary}40`};
+    transform: translateY(-2px);
     
     &::before {
       left: 0;
@@ -145,8 +162,9 @@ const ResumeButton = styled(motion.a)`
   @media (max-width: 767px) {
     margin: 16px 0 0 0;
     padding: 14px 20px;
-    font-size: 0.9rem;
+    font-size: 0.95rem;
     justify-content: center;
+    border-radius: 12px;
   }
 `;
 
@@ -159,6 +177,7 @@ const MobileMenu = styled(motion.div)`
   backdrop-filter: blur(20px);
   border-top: 1px solid ${({ theme }) => theme.colors.border};
   border-bottom: 1px solid ${({ theme }) => theme.colors.border};
+  border-radius: 0 0 20px 20px;
   padding: 30px 20px;
   display: flex;
   flex-direction: column;
@@ -187,7 +206,7 @@ const LogoSection = styled(motion.div)`
 `;
 
 const LogoButton = styled.a`
-  font-family: 'JetBrains Mono', monospace;
+  font-family: 'Space Grotesk', 'Inter', sans-serif;
   font-size: 1.8rem;
   color: ${({ theme }) => theme.colors.primary};
   text-decoration: none;
@@ -195,27 +214,40 @@ const LogoButton = styled.a`
   align-items: center;
   cursor: pointer;
   position: relative;
-  font-weight: 700;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  padding: 8px 12px;
+  border-radius: 12px;
+  transition: all 0.3s ease;
   
   &::before {
     content: '<';
     color: ${({ theme }) => theme.colors.secondary};
     margin-right: 4px;
+    font-weight: 600;
   }
   
   &::after {
     content: '/>';
     color: ${({ theme }) => theme.colors.secondary};
     margin-left: 4px;
+    font-weight: 600;
   }
   
   &:hover {
     transform: scale(1.05);
     text-shadow: 0 0 10px ${({ theme }) => theme.colors.primary};
+    background: ${({ theme }) => `${theme.colors.primary}08`};
   }
   
   @media (max-width: 768px) {
     font-size: 1.5rem;
+    padding: 6px 10px;
+  }
+
+  @media (max-width: 480px) {
+    font-size: 1.3rem;
+    padding: 4px 8px;
   }
 `;
 
@@ -223,12 +255,13 @@ const SystemInfo = styled.div`
   display: flex;
   align-items: center;
   gap: 12px;
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 0.75rem;
-  color: ${({ theme }) => theme.colors.secondary};
-  opacity: 0.7;
+  font-family: 'Fira Code', 'JetBrains Mono', monospace;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: ${({ theme }) => theme.colors.text};
+  opacity: 0.9;
   
-  @media (max-width: 968px) {
+  @media (max-width: 1024px) {
     display: none;
   }
 `;
@@ -249,10 +282,13 @@ const StatusDot = styled.div`
 `;
 
 const SystemText = styled.span`
+  color: ${({ theme }) => theme.colors.text};
+  
   &::before {
     content: 'system@portfolio:~$ ';
-    color: ${({ theme }) => theme.colors.text};
-    opacity: 0.6;
+    color: ${({ theme }) => theme.colors.primary};
+    opacity: 0.9;
+    font-weight: 500;
   }
 `;
 
@@ -288,10 +324,16 @@ const RightSection = styled.div`
   align-items: center;
   gap: 2rem;
 
-  @media (max-width: 1060px) {
+  @media (max-width: 1024px) {
+    gap: 1rem;
+    
     .desktop-nav {
       display: none;
     }
+  }
+
+  @media (max-width: 768px) {
+    gap: 0.5rem;
   }
 `;
 
@@ -306,7 +348,7 @@ const MenuButton = styled(motion.button)`
   justify-content: center;
   padding: 8px;
   z-index: 101;
-  border-radius: 4px;
+  border-radius: 12px;
   width: 40px;
   height: 40px;
   transition: all 0.3s ease;
@@ -314,10 +356,17 @@ const MenuButton = styled(motion.button)`
   &:hover {
     background: ${({ theme }) => `${theme.colors.primary}15`};
     box-shadow: 0 0 10px ${({ theme }) => `${theme.colors.primary}30`};
+    transform: rotate(90deg);
   }
 
-  @media (min-width: 1061px) {
+  @media (min-width: 1025px) {
     display: none;
+  }
+
+  @media (max-width: 480px) {
+    width: 35px;
+    height: 35px;
+    font-size: 0.9rem;
   }
 `;
 
@@ -333,7 +382,7 @@ export default function Navbar() {
   const menuRef = useRef(null);
   const buttonRef = useRef(null);
 
-  const shouldShowMobileMenu = width <= 1060 || height <= 883;
+  const shouldShowMobileMenu = width <= 1024;
 
   useEffect(() => {
     if (!shouldShowMobileMenu && isMenuOpen) {
@@ -390,7 +439,7 @@ export default function Navbar() {
               </NavLink>
             ))}
             <ResumeButton
-              href="https://drive.google.com/file/d/1HKUIG-yU87oTmuqeBZRiBfLPtwLZLGwn/view?usp=sharing"
+              href="https://drive.google.com/file/d/1WUu8oNh8mLDHmN2Zovze9BHVIUmzldGW/view?usp=sharing"
               target="_blank"
               rel="noopener noreferrer"
               whileHover={{ scale: 1.05 }}

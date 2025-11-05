@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import styled from 'styled-components';
+import styled, { keyframes } from 'styled-components';
 import { motion } from 'framer-motion';
 import certificates from '../../data/certificates.json';
 
@@ -11,19 +11,56 @@ const CertificationsContainer = styled.section`
   justify-content: center;
   min-height: 100vh;
   align-items: center;
+  margin: 0 auto;
+  box-sizing: border-box;
+
+  @media (max-width: 1024px) {
+    padding: 1.5rem;
+    max-width: calc(100vw - 2rem);
+  }
+
+  @media (max-width: 768px) {
+    padding: 1rem;
+    min-height: auto;
+    max-width: calc(100vw - 1rem);
+  }
+
+  @media (max-width: 480px) {
+    padding: 0.5rem;
+    max-width: calc(100vw - 0.5rem);
+  }
 `;
 
 const VSCodeWindow = styled(motion.div)`
   background: ${({ theme }) => theme.colors.glass};
   backdrop-filter: blur(20px);
   border: 1px solid ${({ theme }) => theme.colors.border};
-  border-radius: 8px;
+  border-radius: 12px;
   overflow: hidden;
   box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
   width: 100%;
-  height: 700px;
+  max-width: 100%;
+  height: 900px;
   display: flex;
   flex-direction: column;
+  box-sizing: border-box;
+
+  @media (max-width: 1024px) {
+    height: 800px;
+    max-width: calc(100vw - 4rem);
+  }
+
+  @media (max-width: 768px) {
+    height: 700px;
+    border-radius: 8px;
+    max-width: calc(100vw - 2rem);
+  }
+
+  @media (max-width: 480px) {
+    height: 550px;
+    border-radius: 6px;
+    max-width: calc(100vw - 1rem);
+  }
 `;
 
 const TitleBar = styled.div`
@@ -61,15 +98,31 @@ const MainContent = styled.div`
   flex: 1;
   overflow: hidden;
   width: 100%;
+  max-width: 100%;
   position: relative;
+  box-sizing: border-box;
+  min-width: 0;
 `;
 
 const Sidebar = styled.div`
-  width: 300px;
+  width: 350px;
   background: ${({ theme }) => theme.colors.background};
   border-right: 1px solid ${({ theme }) => theme.colors.border};
   display: flex;
   flex-direction: column;
+  flex-shrink: 0;
+
+  @media (max-width: 1024px) {
+    width: 280px;
+  }
+
+  @media (max-width: 768px) {
+    width: 220px;
+  }
+
+  @media (max-width: 480px) {
+    width: 160px;
+  }
 `;
 
 const SidebarHeader = styled.div`
@@ -131,8 +184,22 @@ const EditorArea = styled.div`
   flex-direction: column;
   background: ${({ theme }) => theme.colors.background};
   position: relative;
-  width: calc(100% - 300px);
+  width: calc(100% - 350px);
   min-width: 0;
+  overflow: hidden;
+  box-sizing: border-box;
+
+  @media (max-width: 1024px) {
+    width: calc(100% - 280px);
+  }
+
+  @media (max-width: 768px) {
+    width: calc(100% - 220px);
+  }
+
+  @media (max-width: 480px) {
+    width: calc(100% - 160px);
+  }
 `;
 
 const TabBar = styled.div`
@@ -140,8 +207,13 @@ const TabBar = styled.div`
   background: ${({ theme }) => theme.colors.glass};
   border-bottom: 1px solid ${({ theme }) => theme.colors.border};
   min-height: 35px;
+  max-height: 35px;
   overflow-x: auto;
   overflow-y: hidden;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  flex-shrink: 0;
   
   &::-webkit-scrollbar {
     height: 6px;
@@ -170,7 +242,10 @@ const Tab = styled.div`
   cursor: pointer;
   position: relative;
   flex-shrink: 0;
-  min-width: 200px;
+  min-width: 160px;
+  max-width: 200px;
+  width: 180px;
+  box-sizing: border-box;
   
   &:hover {
     background: ${props => props.isActive ? props.theme.colors.background : `${props.theme.colors.border}50`};
@@ -211,6 +286,59 @@ const Tab = styled.div`
       opacity: 1;
     }
   }
+
+  @media (max-width: 1024px) {
+    min-width: 140px;
+    max-width: 180px;
+    width: 160px;
+    padding: 0 12px;
+  }
+
+  @media (max-width: 768px) {
+    min-width: 120px;
+    max-width: 140px;
+    width: 130px;
+    padding: 0 8px;
+    
+    .tab-icon {
+      width: 14px;
+      height: 14px;
+      margin-right: 6px;
+    }
+    
+    .tab-name {
+      font-size: 0.75rem;
+    }
+    
+    .close-button {
+      width: 14px;
+      height: 14px;
+      margin-left: 6px;
+    }
+  }
+
+  @media (max-width: 480px) {
+    min-width: 100px;
+    max-width: 120px;
+    width: 110px;
+    padding: 0 6px;
+
+    .tab-icon {
+      width: 12px;
+      height: 12px;
+      margin-right: 4px;
+    }
+
+    .tab-name {
+      font-size: 0.7rem;
+    }
+
+    .close-button {
+      width: 12px;
+      height: 12px;
+      margin-left: 4px;
+    }
+  }
 `;
 
 const Editor = styled.div`
@@ -222,6 +350,14 @@ const Editor = styled.div`
   width: 100%;
   display: flex;
   flex-direction: column;
+
+  @media (max-width: 768px) {
+    padding: 12px;
+  }
+
+  @media (max-width: 480px) {
+    padding: 8px;
+  }
 `;
 
 const CertificatePreview = styled.div`
@@ -318,13 +454,82 @@ const CertificateImageContainer = styled.div`
   right: 0;
 `;
 
+const shimmer = keyframes`
+  0% {
+    background-position: -1000px 0;
+  }
+  100% {
+    background-position: 1000px 0;
+  }
+`;
+
+const ImageSkeleton = styled.div`
+  width: 100%;
+  max-width: 900px;
+  height: 600px;
+  border-radius: 12px;
+  background: linear-gradient(
+    90deg,
+    ${({ theme }) => theme.colors.glass} 0%,
+    rgba(100, 255, 218, 0.1) 50%,
+    ${({ theme }) => theme.colors.glass} 100%
+  );
+  background-size: 1000px 100%;
+  animation: ${shimmer} 2s infinite linear;
+  border: 1px solid ${({ theme }) => theme.colors.border};
+  position: relative;
+  overflow: hidden;
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 60px;
+    height: 60px;
+    border: 3px solid ${({ theme }) => theme.colors.border};
+    border-top-color: ${({ theme }) => theme.colors.primary};
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+  }
+
+  @keyframes spin {
+    to {
+      transform: translate(-50%, -50%) rotate(360deg);
+    }
+  }
+
+  @media (max-width: 768px) {
+    max-width: 100%;
+    height: 400px;
+    border-radius: 8px;
+  }
+
+  @media (max-width: 480px) {
+    height: 300px;
+    border-radius: 6px;
+  }
+`;
+
 const CertificateImage = styled.img`
   width: 100%;
-  max-width: 600px;
+  max-width: 900px;
   height: auto;
-  border-radius: 8px;
+  border-radius: 12px;
   border: 1px solid ${({ theme }) => theme.colors.border};
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  display: ${({ $loaded }) => ($loaded ? 'block' : 'none')};
+  transition: opacity 0.3s ease-in;
+
+  @media (max-width: 768px) {
+    max-width: 100%;
+    border-radius: 8px;
+  }
+
+  @media (max-width: 480px) {
+    border-radius: 6px;
+  }
 `;
 
 
@@ -373,13 +578,20 @@ const getFileIconColor = (provider) => {
 export default function Certifications() {
   const [activeTab, setActiveTab] = useState(null);
   const [openTabs, setOpenTabs] = useState([]);
+  const [imageLoaded, setImageLoaded] = useState({});
 
   const openCertificate = (cert, index) => {
     const tabId = `cert-${index}`;
     if (!openTabs.find(tab => tab.id === tabId)) {
       setOpenTabs([...openTabs, { id: tabId, cert, index }]);
+      // Reset image loaded state for new tab
+      setImageLoaded(prev => ({ ...prev, [tabId]: false }));
     }
     setActiveTab(tabId);
+  };
+
+  const handleImageLoad = (tabId) => {
+    setImageLoaded(prev => ({ ...prev, [tabId]: true }));
   };
 
   const closeTab = (tabId, e) => {
@@ -498,18 +710,18 @@ export default function Certifications() {
                         <i className="fas fa-external-link-alt" style={{ marginRight: '6px' }}></i>
                         View Original
                       </button>
-                      <button className="secondary">
-                        <i className="fas fa-download" style={{ marginRight: '6px' }}></i>
-                        Download
-                      </button>
                     </ActionButtons>
                   </PreviewHeader>
                   
                   <PreviewContent>
                     <CertificateImageContainer>
+                      {!imageLoaded[activeTab] && <ImageSkeleton />}
                       <CertificateImage 
                         src={activeCert.thumbnail} 
                         alt={activeCert.name}
+                        $loaded={imageLoaded[activeTab]}
+                        onLoad={() => handleImageLoad(activeTab)}
+                        onError={() => handleImageLoad(activeTab)}
                       />
                     </CertificateImageContainer>
                   </PreviewContent>

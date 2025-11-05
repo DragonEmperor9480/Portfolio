@@ -21,7 +21,7 @@ function ThemedApp() {
   useEffect(() => {
     const timer = setTimeout(() => {
       setIsLoading(false);
-    }, 1800);
+    }, 4500);
 
     return () => clearTimeout(timer);
   }, []);
