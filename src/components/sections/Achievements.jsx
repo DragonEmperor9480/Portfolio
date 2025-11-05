@@ -53,32 +53,30 @@ const Header = styled.div`
 `;
 
 const Title = styled(motion.h2)`
-  font-size: 4.5rem;
-  font-weight: 700;
+  font-size: 4rem;
+  font-weight: 800;
   background: linear-gradient(135deg, ${({ theme }) => theme.colors.primary}, #00ff88);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  margin-bottom: 24px;
-  font-family: 'Fira Code', 'Space Mono', monospace;
-  letter-spacing: -0.01em;
-  text-transform: uppercase;
+  margin-bottom: 20px;
+  font-family: 'JetBrains Mono', monospace;
+  letter-spacing: -0.02em;
 
   @media (max-width: 768px) {
-    font-size: 3rem;
+    font-size: 2.8rem;
   }
 `;
 
 const Subtitle = styled(motion.p)`
-  font-size: 1.6rem;
+  font-size: 1.5rem;
   color: ${({ theme }) => theme.colors.text};
   font-weight: 500;
-  font-family: 'IBM Plex Mono', 'Fira Code', monospace;
-  opacity: 0.95;
-  letter-spacing: 0.02em;
+  font-family: 'JetBrains Mono', monospace;
+  opacity: 0.9;
 
   @media (max-width: 768px) {
-    font-size: 1.3rem;
+    font-size: 1.2rem;
   }
 `;
 
@@ -162,27 +160,26 @@ const AchievementSection = styled(motion.div)`
 `;
 
 const SectionTitle = styled.h3`
-  font-size: 1.8rem;
+  font-size: 1.6rem;
   color: ${({ theme }) => theme.colors.text};
-  font-family: 'Fira Code', 'Space Mono', monospace;
+  font-family: 'JetBrains Mono', monospace;
   font-weight: 700;
-  margin-bottom: 32px;
+  margin-bottom: 28px;
   display: flex;
   align-items: center;
-  gap: 12px;
-  letter-spacing: 0.01em;
-  text-transform: uppercase;
+  gap: 10px;
+  letter-spacing: -0.01em;
 
   &::before {
     content: '//';
     color: ${({ theme }) => theme.colors.primary};
-    opacity: 0.9;
-    font-size: 1.6rem;
+    opacity: 0.8;
+    font-size: 1.4rem;
   }
 
   i {
     color: ${({ theme }) => theme.colors.primary};
-    font-size: 1.4rem;
+    font-size: 1.3rem;
   }
 `;
 
