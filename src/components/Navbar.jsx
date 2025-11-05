@@ -439,7 +439,7 @@ export default function Navbar() {
               </NavLink>
             ))}
             <ResumeButton
-              href="https://drive.google.com/file/d/1HKUIG-yU87oTmuqeBZRiBfLPtwLZLGwn/view?usp=sharing"
+              href="https://drive.google.com/file/d/1WUu8oNh8mLDHmN2Zovze9BHVIUmzldGW/view?usp=sharing"
               target="_blank"
               rel="noopener noreferrer"
               whileHover={{ scale: 1.05 }}
