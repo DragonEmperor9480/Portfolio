@@ -22,6 +22,8 @@ const GlobalStyles = createGlobalStyle`
     width: 100%;
     margin: 0;
     padding: 0;
+    -webkit-text-size-adjust: 100%;
+    -ms-text-size-adjust: 100%;
   }
 
   /* Add smooth transitions for theme changes */
@@ -87,6 +89,19 @@ const GlobalStyles = createGlobalStyle`
     justify-content: center;
     margin: 0 auto;
     padding: 70px 20px;
+
+    @media (max-width: 1024px) {
+      padding: 60px 20px;
+    }
+
+    @media (max-width: 768px) {
+      padding: 50px 15px;
+      min-height: auto;
+    }
+
+    @media (max-width: 480px) {
+      padding: 40px 10px;
+    }
   }
 `;
 
