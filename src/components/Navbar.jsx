@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import ThemeSwitcher from './ThemeSwitcher';
 import useWindowDimensions from '../hooks/useWindowDimensions';
+import FullscreenModal from './FullscreenModal';
 
 const Nav = styled(motion.nav)`
   position: fixed;
@@ -117,7 +118,7 @@ const NavLink = styled(motion.a)`
   }
 `;
 
-const LabButton = styled(motion.a)`
+const LabButton = styled(motion.div)`
   position: relative;
   display: inline-flex;
   align-items: center;
@@ -497,9 +498,15 @@ const navItems = [
 
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [showLabModal, setShowLabModal] = useState(false);
   const { width, height } = useWindowDimensions();
   const menuRef = useRef(null);
   const buttonRef = useRef(null);
+
+  const handleLabClick = () => {
+    setIsMenuOpen(false);
+    setShowLabModal(true);
+  };
 
   const shouldShowMobileMenu = width <= 1024;
 
@@ -530,6 +537,7 @@ export default function Navbar() {
   }, [isMenuOpen]);
 
   return (
+    <>
     <Nav
       initial={{ opacity: 0, y: -20 }}
       animate={{ opacity: 1, y: 0 }}
@@ -558,9 +566,7 @@ export default function Navbar() {
               </NavLink>
             ))}
             <LabButton
-              href="https://amrutslab.example.com"
-              target="_blank"
-              rel="noopener noreferrer"
+              onClick={handleLabClick}
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.97 }}
             >
@@ -611,12 +617,9 @@ export default function Navbar() {
                 </NavLink>
               ))}
               <LabButton
-                href="https://amrutslab.example.com"
-                target="_blank"
-                rel="noopener noreferrer"
+                onClick={handleLabClick}
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.97 }}
-                onClick={() => setIsMenuOpen(false)}
               >
                 <span className="lab-dot" />
                 <span className="lab-text">
@@ -637,5 +640,11 @@ export default function Navbar() {
         )}
       </AnimatePresence>
     </Nav>
+
+      <FullscreenModal
+        isOpen={showLabModal}
+        onClose={() => setShowLabModal(false)}
+      />
+    </>
   );
 }
