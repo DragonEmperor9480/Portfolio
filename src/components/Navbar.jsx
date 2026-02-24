@@ -117,6 +117,125 @@ const NavLink = styled(motion.a)`
   }
 `;
 
+const LabButton = styled(motion.a)`
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 22px;
+  font-family: 'Fira Code', 'JetBrains Mono', monospace;
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: ${({ theme }) => theme.colors.primary};
+  text-decoration: none;
+  cursor: pointer;
+  border: none;
+  border-radius: 8px;
+  background: ${({ theme }) => theme.colors.glass};
+  backdrop-filter: blur(12px);
+  margin-left: 16px;
+  overflow: visible;
+  transition: all 0.35s ease;
+  z-index: 1;
+  isolation: isolate;
+
+  /* Animated rotating border */
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 8px;
+    padding: 1.5px;
+    background: conic-gradient(
+      from var(--border-angle, 0deg),
+      transparent 25%,
+      ${({ theme }) => theme.colors.primary} 50%,
+      transparent 75%
+    );
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    animation: rotateBorder 3s linear infinite;
+    z-index: -1;
+  }
+
+  @property --border-angle {
+    syntax: '<angle>';
+    initial-value: 0deg;
+    inherits: false;
+  }
+
+  @keyframes rotateBorder {
+    to { --border-angle: 360deg; }
+  }
+
+  /* Subtle inner glow */
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 8px;
+    box-shadow: inset 0 0 20px ${({ theme }) => `${theme.colors.primary}10`};
+    pointer-events: none;
+    transition: all 0.35s ease;
+    z-index: -1;
+  }
+
+  &:hover {
+    background: ${({ theme }) => `${theme.colors.primary}12`};
+    box-shadow:
+      0 0 25px ${({ theme }) => `${theme.colors.primary}25`},
+      0 0 50px ${({ theme }) => `${theme.colors.primary}10`};
+    transform: translateY(-2px);
+    color: ${({ theme }) => theme.colors.primary};
+    text-shadow: 0 0 12px ${({ theme }) => `${theme.colors.primary}60`};
+
+    &::after {
+      box-shadow: inset 0 0 30px ${({ theme }) => `${theme.colors.primary}18`};
+    }
+
+    .lab-dot {
+      box-shadow: 0 0 8px currentColor, 0 0 20px currentColor;
+    }
+  }
+
+  .lab-dot {
+    width: 6px;
+    height: 6px;
+    background: ${({ theme }) => theme.colors.primary};
+    border-radius: 50%;
+    box-shadow: 0 0 6px ${({ theme }) => theme.colors.primary};
+    animation: labPulse 2s ease-in-out infinite;
+    flex-shrink: 0;
+  }
+
+  @keyframes labPulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+
+  .lab-text {
+    position: relative;
+    z-index: 2;
+  }
+
+  .lab-bracket {
+    opacity: 0.4;
+    font-weight: 400;
+  }
+
+  @media (max-width: 767px) {
+    margin: 12px 0 0 0;
+    padding: 14px 20px;
+    font-size: 0.85rem;
+    justify-content: center;
+    border-radius: 10px;
+  }
+`;
+
 const ResumeButton = styled(motion.a)`
   color: ${({ theme }) => theme.colors.primary};
   background: transparent;
@@ -438,6 +557,18 @@ export default function Navbar() {
                 {item.name}
               </NavLink>
             ))}
+            <LabButton
+              href="https://amrutslab.example.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.97 }}
+            >
+              <span className="lab-dot" />
+              <span className="lab-text">
+                <span className="lab-bracket">[</span> Amrut's Lab <span className="lab-bracket">]</span>
+              </span>
+            </LabButton>
             <ResumeButton
               href="https://drive.google.com/file/d/1WUu8oNh8mLDHmN2Zovze9BHVIUmzldGW/view?usp=sharing"
               target="_blank"
@@ -479,6 +610,19 @@ export default function Navbar() {
                   {item.name}
                 </NavLink>
               ))}
+              <LabButton
+                href="https://amrutslab.example.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.97 }}
+                onClick={() => setIsMenuOpen(false)}
+              >
+                <span className="lab-dot" />
+                <span className="lab-text">
+                  <span className="lab-bracket">[</span> Amrut's Lab <span className="lab-bracket">]</span>
+                </span>
+              </LabButton>
               <ResumeButton
                 href="https://drive.google.com/file/d/1LwmxptkPOEhyIEYJOoReFBfvzcMIUHkd/view?usp=sharing"
                 target="_blank"
