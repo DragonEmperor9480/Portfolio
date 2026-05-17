@@ -56,10 +56,15 @@ const GlobalStyles = createGlobalStyle`
   #root {
     position: relative;
     z-index: 1;
+    width: 100%;
+    max-width: 100vw;
+    overflow-x: hidden;
   }
 
   html {
     scroll-behavior: smooth;
+    overflow-x: hidden;
+    max-width: 100vw;
   }
 
   body {
