@@ -1,0 +1,59 @@
+{
+  "Cloud Infrastructure": {
+    "description": "Scalable, secure, and resilient cloud architectures.",
+    "color": "#38bdf8",
+    "skills": [
+      { "name": "AWS Lambda", "info": "Serverless" },
+      { "name": "S3", "info": "Storage" },
+      { "name": "DynamoDB", "info": "NoSQL" },
+      { "name": "Aurora", "info": "SQL Database" },
+      { "name": "CloudFront", "info": "CDN / Edge" },
+      { "name": "Cognito", "info": "Auth / IAM" },
+      { "name": "CloudWatch", "info": "Telemetry" }
+    ]
+  },
+  "Backend Engineering": {
+    "description": "High-throughput APIs and serverless microservices.",
+    "color": "#fb923c",
+    "skills": [
+      { "name": "Go", "info": "Language" },
+      { "name": "Java", "info": "Language" },
+      { "name": "Node.js", "info": "Runtime" },
+      { "name": "Python", "info": "Language" },
+      { "name": "SQL", "info": "Queries" },
+      { "name": "REST APIs", "info": "APIs" }
+    ]
+  },
+  "Frontend Development": {
+    "description": "Modern, responsive, and animated user interfaces.",
+    "color": "#2dd4bf",
+    "skills": [
+      { "name": "React", "info": "UI Library" },
+      { "name": "Flutter", "info": "Mobile SDK" },
+      { "name": "JavaScript", "info": "Language" },
+      { "name": "HTML/CSS", "info": "Layout" }
+    ]
+  },
+  "Systems & DevOps": {
+    "description": "Automation, system configurations, and CI/CD pipelines.",
+    "color": "#c084fc",
+    "skills": [
+      { "name": "Linux", "info": "OS" },
+      { "name": "Arch", "info": "Distro" },
+      { "name": "Bash", "info": "Shell Script" },
+      { "name": "Docker", "info": "Containers" },
+      { "name": "SystemD", "info": "Init Sys" },
+      { "name": "Git", "info": "VCS" }
+    ]
+  },
+  "Android & AOSP ROMs": {
+    "description": "Custom operating system building and device kernel development.",
+    "color": "#a3e635",
+    "skills": [
+      { "name": "AOSP", "info": "Framework" },
+      { "name": "Custom ROMs", "info": "Distro" },
+      { "name": "ADB", "info": "Tooling" },
+      { "name": "Android SDK", "info": "Mobile SDK" }
+    ]
+  }
+}
