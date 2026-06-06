@@ -11,7 +11,7 @@ const GlobalStyles = createGlobalStyle`
     font-family: 'Inter', sans-serif;
     background: ${({ theme }) => theme.colors.background};
     color: ${({ theme }) => theme.colors.text};
-    transition: all 0.3s ease;
+    transition: all 0.1s ease;
     position: relative;
     min-height: 100vh;
     overflow-x: hidden;
@@ -28,10 +28,10 @@ const GlobalStyles = createGlobalStyle`
 
   /* Add smooth transitions for theme changes */
   * {
-    transition: background-color 0.3s ease,
-                color 0.3s ease,
-                border-color 0.3s ease,
-                box-shadow 0.3s ease;
+    transition: background-color 0.1s ease,
+                color 0.1s ease,
+                border-color 0.1s ease,
+                box-shadow 0.1s ease;
   }
 
   /* Ensure content appears above background */

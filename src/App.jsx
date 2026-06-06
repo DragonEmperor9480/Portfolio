@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { ReactLenis } from 'lenis/react';
 import { AnimatePresence } from 'framer-motion';
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import { ThemeProvider as StyledThemeProvider } from 'styled-components';
@@ -66,7 +67,9 @@ function ThemedApp() {
 function App() {
   return (
     <ThemeProvider>
-      <ThemedApp />
+      <ReactLenis root options={{ lerp: 0.08, smoothWheel: true }}>
+        <ThemedApp />
+      </ReactLenis>
     </ThemeProvider>
   );
 }
