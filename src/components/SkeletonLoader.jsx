@@ -1,5 +1,5 @@
 import styled, { keyframes } from 'styled-components';
-import { motion } from 'framer-motion';
+import { motion, useMotionValue, useTransform } from 'framer-motion';
 import { useState, useEffect, useRef } from 'react';
 
 const BLINK = keyframes`
@@ -328,6 +328,31 @@ export default function SkeletonLoader({ onComplete }) {
   
   const logAreaRef = useRef(null);
 
+  // Parallax motion tracking
+  const mouseX = useMotionValue(0);
+  const mouseY = useMotionValue(0);
+
+  const handleMouseMove = (e) => {
+    const { clientX, clientY } = e;
+    const centerX = window.innerWidth / 2;
+    const centerY = window.innerHeight / 2;
+    mouseX.set(clientX - centerX);
+    mouseY.set(clientY - centerY);
+  };
+
+  // Layered translation offsets
+  const canvasX = useTransform(mouseX, (val) => val * 0.015);
+  const canvasY = useTransform(mouseY, (val) => val * 0.015);
+
+  const blob1X = useTransform(mouseX, (val) => val * 0.03);
+  const blob1Y = useTransform(mouseY, (val) => val * 0.03);
+
+  const blob2X = useTransform(mouseX, (val) => val * -0.02);
+  const blob2Y = useTransform(mouseY, (val) => val * -0.02);
+
+  const blob3X = useTransform(mouseX, (val) => val * 0.04);
+  const blob3Y = useTransform(mouseY, (val) => val * 0.04);
+
   // Auto-scroll logs to bottom
   useEffect(() => {
     if (logAreaRef.current) {
@@ -428,53 +453,64 @@ export default function SkeletonLoader({ onComplete }) {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0, transition: { duration: 0.45, ease: 'easeInOut' } }}
+      onMouseMove={handleMouseMove}
     >
-      {/* Floating background blobs to highlight terminal glassmorphism */}
-      <GlowBlob
-        $color="#64ffda"
-        $size="300px"
-        style={{ top: '10%', left: '10%' }}
-        animate={{
-          x: [0, 40, -30, 0],
-          y: [0, -30, 40, 0],
-        }}
-        transition={{
-          duration: 12,
-          repeat: Infinity,
-          ease: 'easeInOut',
-        }}
-      />
-      <GlowBlob
-        $color="#7c3aed"
-        $size="350px"
-        style={{ bottom: '15%', right: '10%' }}
-        animate={{
-          x: [0, -40, 50, 0],
-          y: [0, 30, -40, 0],
-        }}
-        transition={{
-          duration: 15,
-          repeat: Infinity,
-          ease: 'easeInOut',
-        }}
-      />
-      <GlowBlob
-        $color="#00ff88"
-        $size="250px"
-        style={{ top: '45%', right: '35%' }}
-        animate={{
-          x: [0, 30, -30, 0],
-          y: [0, -20, 30, 0],
-        }}
-        transition={{
-          duration: 10,
-          repeat: Infinity,
-          ease: 'easeInOut',
-        }}
-      />
+      {/* Deepest layer: Constellation network (moves slowest) */}
+      <motion.div style={{ x: canvasX, y: canvasY, position: 'absolute', inset: 0, zIndex: 1 }}>
+        <ConstellationNetwork />
+      </motion.div>
 
-      {/* Dynamic drifting constellation network */}
-      <ConstellationNetwork />
+      {/* Mid layers: Floating background blobs (move independently with cursor offset) */}
+      <motion.div style={{ x: blob1X, y: blob1Y, position: 'absolute', inset: 0, zIndex: 2 }}>
+        <GlowBlob
+          $color="#64ffda"
+          $size="300px"
+          style={{ top: '10%', left: '10%' }}
+          animate={{
+            x: [0, 40, -30, 0],
+            y: [0, -30, 40, 0],
+          }}
+          transition={{
+            duration: 12,
+            repeat: Infinity,
+            ease: 'easeInOut',
+          }}
+        />
+      </motion.div>
+
+      <motion.div style={{ x: blob2X, y: blob2Y, position: 'absolute', inset: 0, zIndex: 2 }}>
+        <GlowBlob
+          $color="#7c3aed"
+          $size="350px"
+          style={{ bottom: '15%', right: '10%' }}
+          animate={{
+            x: [0, -40, 50, 0],
+            y: [0, 30, -40, 0],
+          }}
+          transition={{
+            duration: 15,
+            repeat: Infinity,
+            ease: 'easeInOut',
+          }}
+        />
+      </motion.div>
+
+      <motion.div style={{ x: blob3X, y: blob3Y, position: 'absolute', inset: 0, zIndex: 2 }}>
+        <GlowBlob
+          $color="#00ff88"
+          $size="250px"
+          style={{ top: '45%', right: '35%' }}
+          animate={{
+            x: [0, 30, -30, 0],
+            y: [0, -20, 30, 0],
+          }}
+          transition={{
+            duration: 10,
+            repeat: Infinity,
+            ease: 'easeInOut',
+          }}
+        />
+      </motion.div>
 
       <TerminalWindow
         initial={{ scale: 0.95, opacity: 0 }}
