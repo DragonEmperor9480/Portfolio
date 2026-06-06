@@ -47,21 +47,13 @@ function ThemedApp() {
   const { currentTheme } = useTheme();
   const [isLoading, setIsLoading] = useState(true);
 
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-    }, 4500);
-
-    return () => clearTimeout(timer);
-  }, []);
-
   return (
     <StyledThemeProvider theme={themes[currentTheme]}>
       <Router>
         <GlobalStyles />
         <AnimatePresence>
           {isLoading ? (
-            <SkeletonLoader />
+            <SkeletonLoader onComplete={() => setIsLoading(false)} />
           ) : (
             <AppRoutes />
           )}
