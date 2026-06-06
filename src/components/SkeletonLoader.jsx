@@ -1,5 +1,5 @@
 import styled, { keyframes } from 'styled-components';
-import { motion, useMotionValue, useTransform } from 'framer-motion';
+import { motion, useMotionValue, useTransform, useSpring } from 'framer-motion';
 import { useState, useEffect, useRef } from 'react';
 
 const BLINK = keyframes`
@@ -332,6 +332,11 @@ export default function SkeletonLoader({ onComplete }) {
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
 
+  // Smooth spring configuration to filter out hand tremors/jerks
+  const springConfig = { stiffness: 60, damping: 20, mass: 0.5 };
+  const smoothX = useSpring(mouseX, springConfig);
+  const smoothY = useSpring(mouseY, springConfig);
+
   const handleMouseMove = (e) => {
     const { clientX, clientY } = e;
     const centerX = window.innerWidth / 2;
@@ -340,18 +345,40 @@ export default function SkeletonLoader({ onComplete }) {
     mouseY.set(clientY - centerY);
   };
 
+  // Device orientation (tilt) parallax for mobile support
+  useEffect(() => {
+    const handleOrientation = (e) => {
+      const { beta, gamma } = e; // beta: -180 to 180, gamma: -90 to 90
+      if (beta === null || gamma === null) return;
+      
+      // Comfort tilt range: -30 to 30 degrees. Translate to matching pixel offsets
+      const xOffset = Math.max(-30, Math.min(30, gamma)) * 8;
+      
+      // Comfort tilt range: 15 to 75 degrees. Offset by 45 degrees
+      const yOffset = (Math.max(15, Math.min(75, beta)) - 45) * 8;
+      
+      mouseX.set(xOffset);
+      mouseY.set(yOffset);
+    };
+
+    window.addEventListener('deviceorientation', handleOrientation);
+    return () => {
+      window.removeEventListener('deviceorientation', handleOrientation);
+    };
+  }, [mouseX, mouseY]);
+
   // Layered translation offsets
-  const canvasX = useTransform(mouseX, (val) => val * 0.015);
-  const canvasY = useTransform(mouseY, (val) => val * 0.015);
+  const canvasX = useTransform(smoothX, (val) => val * 0.015);
+  const canvasY = useTransform(smoothY, (val) => val * 0.015);
 
-  const blob1X = useTransform(mouseX, (val) => val * 0.03);
-  const blob1Y = useTransform(mouseY, (val) => val * 0.03);
+  const blob1X = useTransform(smoothX, (val) => val * 0.03);
+  const blob1Y = useTransform(smoothY, (val) => val * 0.03);
 
-  const blob2X = useTransform(mouseX, (val) => val * -0.02);
-  const blob2Y = useTransform(mouseY, (val) => val * -0.02);
+  const blob2X = useTransform(smoothX, (val) => val * -0.02);
+  const blob2Y = useTransform(smoothY, (val) => val * -0.02);
 
-  const blob3X = useTransform(mouseX, (val) => val * 0.04);
-  const blob3Y = useTransform(mouseY, (val) => val * 0.04);
+  const blob3X = useTransform(smoothX, (val) => val * 0.04);
+  const blob3Y = useTransform(smoothY, (val) => val * 0.04);
 
   // Auto-scroll logs to bottom
   useEffect(() => {
