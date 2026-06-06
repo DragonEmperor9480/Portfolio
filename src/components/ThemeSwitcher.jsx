@@ -13,40 +13,41 @@ const ThemeToggle = styled.div`
 
 const ThemeButton = styled(motion.button)`
   background: ${({ theme }) => `${theme.colors.primary}10`};
-  border: 1px solid ${({ theme }) => `${theme.colors.primary}30`};
+  border: 1px solid ${({ theme }) => `${theme.colors.border}80`};
   color: ${({ theme }) => theme.colors.primary};
-  padding: 8px 16px;
+  padding: 6px 14px;
   border-radius: 12px;
   cursor: pointer;
   display: flex;
   align-items: center;
-  gap: 10px;
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 0.9rem;
-  transition: all 0.3s ease;
+  gap: 8px;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 600;
+  transition: all 0.2s ease;
   
   .icon {
-    font-size: 1.1rem;
+    font-size: 1rem;
   }
 
   .label {
-    font-size: 0.85rem;
     letter-spacing: 0.5px;
   }
 
   &:hover {
     background: ${({ theme }) => `${theme.colors.primary}15`};
-    border-color: ${({ theme }) => theme.colors.primary};
-    transform: translateY(-2px);
-    box-shadow: 0 5px 15px ${({ theme }) => `${theme.colors.primary}20`};
+    border-color: ${({ theme }) => theme.colors.primary}80;
+    box-shadow: 0 4px 12px ${({ theme }) => `${theme.colors.primary}20`};
   }
 
   @media (max-width: 768px) {
-    padding: 14px 16px;
-    font-size: 1rem;
+    padding: 12px 14px;
+    font-size: 0.95rem;
+    width: 100%;
+    justify-content: center;
     
     .icon {
-      font-size: 1.2rem;
+      font-size: 1.1rem;
     }
 
     .label {
@@ -55,10 +56,10 @@ const ThemeButton = styled(motion.button)`
   }
 
   @media (max-width: 480px) {
-    padding: 12px;
+    padding: 10px;
     
     .icon {
-      font-size: 1.1rem;
+      font-size: 1rem;
     }
   }
 `;
@@ -67,9 +68,10 @@ const ThemeMenu = styled(motion.div)`
   position: absolute;
   top: calc(100% + 10px);
   right: 0;
-  background: ${({ theme }) => theme.colors.glass};
-  backdrop-filter: blur(20px);
-  border: 1px solid ${({ theme }) => `${theme.colors.primary}30`};
+  background: ${({ theme }) => theme.colors.background}f2;
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  border: 1px solid ${({ theme }) => theme.colors.primary}50;
   border-radius: 16px;
   padding: 8px;
   display: flex;

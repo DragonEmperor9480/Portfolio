@@ -1,645 +1,414 @@
 import { useState, useEffect, useRef } from 'react';
 import styled from 'styled-components';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Link } from 'react-router-dom';
 import ThemeSwitcher from './ThemeSwitcher';
 import useWindowDimensions from '../hooks/useWindowDimensions';
 import FullscreenModal from './FullscreenModal';
 
-const Nav = styled(motion.nav)`
+const NavContainer = styled.div`
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
-  height: 80px;
+  display: flex;
+  justify-content: center;
+  padding: 24px;
+  z-index: 100;
+  pointer-events: none;
+
+  @media (max-width: 768px) {
+    padding: 16px;
+  }
+`;
+
+const Nav = styled(motion.nav)`
+  pointer-events: auto;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 1100px;
+  background: ${({ theme }) => theme.colors.background}e6;
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  border: 1px solid ${({ theme }) => theme.colors.primary}50;
+  border-radius: 20px;
+  box-shadow: 
+    0 10px 30px -10px rgba(0, 0, 0, 0.8),
+    0 0 2px 1px ${({ theme }) => theme.colors.primary}30 inset;
+  padding: 0 16px;
+  box-sizing: border-box;
+  transition: border-color 0.3s ease;
+
+  &:hover {
+    border-color: ${({ theme }) => theme.colors.primary}50;
+  }
+`;
+
+const NavRow = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background: ${({ theme }) => theme.colors.glass};
-  backdrop-filter: blur(20px);
-  border-bottom: 1px solid ${({ theme }) => theme.colors.border};
-  z-index: 100;
-  padding: 0 40px;
-  transition: all 0.3s ease;
-  
-  &::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 1px;
-    background: linear-gradient(90deg, 
-      transparent 0%, 
-      ${({ theme }) => theme.colors.primary} 20%, 
-      ${({ theme }) => theme.colors.secondary} 50%, 
-      ${({ theme }) => theme.colors.primary} 80%, 
-      transparent 100%);
-    opacity: 0.6;
-  }
-
-  @media (max-width: 1024px) {
-    padding: 0 30px;
-  }
+  width: 100%;
+  height: 60px;
+  flex-shrink: 0;
 
   @media (max-width: 768px) {
-    padding: 0 20px;
-    height: 70px;
-  }
-
-  @media (max-width: 480px) {
-    padding: 0 15px;
-    height: 65px;
+    height: 56px;
   }
 `;
 
-const NavLinks = styled.div`
-  display: flex;
-  gap: 0;
-  align-items: center;
-
-  @media (max-width: 767px) {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 8px;
-    width: 100%;
-  }
-`;
-
-const NavLink = styled(motion.a)`
-  font-family: 'Inter', 'Segoe UI', sans-serif;
+const LogoLink = styled.a`
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 800;
+  font-size: 1.25rem;
   color: ${({ theme }) => theme.colors.text};
   text-decoration: none;
-  font-size: 0.95rem;
-  font-weight: 500;
-  letter-spacing: -0.01em;
-  padding: 12px 20px;
-  position: relative;
+  letter-spacing: -0.04em;
   display: flex;
   align-items: center;
-  transition: all 0.3s ease;
-  border-radius: 8px;
-  
-  &::after {
-    content: '';
-    position: absolute;
-    bottom: 8px;
-    left: 50%;
-    width: 0;
-    height: 2px;
-    background: linear-gradient(90deg, ${({ theme }) => theme.colors.primary}, ${({ theme }) => theme.colors.secondary});
-    transition: all 0.3s ease;
-    transform: translateX(-50%);
-    border-radius: 2px;
-  }
-
-  &:hover {
-    color: ${({ theme }) => theme.colors.primary};
-    background: ${({ theme }) => `${theme.colors.primary}08`};
-    
-    &::after {
-      width: 60%;
-    }
-  }
-
-  @media (max-width: 767px) {
-    padding: 16px 20px;
-    font-size: 1.05rem;
-    border-radius: 12px;
-    
-    &::after {
-      display: none;
-    }
-    
-    &:hover {
-      background: ${({ theme }) => `${theme.colors.primary}15`};
-      transform: translateX(4px);
-    }
-  }
-`;
-
-const LabButton = styled(motion.div)`
+  gap: 8px;
   position: relative;
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  padding: 10px 22px;
-  font-family: 'Fira Code', 'JetBrains Mono', monospace;
-  font-size: 0.82rem;
-  font-weight: 600;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  color: ${({ theme }) => theme.colors.primary};
-  text-decoration: none;
-  cursor: pointer;
-  border: none;
-  border-radius: 8px;
-  background: ${({ theme }) => theme.colors.glass};
-  backdrop-filter: blur(12px);
-  margin-left: 16px;
-  overflow: visible;
-  transition: all 0.35s ease;
-  z-index: 1;
-  isolation: isolate;
-
-  /* Animated rotating border */
-  &::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    border-radius: 8px;
-    padding: 1.5px;
-    background: conic-gradient(
-      from var(--border-angle, 0deg),
-      transparent 25%,
-      ${({ theme }) => theme.colors.primary} 50%,
-      transparent 75%
-    );
-    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-    -webkit-mask-composite: xor;
-    mask-composite: exclude;
-    animation: rotateBorder 3s linear infinite;
-    z-index: -1;
-  }
-
-  @property --border-angle {
-    syntax: '<angle>';
-    initial-value: 0deg;
-    inherits: false;
-  }
-
-  @keyframes rotateBorder {
-    to { --border-angle: 360deg; }
-  }
-
-  /* Subtle inner glow */
-  &::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    border-radius: 8px;
-    box-shadow: inset 0 0 20px ${({ theme }) => `${theme.colors.primary}10`};
-    pointer-events: none;
-    transition: all 0.35s ease;
-    z-index: -1;
-  }
-
-  &:hover {
-    background: ${({ theme }) => `${theme.colors.primary}12`};
-    box-shadow:
-      0 0 25px ${({ theme }) => `${theme.colors.primary}25`},
-      0 0 50px ${({ theme }) => `${theme.colors.primary}10`};
-    transform: translateY(-2px);
-    color: ${({ theme }) => theme.colors.primary};
-    text-shadow: 0 0 12px ${({ theme }) => `${theme.colors.primary}60`};
-
-    &::after {
-      box-shadow: inset 0 0 30px ${({ theme }) => `${theme.colors.primary}18`};
-    }
-
-    .lab-dot {
-      box-shadow: 0 0 8px currentColor, 0 0 20px currentColor;
-    }
-  }
-
-  .lab-dot {
+  z-index: 2;
+  
+  .dot {
     width: 6px;
     height: 6px;
     background: ${({ theme }) => theme.colors.primary};
     border-radius: 50%;
-    box-shadow: 0 0 6px ${({ theme }) => theme.colors.primary};
-    animation: labPulse 2s ease-in-out infinite;
-    flex-shrink: 0;
+    box-shadow: 0 0 10px ${({ theme }) => theme.colors.primary};
   }
 
-  @keyframes labPulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.3; }
-  }
-
-  .lab-text {
-    position: relative;
-    z-index: 2;
-  }
-
-  .lab-bracket {
-    opacity: 0.4;
-    font-weight: 400;
-  }
-
-  @media (max-width: 767px) {
-    margin: 12px 0 0 0;
-    padding: 14px 20px;
-    font-size: 0.85rem;
-    justify-content: center;
-    border-radius: 10px;
-  }
-`;
-
-const ResumeButton = styled(motion.a)`
-  color: ${({ theme }) => theme.colors.primary};
-  background: transparent;
-  border: 1px solid ${({ theme }) => theme.colors.primary};
-  border-radius: 25px;
-  padding: 10px 20px;
-  font-family: 'Inter', 'Segoe UI', sans-serif;
-  font-size: 0.9rem;
-  font-weight: 600;
-  letter-spacing: -0.01em;
-  cursor: pointer;
-  text-decoration: none;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  transition: all 0.3s ease;
-  position: relative;
-  overflow: hidden;
-  margin-left: 20px;
-  
-  &::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: ${({ theme }) => `${theme.colors.primary}15`};
-    transition: left 0.3s ease;
-  }
-  
   &:hover {
-    color: ${({ theme }) => theme.colors.background};
-    background: ${({ theme }) => theme.colors.primary};
-    box-shadow: 0 0 20px ${({ theme }) => `${theme.colors.primary}40`};
-    transform: translateY(-2px);
-    
-    &::before {
-      left: 0;
-    }
-  }
-
-  @media (max-width: 767px) {
-    margin: 16px 0 0 0;
-    padding: 14px 20px;
-    font-size: 0.95rem;
-    justify-content: center;
-    border-radius: 12px;
+    color: ${({ theme }) => theme.colors.primary};
   }
 `;
 
-const MobileMenu = styled(motion.div)`
-  position: fixed;
-  top: 70px;
-  left: 0;
-  right: 0;
-  background: ${({ theme }) => theme.colors.glass};
-  backdrop-filter: blur(20px);
-  border-top: 1px solid ${({ theme }) => theme.colors.border};
-  border-bottom: 1px solid ${({ theme }) => theme.colors.border};
-  border-radius: 0 0 20px 20px;
-  padding: 30px 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  z-index: 99;
-  
-  &::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 1px;
-    background: linear-gradient(90deg, 
-      transparent 0%, 
-      ${({ theme }) => theme.colors.primary} 50%, 
-      transparent 100%);
-    opacity: 0.6;
-  }
-`;
-
-const LogoSection = styled(motion.div)`
+const CenterLinks = styled.div`
   display: flex;
   align-items: center;
-  gap: 20px;
-`;
+  gap: 4px;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
 
-const LogoButton = styled.a`
-  font-family: 'Space Grotesk', 'Inter', sans-serif;
-  font-size: 1.8rem;
-  color: ${({ theme }) => theme.colors.primary};
-  text-decoration: none;
-  display: flex;
-  align-items: center;
-  cursor: pointer;
-  position: relative;
-  font-weight: 800;
-  letter-spacing: -0.02em;
-  padding: 8px 12px;
-  border-radius: 12px;
-  transition: all 0.3s ease;
-  
-  &::before {
-    content: '<';
-    color: ${({ theme }) => theme.colors.secondary};
-    margin-right: 4px;
-    font-weight: 600;
-  }
-  
-  &::after {
-    content: '/>';
-    color: ${({ theme }) => theme.colors.secondary};
-    margin-left: 4px;
-    font-weight: 600;
-  }
-  
-  &:hover {
-    transform: scale(1.05);
-    text-shadow: 0 0 10px ${({ theme }) => theme.colors.primary};
-    background: ${({ theme }) => `${theme.colors.primary}08`};
-  }
-  
-  @media (max-width: 768px) {
-    font-size: 1.5rem;
-    padding: 6px 10px;
-  }
-
-  @media (max-width: 480px) {
-    font-size: 1.3rem;
-    padding: 4px 8px;
-  }
-`;
-
-const SystemInfo = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  font-family: 'Fira Code', 'JetBrains Mono', monospace;
-  font-size: 0.85rem;
-  font-weight: 500;
-  color: ${({ theme }) => theme.colors.text};
-  opacity: 0.9;
-  
   @media (max-width: 1024px) {
     display: none;
   }
 `;
 
-const StatusDot = styled.div`
-  width: 8px;
-  height: 8px;
-  background: ${({ theme }) => theme.colors.primary};
-  border-radius: 50%;
-  animation: pulse 2s infinite;
-  box-shadow: 0 0 8px ${({ theme }) => theme.colors.primary};
-  
-  @keyframes pulse {
-    0% { opacity: 1; }
-    50% { opacity: 0.5; }
-    100% { opacity: 1; }
-  }
-`;
-
-const SystemText = styled.span`
-  color: ${({ theme }) => theme.colors.text};
-  
-  &::before {
-    content: 'system@portfolio:~$ ';
-    color: ${({ theme }) => theme.colors.primary};
-    opacity: 0.9;
-    font-weight: 500;
-  }
-`;
-
-const TechStack = styled(motion.div)`
-  position: absolute;
-  top: 80px;
-  left: 50px;
-  background: rgba(17, 34, 64, 0.95);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(100, 255, 218, 0.2);
-  border-radius: 8px;
-  padding: 15px;
-  display: flex;
-  gap: 10px;
-  box-shadow: 0 10px 30px -10px rgba(2,12,27,0.7);
-`;
-
-const TechIcon = styled(motion.span)`
-  font-size: 20px;
-  color: #64ffda;
-  opacity: 0.8;
-  cursor: pointer;
-  transition: all 0.3s ease;
+const NavLink = styled(motion.a)`
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 500;
+  color: ${({ theme, $active }) => $active ? theme.colors.text : theme.colors.textSecondary};
+  text-decoration: none;
+  font-size: 0.9rem;
+  padding: 6px 16px;
+  border-radius: 12px;
+  position: relative;
+  transition: color 0.2s ease;
+  z-index: 1;
 
   &:hover {
-    opacity: 1;
-    transform: translateY(-2px);
+    color: ${({ theme }) => theme.colors.text};
+  }
+  
+  @media (max-width: 1024px) {
+    font-size: 1.05rem;
+    padding: 12px 16px;
+    width: 100%;
+    box-sizing: border-box;
+    text-align: center;
   }
 `;
 
-const RightSection = styled.div`
+const ActivePill = styled(motion.div)`
+  position: absolute;
+  inset: 0;
+  background: ${({ theme }) => theme.colors.text}10;
+  border-radius: 12px;
+  z-index: -1;
+`;
+
+const RightControls = styled.div`
   display: flex;
   align-items: center;
-  gap: 2rem;
+  gap: 12px;
 
   @media (max-width: 1024px) {
-    gap: 1rem;
-    
-    .desktop-nav {
+    .desktop-only {
       display: none;
     }
   }
+`;
 
-  @media (max-width: 768px) {
-    gap: 0.5rem;
+const ActionButton = styled(motion.button)`
+  background: ${({ theme, $primary }) => $primary ? theme.colors.text : 'transparent'};
+  color: ${({ theme, $primary }) => $primary ? theme.colors.background : theme.colors.text};
+  border: 1px solid ${({ theme, $primary }) => $primary ? 'transparent' : `${theme.colors.border}80`};
+  padding: 6px 16px;
+  border-radius: 12px;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.2s ease;
+  text-decoration: none;
+
+  &:hover {
+    background: ${({ theme, $primary }) => $primary ? theme.colors.text : theme.colors.text}15;
+    transform: translateY(-1px);
+  }
+
+  @media (max-width: 1024px) {
+    width: 100%;
+    justify-content: center;
+    padding: 12px;
+    font-size: 0.95rem;
   }
 `;
 
 const MenuButton = styled(motion.button)`
   background: transparent;
-  border: 1px solid ${({ theme }) => theme.colors.primary};
-  color: ${({ theme }) => theme.colors.primary};
-  font-size: 1rem;
+  border: none;
+  color: ${({ theme }) => theme.colors.text};
+  font-size: 1.2rem;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 8px;
-  z-index: 101;
-  border-radius: 12px;
   width: 40px;
   height: 40px;
-  transition: all 0.3s ease;
+  border-radius: 12px;
+  z-index: 101;
+  transition: background 0.2s ease;
   
   &:hover {
-    background: ${({ theme }) => `${theme.colors.primary}15`};
-    box-shadow: 0 0 10px ${({ theme }) => `${theme.colors.primary}30`};
-    transform: rotate(90deg);
+    background: ${({ theme }) => theme.colors.text}10;
   }
 
   @media (min-width: 1025px) {
     display: none;
   }
+`;
 
-  @media (max-width: 480px) {
-    width: 35px;
-    height: 35px;
-    font-size: 0.9rem;
+const MobileDropdown = styled(motion.div)`
+  width: 100%;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  
+  @media (min-width: 1025px) {
+    display: none;
   }
 `;
 
+const MobileContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px 0 24px;
+  border-top: 1px solid ${({ theme }) => `${theme.colors.border}40`};
+`;
+
 const navItems = [
-  { name: 'About', link: '#about', number: '01' },
-  { name: 'Achievements', link: '#achievements', number: '02' },
-  { name: 'Certifications', link: '#certifications', number: '03' }
+  { id: 'home', name: 'Home' },
+  { id: 'about', name: 'About' },
+  { id: 'achievements', name: 'Achievements' },
+  { id: 'certifications', name: 'Certifications' }
 ];
 
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [showLabModal, setShowLabModal] = useState(false);
-  const { width, height } = useWindowDimensions();
-  const menuRef = useRef(null);
+  const [hoveredIndex, setHoveredIndex] = useState(null);
+  const [activeSection, setActiveSection] = useState('home');
+  const { width } = useWindowDimensions();
+  const navRef = useRef(null);
   const buttonRef = useRef(null);
 
-  const handleLabClick = () => {
-    setIsMenuOpen(false);
-    setShowLabModal(true);
-  };
-
-  const shouldShowMobileMenu = width <= 1024;
-
   useEffect(() => {
-    if (!shouldShowMobileMenu && isMenuOpen) {
+    const handleScroll = () => {
+      const sections = navItems.map(item => item.id);
+      let current = 'home';
+      
+      for (const section of sections) {
+        const el = document.getElementById(section);
+        if (el) {
+          const rect = el.getBoundingClientRect();
+          if (rect.top <= window.innerHeight * 0.3 && rect.bottom >= window.innerHeight * 0.3) {
+            current = section;
+          }
+        }
+      }
+      
+      if (window.scrollY < 100) current = 'home';
+      setActiveSection(current);
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    setTimeout(handleScroll, 100);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  const shouldCollapseMobileMenu = width > 1024;
+  useEffect(() => {
+    if (shouldCollapseMobileMenu && isMenuOpen) {
       setIsMenuOpen(false);
     }
-  }, [width, height, shouldShowMobileMenu]);
+  }, [width, shouldCollapseMobileMenu, isMenuOpen]);
 
   useEffect(() => {
     function handleClickOutside(event) {
       if (
-        menuRef.current && 
-        !menuRef.current.contains(event.target) &&
+        navRef.current && 
+        !navRef.current.contains(event.target) &&
+        buttonRef.current &&
         !buttonRef.current.contains(event.target)
       ) {
         setIsMenuOpen(false);
       }
     }
-
     if (isMenuOpen) {
       document.addEventListener('mousedown', handleClickOutside);
     }
-
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
+    return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [isMenuOpen]);
+
+  const closedHeight = width <= 768 ? '56px' : '60px';
+  const openHeight = width <= 480 ? '340px' : '320px';
+  const navHeight = isMenuOpen ? openHeight : closedHeight;
 
   return (
     <>
-    <Nav
-      initial={{ opacity: 0, y: -20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.8 }}
-      $isMenuOpen={isMenuOpen}
-    >
-      <LogoSection>
-        <LogoButton href="#home">
-          AN
-        </LogoButton>
-        <SystemInfo>
-          <StatusDot />
-          <SystemText>online</SystemText>
-        </SystemInfo>
-      </LogoSection>
-
-      <RightSection>
-        <div className="desktop-nav">
-          <NavLinks className="desktop-nav">
-            {navItems.map((item) => (
-              <NavLink
-                key={item.name}
-                href={item.link}
-              >
-                {item.name}
-              </NavLink>
-            ))}
-            <LabButton
-              onClick={handleLabClick}
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.97 }}
-            >
-              <span className="lab-dot" />
-              <span className="lab-text">
-                <span className="lab-bracket">[</span> Amrut's Lab <span className="lab-bracket">]</span>
-              </span>
-            </LabButton>
-            <ResumeButton
-              href="https://drive.google.com/file/d/1WUu8oNh8mLDHmN2Zovze9BHVIUmzldGW/view?usp=sharing"
-              target="_blank"
-              rel="noopener noreferrer"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              Resume.pdf
-            </ResumeButton>
-          </NavLinks>
-        </div>
-        <ThemeSwitcher />
-        <MenuButton
-          ref={buttonRef}
-          onClick={() => setIsMenuOpen(!isMenuOpen)}
-          whileHover={{ scale: 1.1 }}
-          whileTap={{ scale: 0.95 }}
+      <NavContainer>
+        <Nav
+          ref={navRef}
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ 
+            opacity: 1, 
+            y: 0,
+            height: navHeight,
+          }}
+          transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
         >
-          <i className={`fas fa-${isMenuOpen ? 'times' : 'bars'}`} />
-        </MenuButton>
-      </RightSection>
+          <NavRow>
+            <LogoLink href="#home">
+              <span className="dot" />
+              AN
+            </LogoLink>
 
-      <AnimatePresence>
-        {isMenuOpen && (
-          <MobileMenu
-            ref={menuRef}
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            transition={{ duration: 0.2 }}
-          >
-            <NavLinks>
-              {navItems.map((item) => (
-                <NavLink
-                  key={item.name}
-                  href={item.link}
-                  onClick={() => setIsMenuOpen(false)}
+            <CenterLinks>
+              {navItems.map((item, idx) => {
+                const isActive = activeSection === item.id;
+                const isHovered = hoveredIndex === idx;
+                
+                return (
+                  <NavLink
+                    key={item.id}
+                    href={`#${item.id}`}
+                    $active={isActive}
+                    onMouseEnter={() => setHoveredIndex(idx)}
+                    onMouseLeave={() => setHoveredIndex(null)}
+                  >
+                    <AnimatePresence>
+                      {isHovered && (
+                        <ActivePill
+                          layoutId="nav-hover-pill"
+                          initial={{ opacity: 0 }}
+                          animate={{ opacity: 1 }}
+                          exit={{ opacity: 0 }}
+                          transition={{ type: 'spring', stiffness: 400, damping: 30 }}
+                        />
+                      )}
+                    </AnimatePresence>
+                    {isActive && !isHovered && (
+                      <ActivePill
+                        layoutId="nav-active-pill"
+                        transition={{ type: 'spring', stiffness: 400, damping: 30 }}
+                        style={{ background: 'transparent', borderBottom: '2px solid currentColor', borderRadius: 0, bottom: '2px', top: 'auto', height: '0px' }}
+                      />
+                    )}
+                    {item.name}
+                  </NavLink>
+                );
+              })}
+            </CenterLinks>
+
+            <RightControls>
+              <div className="desktop-only" style={{ display: 'flex', gap: '8px' }}>
+                <ActionButton onClick={() => setShowLabModal(true)}>
+                  Lab
+                </ActionButton>
+                <ActionButton 
+                  as="a"
+                  $primary
+                  href="https://drive.google.com/file/d/1WUu8oNh8mLDHmN2Zovze9BHVIUmzldGW/view?usp=sharing"
+                  target="_blank"
+                  rel="noopener noreferrer"
                 >
-                  {item.name}
-                </NavLink>
-              ))}
-              <LabButton
-                onClick={handleLabClick}
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.97 }}
-              >
-                <span className="lab-dot" />
-                <span className="lab-text">
-                  <span className="lab-bracket">[</span> Amrut's Lab <span className="lab-bracket">]</span>
-                </span>
-              </LabButton>
-              <ResumeButton
-                href="https://drive.google.com/file/d/1LwmxptkPOEhyIEYJOoReFBfvzcMIUHkd/view?usp=sharing"
-                target="_blank"
-                rel="noopener noreferrer"
+                  Resume
+                </ActionButton>
+              </div>
+              
+              <ThemeSwitcher />
+              
+              <MenuButton
+                ref={buttonRef}
+                onClick={() => setIsMenuOpen(!isMenuOpen)}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
+                animate={{ rotate: isMenuOpen ? 90 : 0 }}
               >
-                Resume.pdf
-              </ResumeButton>
-            </NavLinks>
-          </MobileMenu>
-        )}
-      </AnimatePresence>
-    </Nav>
+                <i className={`fas fa-${isMenuOpen ? 'times' : 'bars'}`} />
+              </MenuButton>
+            </RightControls>
+          </NavRow>
+
+          <AnimatePresence>
+            {isMenuOpen && (
+              <MobileDropdown
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: 'auto' }}
+                exit={{ opacity: 0, height: 0 }}
+                transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+              >
+                <MobileContainer>
+                  {navItems.map((item) => (
+                    <NavLink
+                      key={item.id}
+                      href={`#${item.id}`}
+                      $active={activeSection === item.id}
+                      onClick={() => setIsMenuOpen(false)}
+                    >
+                      {item.name}
+                    </NavLink>
+                  ))}
+                  
+                  <ActionButton onClick={() => {
+                    setIsMenuOpen(false);
+                    setShowLabModal(true);
+                  }}>
+                    Amrut's Lab
+                  </ActionButton>
+                  
+                  <ActionButton 
+                    as="a"
+                    $primary
+                    href="https://drive.google.com/file/d/1WUu8oNh8mLDHmN2Zovze9BHVIUmzldGW/view?usp=sharing"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    Resume
+                  </ActionButton>
+                </MobileContainer>
+              </MobileDropdown>
+            )}
+          </AnimatePresence>
+        </Nav>
+      </NavContainer>
 
       <FullscreenModal
         isOpen={showLabModal}
