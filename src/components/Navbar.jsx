@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import styled from 'styled-components';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useLenis } from 'lenis/react';
 import ThemeSwitcher from './ThemeSwitcher';
 import useWindowDimensions from '../hooks/useWindowDimensions';
 import FullscreenModal from './FullscreenModal';
@@ -228,6 +229,16 @@ export default function Navbar() {
   const { width } = useWindowDimensions();
   const navRef = useRef(null);
   const buttonRef = useRef(null);
+  const lenis = useLenis();
+
+  const handleNavClick = (e, id) => {
+    e.preventDefault();
+    if (lenis) {
+      lenis.scrollTo(`#${id}`, { duration: 1.2 });
+    } else {
+      document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
 
   useEffect(() => {
     const handleScroll = () => {
@@ -310,6 +321,7 @@ export default function Navbar() {
                     key={item.id}
                     href={`#${item.id}`}
                     $active={isActive}
+                    onClick={(e) => handleNavClick(e, item.id)}
                     onMouseEnter={() => setHoveredIndex(idx)}
                     onMouseLeave={() => setHoveredIndex(null)}
                   >
@@ -381,7 +393,10 @@ export default function Navbar() {
                       key={item.id}
                       href={`#${item.id}`}
                       $active={activeSection === item.id}
-                      onClick={() => setIsMenuOpen(false)}
+                      onClick={(e) => {
+                        setIsMenuOpen(false);
+                        handleNavClick(e, item.id);
+                      }}
                     >
                       {item.name}
                     </NavLink>

@@ -147,23 +147,23 @@ const FileItem = styled.div`
   align-items: center;
   cursor: pointer;
   transition: all 0.2s ease;
-  border-left: ${props => props.isActive ? `2px solid ${props.theme.colors.primary}` : '2px solid transparent'};
-  background: ${props => props.isActive ? `${props.theme.colors.primary}20` : 'transparent'};
+  border-left: ${props => props.$isActive ? `2px solid ${props.theme.colors.primary}` : '2px solid transparent'};
+  background: ${props => props.$isActive ? `${props.theme.colors.primary}20` : 'transparent'};
   
   &:hover {
-    background: ${props => props.isActive ? `${props.theme.colors.primary}20` : `${props.theme.colors.border}30`};
+    background: ${props => props.$isActive ? `${props.theme.colors.primary}20` : `${props.theme.colors.border}30`};
   }
   
   .file-icon {
     width: 16px;
     height: 16px;
     margin-right: 8px;
-    color: ${props => props.iconColor || props.theme.colors.text};
+    color: ${props => props.$iconColor || props.theme.colors.text};
     font-size: 0.8rem;
   }
   
   .file-name {
-    color: ${props => props.isActive ? props.theme.colors.primary : props.theme.colors.text};
+    color: ${props => props.$isActive ? props.theme.colors.primary : props.theme.colors.text};
     font-size: 0.85rem;
     font-family: 'JetBrains Mono', monospace;
     white-space: nowrap;
@@ -237,7 +237,7 @@ const Tab = styled.div`
   display: flex;
   align-items: center;
   padding: 0 16px;
-  background: ${props => props.isActive ? props.theme.colors.background : props.theme.colors.glass};
+  background: ${props => props.$isActive ? props.theme.colors.background : props.theme.colors.glass};
   border-right: 1px solid ${({ theme }) => theme.colors.border};
   cursor: pointer;
   position: relative;
@@ -248,20 +248,20 @@ const Tab = styled.div`
   box-sizing: border-box;
   
   &:hover {
-    background: ${props => props.isActive ? props.theme.colors.background : `${props.theme.colors.border}50`};
+    background: ${props => props.$isActive ? props.theme.colors.background : `${props.theme.colors.border}50`};
   }
   
   .tab-icon {
     width: 16px;
     height: 16px;
     margin-right: 8px;
-    color: ${props => props.iconColor || props.theme.colors.text};
+    color: ${props => props.$iconColor || props.theme.colors.text};
     font-size: 0.8rem;
     flex-shrink: 0;
   }
   
   .tab-name {
-    color: ${props => props.isActive ? props.theme.colors.primary : props.theme.colors.text};
+    color: ${props => props.$isActive ? props.theme.colors.primary : props.theme.colors.text};
     font-size: 0.85rem;
     font-family: 'JetBrains Mono', monospace;
     white-space: nowrap;
@@ -650,8 +650,8 @@ export default function Certifications() {
               {certificates.certificates.map((cert, index) => (
                 <FileItem
                   key={index}
-                  isActive={activeTab === `cert-${index}`}
-                  iconColor={getFileIconColor(cert.provider)}
+                  $isActive={activeTab === `cert-${index}`}
+                  $iconColor={getFileIconColor(cert.provider)}
                   onClick={() => openCertificate(cert, index)}
                 >
                   <i className={`${cert.icon} file-icon`}></i>
@@ -669,8 +669,8 @@ export default function Certifications() {
               {openTabs.map((tab) => (
                 <Tab
                   key={tab.id}
-                  isActive={activeTab === tab.id}
-                  iconColor={getFileIconColor(tab.cert.provider)}
+                  $isActive={activeTab === tab.id}
+                  $iconColor={getFileIconColor(tab.cert.provider)}
                   onClick={() => setActiveTab(tab.id)}
                 >
                   <i className={`${tab.cert.icon} tab-icon`}></i>
