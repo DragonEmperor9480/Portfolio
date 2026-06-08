@@ -3,6 +3,8 @@ import styled from 'styled-components';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useLenis } from 'lenis/react';
 import ThemeSwitcher from './ThemeSwitcher';
+import SystemClock from './SystemClock';
+import SystemControl from './SystemControl';
 import useWindowDimensions from '../hooks/useWindowDimensions';
 import FullscreenModal from './FullscreenModal';
 
@@ -89,8 +91,9 @@ const CenterLinks = styled.div`
   align-items: center;
   gap: 4px;
   position: absolute;
-  left: 50%;
+  left: 46%;
   transform: translateX(-50%);
+  z-index: 5;
 
   @media (max-width: 1024px) {
     display: none;
@@ -134,6 +137,10 @@ const RightControls = styled.div`
   display: flex;
   align-items: center;
   gap: 12px;
+
+  @media (max-width: 1200px) {
+    gap: 8px;
+  }
 
   @media (max-width: 1024px) {
     .desktop-only {
@@ -218,7 +225,8 @@ const navItems = [
   { id: 'home', name: 'Home' },
   { id: 'about', name: 'About' },
   { id: 'achievements', name: 'Achievements' },
-  { id: 'certifications', name: 'Certifications' }
+  { id: 'certifications', name: 'Certifications' },
+  { id: 'lab', name: 'Lab' }
 ];
 
 export default function Navbar() {
@@ -226,6 +234,7 @@ export default function Navbar() {
   const [showLabModal, setShowLabModal] = useState(false);
   const [hoveredIndex, setHoveredIndex] = useState(null);
   const [activeSection, setActiveSection] = useState('home');
+  
   const { width } = useWindowDimensions();
   const navRef = useRef(null);
   const buttonRef = useRef(null);
@@ -233,6 +242,10 @@ export default function Navbar() {
 
   const handleNavClick = (e, id) => {
     e.preventDefault();
+    if (id === 'lab') {
+      setShowLabModal(true);
+      return;
+    }
     if (lenis) {
       lenis.scrollTo(`#${id}`, { duration: 1.2 });
     } else {
@@ -306,10 +319,14 @@ export default function Navbar() {
           transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
         >
           <NavRow>
-            <LogoLink href="#home">
-              <span className="dot" />
-              AN
-            </LogoLink>
+            <div style={{ display: 'flex', alignItems: 'center', zIndex: 2 }}>
+              <LogoLink href="#home">
+                <span className="dot" />
+                AN
+              </LogoLink>
+
+              <SystemControl />
+            </div>
 
             <CenterLinks>
               {navItems.map((item, idx) => {
@@ -351,9 +368,6 @@ export default function Navbar() {
 
             <RightControls>
               <div className="desktop-only" style={{ display: 'flex', gap: '8px' }}>
-                <ActionButton onClick={() => setShowLabModal(true)}>
-                  Lab
-                </ActionButton>
                 <ActionButton 
                   as="a"
                   $primary
@@ -365,6 +379,7 @@ export default function Navbar() {
                 </ActionButton>
               </div>
               
+              <SystemClock />
               <ThemeSwitcher />
               
               <MenuButton
@@ -401,13 +416,6 @@ export default function Navbar() {
                       {item.name}
                     </NavLink>
                   ))}
-                  
-                  <ActionButton onClick={() => {
-                    setIsMenuOpen(false);
-                    setShowLabModal(true);
-                  }}>
-                    Amrut's Lab
-                  </ActionButton>
                   
                   <ActionButton 
                     as="a"

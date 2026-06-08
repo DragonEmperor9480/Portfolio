@@ -40,6 +40,13 @@ const ThemeButton = styled(motion.button)`
     box-shadow: 0 4px 12px ${({ theme }) => `${theme.colors.primary}20`};
   }
 
+  @media (max-width: 1200px) {
+    padding: 6px 10px;
+    .label {
+      display: none;
+    }
+  }
+
   @media (max-width: 768px) {
     padding: 12px 14px;
     font-size: 0.95rem;
@@ -48,10 +55,6 @@ const ThemeButton = styled(motion.button)`
     
     .icon {
       font-size: 1.1rem;
-    }
-
-    .label {
-      display: none;
     }
   }
 
@@ -195,7 +198,7 @@ export default function ThemeSwitcher() {
           aria-label="Theme Configuration"
         >
           <i className={`fas fa-${themeIcons[currentTheme]} icon`} />
-          <span className="label">THEME.CONFIG</span>
+          <span className="label">THEME</span>
           <span className="status" />
         </ThemeButton>
       </motion.div>
