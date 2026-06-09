@@ -225,6 +225,43 @@ export default function SystemControl() {
 
   const containerRef = useRef(null);
   const buttonRef = useRef(null);
+  const lastSoundTimeRef = useRef(0);
+
+  const playVolumeSound = (volumePercent) => {
+    try {
+      const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+      if (!AudioContextClass) return;
+      
+      const audioCtx = new AudioContextClass();
+      const oscillator = audioCtx.createOscillator();
+      const gainNode = audioCtx.createGain();
+      
+      oscillator.connect(gainNode);
+      gainNode.connect(audioCtx.destination);
+      
+      oscillator.type = 'sine';
+      oscillator.frequency.setValueAtTime(520, audioCtx.currentTime); // A clean 520Hz notification tone
+      
+      // Cap max volume at 0.12 gain to prevent deafening the user
+      const gainVal = (volumePercent / 100) * 0.12;
+      gainNode.gain.setValueAtTime(gainVal, audioCtx.currentTime);
+      gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.12);
+      
+      oscillator.start();
+      oscillator.stop(audioCtx.currentTime + 0.12);
+    } catch (e) {
+      console.warn("AudioContext failed to play: ", e);
+    }
+  };
+
+  const handleVolumeChange = (newVal) => {
+    setVolume(newVal);
+    const now = Date.now();
+    if (now - lastSoundTimeRef.current > 150) {
+      playVolumeSound(newVal);
+      lastSoundTimeRef.current = now;
+    }
+  };
 
   // Apply screen brightness dynamically using global filter
   useEffect(() => {
@@ -384,7 +421,9 @@ export default function SystemControl() {
                     min="0" 
                     max="100" 
                     value={volume}
-                    onChange={(e) => setVolume(parseInt(e.target.value))}
+                    onChange={(e) => handleVolumeChange(parseInt(e.target.value))}
+                    onMouseUp={() => playVolumeSound(volume)}
+                    onTouchEnd={() => playVolumeSound(volume)}
                   />
                 </SliderRow>
               </SliderContainer>
