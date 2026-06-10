@@ -612,26 +612,30 @@ function WavyProgressBar({ isPlaying, playerRef, isReady, currentIdx, themePrima
 
 /* ─── Data ────────────────────────────────────────────────────────── */
 
-const STATIONS = [
-  { name: 'I Really Want to Stay at Your House', id: 'Rbgw_rduQpM', genre: 'Rosa Walton'  },
-  { name: 'Distant Echoes',                      id: '87Nk5cVwD9A', genre: 'VXLLAIN'       },
-  { name: 'Fainted',                             id: 'hLuhfSP8Odc', genre: 'Narvent'       },
-];
-
 /* ─── Component ───────────────────────────────────────────────────── */
 
 export default function NavMusicPlayer() {
   const [isOpen, setIsOpen]         = useState(false);
-  const [currentIdx, setCurrentIdx] = useState(0);
-  const [isPlaying, setIsPlaying]   = useState(false);
-  const [isReady, setIsReady]       = useState(false);
   const [customUrl, setCustomUrl]   = useState('');
   const [imgError, setImgError]     = useState(false);
-  const [currentVideoData, setCurrentVideoData] = useState({ title: '', author: '' });
   const [visHeights, setVisHeights] = useState(Array(12).fill(4));
 
-  // Shared volume state from context
-  const { volume, setVolume, playerRef } = usePlayer();
+  // Shared player states from context
+  const { 
+    volume, 
+    setVolume, 
+    playerRef, 
+    stations, 
+    setStations,
+    currentIdx, 
+    setCurrentIdx, 
+    isPlaying, 
+    setIsPlaying, 
+    isReady, 
+    setIsReady, 
+    currentVideoData, 
+    setCurrentVideoData 
+  } = usePlayer();
 
   const panelRef  = useRef(null);
   const btnRef    = useRef(null);
@@ -642,7 +646,7 @@ export default function NavMusicPlayer() {
   useEffect(() => {
     setImgError(false);
     setCurrentVideoData({ title: '', author: '' });
-  }, [currentIdx]);
+  }, [currentIdx, setCurrentVideoData]);
 
   /* Chime */
   const playChime = (isPlay) => {
@@ -688,7 +692,7 @@ export default function NavMusicPlayer() {
       try {
         playerRef.current = new window.YT.Player('yt-nav-player', {
           height: '0', width: '0',
-          videoId: STATIONS[0].id,
+          videoId: stations[0]?.id || '',
           playerVars: { autoplay: 0, controls: 0, disablekb: 1, fs: 0, rel: 0, playsinline: 1 },
           events: {
             onReady: (e) => {
@@ -756,13 +760,13 @@ export default function NavMusicPlayer() {
     setCurrentVideoData({ title: '', author: '' });
     if (playerRef.current && isReady) {
       playChime(true);
-      playerRef.current.loadVideoById(STATIONS[idx].id);
+      playerRef.current.loadVideoById(stations[idx]?.id || '');
       setIsPlaying(true);
     }
   };
 
-  const handleNext = () => selectStation((currentIdx + 1) % STATIONS.length);
-  const handlePrev = () => selectStation((currentIdx - 1 + STATIONS.length) % STATIONS.length);
+  const handleNext = () => selectStation((currentIdx + 1) % stations.length);
+  const handlePrev = () => selectStation((currentIdx - 1 + stations.length) % stations.length);
 
   const loadCustom = () => {
     if (!customUrl.trim() || !playerRef.current || !isReady) return;
@@ -776,12 +780,14 @@ export default function NavMusicPlayer() {
       setCurrentVideoData({ title: '', author: '' });
       playerRef.current.loadVideoById(id);
       setIsPlaying(true);
-      STATIONS[currentIdx] = { name: 'CUSTOM STREAM', id, genre: 'User Link' };
+      const updatedStations = [...stations];
+      updatedStations[currentIdx] = { name: 'CUSTOM STREAM', id, genre: 'User Link' };
+      setStations(updatedStations);
       setCustomUrl('');
     }
   };
 
-  const displayName = (currentVideoData.title || STATIONS[currentIdx].name)
+  const displayName = (currentVideoData.title || stations[currentIdx]?.name || 'Unknown Track')
     .replace('.SH', '').replace('.WAV', '').replace(/_/g, ' ');
 
   return (
@@ -836,10 +842,10 @@ export default function NavMusicPlayer() {
 
             {/* Cover Art */}
             <CoverArtContainer>
-              {!imgError && STATIONS[currentIdx]?.id ? (
+              {!imgError && stations[currentIdx]?.id ? (
                 <CoverArtImage
-                  src={`https://img.youtube.com/vi/${STATIONS[currentIdx].id}/hqdefault.jpg`}
-                  alt={STATIONS[currentIdx].name}
+                  src={`https://img.youtube.com/vi/${stations[currentIdx].id}/hqdefault.jpg`}
+                  alt={stations[currentIdx].name}
                   onError={() => setImgError(true)}
                   animate={isPlaying ? { scale: [1, 1.02, 1] } : { scale: 1 }}
                   transition={isPlaying ? { repeat: Infinity, duration: 6, ease: 'easeInOut' } : { duration: 0.2 }}
@@ -858,7 +864,7 @@ export default function NavMusicPlayer() {
                 </div>
               )}
               <CoverOverlay>
-                <TrackGenre>{currentVideoData.author || STATIONS[currentIdx].genre}</TrackGenre>
+                <TrackGenre>{currentVideoData.author || stations[currentIdx]?.genre || ''}</TrackGenre>
                 <TrackTitle>{displayName}</TrackTitle>
               </CoverOverlay>
             </CoverArtContainer>
@@ -911,7 +917,7 @@ export default function NavMusicPlayer() {
 
             {/* Station List */}
             <StationList>
-              {STATIONS.map((s, idx) => (
+              {stations.map((s, idx) => (
                 <StationItem key={s.id} $active={idx === currentIdx} onClick={() => selectStation(idx)}>
                   <span>{s.name}</span>
                   <span style={{ fontSize: '0.58rem', opacity: 0.55 }}>{s.genre}</span>
