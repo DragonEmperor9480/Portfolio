@@ -1,7 +1,11 @@
 import { useState, useEffect, useRef } from 'react';
 import styled from 'styled-components';
 import { motion, AnimatePresence } from 'framer-motion';
+import { usePlayer } from '../context/PlayerContext';
+import { useTheme } from '../context/ThemeContext';
+import HackingHUD from './HackingHUD';
 
+/* ─── Tray Button ─────────────────────────────────────────────────── */
 const ControlContainer = styled.div`
   position: relative;
   display: flex;
@@ -9,272 +13,315 @@ const ControlContainer = styled.div`
 `;
 
 const StatusTrayButton = styled(motion.button)`
-  background: ${({ theme }) => `${theme.colors.primary}08`};
-  border: 1px solid ${({ theme }) => `${theme.colors.border}40`};
+  background: ${({ theme }) => `${theme?.colors?.primary || '#64ffda'}08`};
+  border: 1px solid ${({ theme }) => `${theme?.colors?.border || 'rgba(100,255,218,0.1)'}80`};
   border-radius: 12px;
   padding: 6px 12px;
   margin-left: 10px;
   cursor: pointer;
   display: flex;
   align-items: center;
-  gap: 10px;
-  transition: all 0.2s ease;
+  gap: 8px;
+  transition: all 0.25s ease;
   outline: none;
 
   &:hover {
-    background: ${({ theme }) => `${theme.colors.primary}15`};
-    border-color: ${({ theme }) => theme.colors.primary}80;
-    box-shadow: 0 4px 12px ${({ theme }) => `${theme.colors.primary}15`};
+    background: ${({ theme }) => `${theme?.colors?.primary || '#64ffda'}15`};
+    border-color: ${({ theme }) => `${theme?.colors?.primary || '#64ffda'}60`};
+    box-shadow: 0 0 14px ${({ theme }) => `${theme?.colors?.primary || '#64ffda'}18`};
   }
 
-  @media (max-width: 480px) {
-    display: none;
-  }
+  @media (max-width: 480px) { display: none; }
 `;
 
 const TrayIcon = styled.span`
-  color: ${props => props.$active ? props.$color : ({ theme }) => theme.colors.textSecondary};
-  opacity: ${props => props.$active ? 1 : 0.4};
+  color: ${props => props.$active ? props.$color : ({ theme }) => theme?.colors?.textSecondary || '#B3B3B3'};
+  opacity: ${props => props.$active ? 1 : 0.6};
   font-size: 0.85rem;
   display: flex;
   align-items: center;
-  justify-content: center;
   transition: all 0.2s ease;
+
+  i {
+    filter: ${props => props.$active ? `drop-shadow(0 0 4px ${props.$color})` : 'none'};
+  }
 `;
 
+/* ─── Dropdown Panel ──────────────────────────────────────────────── */
 const DropdownPanel = styled(motion.div)`
   position: absolute;
-  top: calc(100% + 10px);
+  top: calc(100% + 12px);
   left: 10px;
-  background: ${({ theme }) => theme.colors.background}f2;
-  backdrop-filter: blur(24px) saturate(180%);
-  -webkit-backdrop-filter: blur(24px) saturate(180%);
-  border: 1px solid ${({ theme }) => theme.colors.primary}50;
+  background: ${({ theme }) => `${theme?.colors?.background || '#0a192f'}f2`};
+  backdrop-filter: blur(32px) saturate(200%);
+  -webkit-backdrop-filter: blur(32px) saturate(200%);
+  border: 1px solid ${({ theme }) => `${theme?.colors?.border || 'rgba(100,255,218,0.15)'}`};
   border-radius: 16px;
   padding: 16px;
   display: flex;
   flex-direction: column;
   gap: 14px;
-  min-width: 290px;
-  box-shadow: 
-    0 10px 30px -10px rgba(0, 0, 0, 0.8),
-    0 0 2px 1px ${({ theme }) => theme.colors.primary}30 inset;
+  width: 280px;
+  box-shadow:
+    0 20px 48px -12px rgba(0, 0, 0, 0.8),
+    0 0 0 1px rgba(255, 255, 255, 0.04) inset;
   z-index: 101;
-  font-family: 'IBM Plex Mono', 'Fira Code', 'Space Mono', monospace;
-
+  font-family: 'Space Grotesk', sans-serif;
   will-change: transform, opacity;
-  transform: translateZ(0);
 
   @media (max-width: 768px) {
     position: fixed;
-    top: 90px;
-    left: 20px;
-    right: 20px;
+    top: 80px;
+    left: 14px;
+    right: 14px;
     transform: none !important;
     width: auto;
-    max-width: none;
-    min-width: unset;
-    background: ${({ theme }) => theme.colors.background};
-    border: 1px solid ${({ theme }) => theme.colors.primary};
-    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
   }
 `;
 
 const PanelHeader = styled.div`
-  font-size: 0.75rem;
-  font-weight: 700;
-  color: ${({ theme }) => theme.colors.primary};
-  border-bottom: 1px solid ${({ theme }) => `${theme.colors.primary}30`};
-  padding-bottom: 8px;
-  margin-bottom: 4px;
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  letter-spacing: 1px;
+  justify-content: space-between;
+  padding-bottom: 8px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
 `;
 
-const PanelSection = styled.div`
+const PanelTitle = styled.span`
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: ${({ theme }) => theme?.colors?.text || '#E6E6E6'};
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  opacity: 0.85;
+`;
+
+const StatusDot = styled.span`
+  font-size: 0.65rem;
+  font-weight: 600;
+  color: ${props => props.$online ? '#4ade80' : '#f87171'};
+  display: flex;
+  align-items: center;
+  gap: 5px;
+
+  &::before {
+    content: '';
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background-color: currentColor;
+    box-shadow: 0 0 6px currentColor;
+  }
+`;
+
+const SectionCard = styled.div`
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  border-radius: 12px;
+  padding: 12px;
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  padding-bottom: 6px;
-  border-bottom: 1px solid ${({ theme }) => `${theme.colors.primary}15`};
-`;
-
-const SectionTitle = styled.div`
-  font-size: 0.7rem;
-  color: ${({ theme }) => theme.colors.textSecondary};
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+  gap: 10px;
 `;
 
 const DeviceRow = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  font-size: 0.8rem;
+  font-size: 0.78rem;
 `;
 
-const DeviceLabel = styled.span`
-  color: ${({ theme }) => theme.colors.text};
+const DeviceName = styled.div`
   display: flex;
   align-items: center;
   gap: 8px;
-  
+  color: ${({ theme }) => theme?.colors?.text || '#E6E6E6'};
+  font-weight: 500;
+
   i {
-    width: 14px;
-    text-align: center;
-    color: ${({ theme }) => theme.colors.primary};
+    color: ${props => props.$iconColor};
+    font-size: 0.8rem;
   }
 `;
 
-const DeviceInfo = styled.span`
-  color: ${({ theme }) => theme.colors.textSecondary};
-  font-size: 0.75rem;
+const StatusBadge = styled.span`
+  font-size: 0.6rem;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 6px;
+  background: ${props => props.$type === 'online' ? 'rgba(74, 222, 128, 0.1)' : 'rgba(255, 255, 255, 0.05)'};
+  color: ${props => props.$type === 'online' ? '#4ade80' : '#888'};
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 `;
 
-const ToggleSwitch = styled.div`
-  position: relative;
-  width: 36px;
-  height: 18px;
-  background: ${props => props.$active ? props.theme.colors.primary : 'rgba(255,255,255,0.1)'};
-  border-radius: 9px;
-  cursor: pointer;
-  transition: background 0.2s ease;
-  
-  .thumb {
-    position: absolute;
-    top: 2px;
-    left: ${props => props.$active ? '20px' : '2px'};
-    width: 14px;
-    height: 14px;
-    background: ${props => props.$active ? props.theme.colors.background : props.theme.colors.text};
-    border-radius: 50%;
-    transition: left 0.2s ease, background 0.2s ease;
-  }
-`;
-
-const SliderContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
+const ScannerItem = styled.button`
   width: 100%;
-`;
-
-const SliderHeader = styled.div`
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  padding: 8px 10px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  font-size: 0.7rem;
-  color: ${({ theme }) => theme.colors.textSecondary};
-`;
+  cursor: ${props => props.disabled ? 'not-allowed' : 'pointer'};
+  opacity: ${props => props.disabled ? 0.4 : 1};
+  transition: all 0.2s ease;
+  font-family: inherit;
 
-const SliderRow = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  width: 100%;
-  
-  i {
-    width: 16px;
-    text-align: center;
-    color: ${({ theme }) => theme.colors.primary};
-    font-size: 0.85rem;
+  &:hover:not(:disabled) {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.1);
   }
 `;
 
-const CustomRangeInput = styled.input`
-  flex: 1;
+/* ─── Minimal Slider Styling ───────────────────────────────────────── */
+const SliderWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+`;
+
+const SliderMeta = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.72rem;
+  color: ${({ theme }) => theme?.colors?.textSecondary || '#B3B3B3'};
+  
+  .label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+  }
+
+  .value {
+    font-family: monospace;
+    font-weight: 700;
+  }
+`;
+
+const ModernSlider = styled.input`
   -webkit-appearance: none;
   width: 100%;
-  height: 6px;
-  border-radius: 3px;
-  background: ${({ theme }) => theme.colors.text}15;
+  height: 3px;
+  border-radius: 2px;
+  background: rgba(255, 255, 255, 0.1);
   outline: none;
+  margin: 4px 0;
+  position: relative;
   cursor: pointer;
-  border: 1px solid ${({ theme }) => theme.colors.text}10;
-  
-  &::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    appearance: none;
-    width: 14px;
-    height: 14px;
-    border-radius: 50%;
-    background: ${({ theme }) => theme.colors.primary};
+
+  &::-webkit-slider-runnable-track {
+    width: 100%;
+    height: 3px;
     cursor: pointer;
-    box-shadow: 0 0 6px ${({ theme }) => `${theme.colors.primary}60`};
+    background: linear-gradient(
+      to right, 
+      ${({ theme }) => theme?.colors?.primary || '#64ffda'} 0%, 
+      ${({ theme }) => theme?.colors?.primary || '#64ffda'} ${props => props.$pct}%, 
+      rgba(255, 255, 255, 0.1) ${props => props.$pct}%, 
+      rgba(255, 255, 255, 0.1) 100%
+    );
+    border-radius: 2px;
+  }
+
+  &::-webkit-slider-thumb {
+    height: 12px;
+    width: 12px;
+    border-radius: 50%;
+    background: #ffffff;
+    cursor: pointer;
+    -webkit-appearance: none;
+    margin-top: -4.5px;
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.5);
     transition: transform 0.1s ease;
-    
-    &:hover {
-      transform: scale(1.25);
-    }
+  }
+
+  &:hover::-webkit-slider-thumb {
+    transform: scale(1.2);
+  }
+
+  &::-moz-range-track {
+    width: 100%;
+    height: 3px;
+    cursor: pointer;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 2px;
+  }
+
+  &::-moz-range-progress {
+    background: ${({ theme }) => theme?.colors?.primary || '#64ffda'};
+    height: 3px;
+    border-radius: 2px;
+  }
+
+  &::-moz-range-thumb {
+    height: 12px;
+    width: 12px;
+    border-radius: 50%;
+    background: #ffffff;
+    cursor: pointer;
+    border: none;
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.5);
+    transition: transform 0.1s ease;
+  }
+
+  &:hover::-moz-range-thumb {
+    transform: scale(1.2);
   }
 `;
 
 export default function SystemControl() {
   const [isOpen, setIsOpen] = useState(false);
   const [isOnline, setIsOnline] = useState(navigator.onLine);
-  const [isBluetoothOn, setIsBluetoothOn] = useState(true);
-  
-  // Simulated hardware controls
-  const [volume, setVolume] = useState(70);
+  const [isHackingActive, setIsHackingActive] = useState(false);
   const [brightness, setBrightness] = useState(100);
+  const { volume, setVolume } = usePlayer();
+  const { setCurrentTheme } = useTheme();
 
   const containerRef = useRef(null);
   const buttonRef = useRef(null);
   const lastSoundTimeRef = useRef(0);
 
-  const playVolumeSound = (volumePercent) => {
+  /* ── Audio helpers ── */
+  const playTone = (freq, duration = 0.12, type = 'sine', gainMult = 0.12) => {
     try {
-      const AudioContextClass = window.AudioContext || window.webkitAudioContext;
-      if (!AudioContextClass) return;
-      
-      const audioCtx = new AudioContextClass();
-      const oscillator = audioCtx.createOscillator();
-      const gainNode = audioCtx.createGain();
-      
-      oscillator.connect(gainNode);
-      gainNode.connect(audioCtx.destination);
-      
-      oscillator.type = 'sine';
-      oscillator.frequency.setValueAtTime(520, audioCtx.currentTime); // A clean 520Hz notification tone
-      
-      // Cap max volume at 0.12 gain to prevent deafening the user
-      const gainVal = (volumePercent / 100) * 0.12;
-      gainNode.gain.setValueAtTime(gainVal, audioCtx.currentTime);
-      gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.12);
-      
-      oscillator.start();
-      oscillator.stop(audioCtx.currentTime + 0.12);
-    } catch (e) {
-      console.warn("AudioContext failed to play: ", e);
-    }
+      const Ctx = window.AudioContext || window.webkitAudioContext;
+      if (!Ctx) return;
+      const ctx = new Ctx();
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.type = type;
+      osc.frequency.setValueAtTime(freq, ctx.currentTime);
+      gain.gain.setValueAtTime((volume / 100) * gainMult, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + duration);
+      osc.start();
+      osc.stop(ctx.currentTime + duration);
+    } catch { /* silent */ }
   };
 
-  const handleVolumeChange = (newVal) => {
-    setVolume(newVal);
+  const handleVolumeChange = (val) => {
+    setVolume(val);
     const now = Date.now();
     if (now - lastSoundTimeRef.current > 150) {
-      playVolumeSound(newVal);
+      playTone(520, 0.10, 'sine', 0.12);
       lastSoundTimeRef.current = now;
     }
   };
 
-  // Apply screen brightness dynamically using global filter
-  useEffect(() => {
-    // Apply brightness filter. We cap the minimum brightness at 40% so the user doesn't get a completely black screen.
-    const actualBrightness = Math.max(40, brightness);
-    document.body.style.filter = `brightness(${actualBrightness}%)`;
-    
-    return () => {
-      document.body.style.filter = 'none';
-    };
-  }, [brightness]);
+  const startHacking = () => {
+    setIsOpen(false);
+    playTone(180, 0.25, 'sawtooth', 0.08);
+  };
 
-  // Online / Offline listener
+  // Sync online status
   useEffect(() => {
     const handleOnline = () => setIsOnline(true);
     const handleOffline = () => setIsOnline(false);
@@ -287,6 +334,15 @@ export default function SystemControl() {
       window.removeEventListener('offline', handleOffline);
     };
   }, []);
+
+  // Sync brightness styling effect
+  useEffect(() => {
+    const actualBrt = Math.max(40, brightness);
+    document.documentElement.style.setProperty('--system-brightness', `${actualBrt}%`);
+    return () => {
+      document.documentElement.style.removeProperty('--system-brightness');
+    };
+  }, [brightness]);
 
   // Handle clicking outside to close
   useEffect(() => {
@@ -309,37 +365,14 @@ export default function SystemControl() {
     };
   }, [isOpen]);
 
-  // Determine volume icon based on percentage
-  const getVolumeIcon = () => {
-    if (volume === 0) return 'volume-mute';
-    if (volume < 35) return 'volume-off';
-    if (volume < 70) return 'volume-down';
-    return 'volume-up';
-  };
+  const brtPct = Math.round(((brightness - 40) / 60) * 100);
 
   return (
     <ControlContainer>
-      <motion.div
-        whileHover={{ scale: 1.02 }}
-        whileTap={{ scale: 0.98 }}
-        ref={buttonRef}
-      >
-        <StatusTrayButton
-          onClick={() => setIsOpen(!isOpen)}
-          aria-label="Quick System Controls"
-        >
-          <TrayIcon 
-            $active={isOnline} 
-            $color={isOnline ? '#00ff41' : '#ff4141'}
-          >
+      <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} ref={buttonRef}>
+        <StatusTrayButton onClick={() => setIsOpen(o => !o)} aria-label="Wireless Status and Controls">
+          <TrayIcon $active={isOnline} $color="#4ade80">
             <i className={`fas fa-${isOnline ? 'wifi' : 'wifi-slash'}`} />
-          </TrayIcon>
-
-          <TrayIcon 
-            $active={isBluetoothOn} 
-            $color={isBluetoothOn ? '#00c6ff' : 'currentColor'}
-          >
-            <i className="fab fa-bluetooth-b" />
           </TrayIcon>
         </StatusTrayButton>
       </motion.div>
@@ -348,108 +381,110 @@ export default function SystemControl() {
         {isOpen && (
           <DropdownPanel
             ref={containerRef}
-            initial={{ opacity: 0, y: -10, scale: 0.95 }}
+            initial={{ opacity: 0, y: -12, scale: 0.96 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: -10, scale: 0.95 }}
+            exit={{ opacity: 0, y: -12, scale: 0.96 }}
             transition={{ duration: 0.2, ease: 'easeOut' }}
           >
+            {/* Header */}
             <PanelHeader>
-              <span>SYS_CONTROLS.SH</span>
-              <span style={{ fontSize: '0.65rem', opacity: 0.7 }}>OS: PortfolioLinux</span>
+              <PanelTitle>System Info</PanelTitle>
+              <StatusDot $online={isOnline}>{isOnline ? 'Online' : 'Offline'}</StatusDot>
             </PanelHeader>
 
-            {/* Network Section */}
-            <PanelSection>
-              <SectionTitle>
-                <span>WiFi Network</span>
-                <span style={{ color: isOnline ? '#00ff41' : '#ff4141', fontSize: '0.65rem' }}>
-                  {isOnline ? 'ONLINE' : 'OFFLINE'}
-                </span>
-              </SectionTitle>
-              
+            {/* Connection Info */}
+            <SectionCard>
               <DeviceRow>
-                <DeviceLabel>
-                  <i className={`fas fa-${isOnline ? 'wifi' : 'wifi-slash'}`} />
-                  {isOnline ? 'Amrut_WiFi_5G' : 'Disconnected'}
-                </DeviceLabel>
-                <DeviceInfo>{isOnline ? '192.168.1.42' : 'N/A'}</DeviceInfo>
-              </DeviceRow>
-            </PanelSection>
-
-            {/* Bluetooth Section */}
-            <PanelSection>
-              <SectionTitle>
-                <span>Bluetooth</span>
-                <ToggleSwitch 
-                  $active={isBluetoothOn} 
-                  onClick={() => setIsBluetoothOn(!isBluetoothOn)}
-                >
-                  <div className="thumb" />
-                </ToggleSwitch>
-              </SectionTitle>
-
-              <DeviceRow style={{ opacity: isBluetoothOn ? 1 : 0.4 }}>
-                <DeviceLabel>
-                  <i className="fab fa-bluetooth-b" style={{ color: isBluetoothOn ? '#00c6ff' : 'inherit' }} />
-                  Sony WH-1000XM4
-                </DeviceLabel>
-                <DeviceInfo>{isBluetoothOn ? 'Connected' : 'Disabled'}</DeviceInfo>
+                <DeviceName $iconColor="#4ade80">
+                  <i className="fas fa-wifi" />
+                  <span>Amrut_WiFi_5G</span>
+                </DeviceName>
+                <StatusBadge $type="online">Connected</StatusBadge>
               </DeviceRow>
 
-              {isBluetoothOn && (
-                <DeviceRow>
-                  <DeviceLabel>
-                    <i className="fas fa-keyboard" style={{ color: '#00c6ff' }} />
-                    Keychron K2
-                  </DeviceLabel>
-                  <DeviceInfo>Connected</DeviceInfo>
-                </DeviceRow>
-              )}
-            </PanelSection>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', marginTop: '6px' }}>
+                <span style={{ fontSize: '0.55rem', opacity: 0.4, textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '4px' }}>
+                  Available Networks
+                </span>
+                
+                <ScannerItem onClick={startHacking}>
+                  <span style={{ fontSize: '0.68rem', color: '#00ff41', textShadow: '0 0 3px #00ff4140', fontFamily: 'monospace', fontWeight: 'bold' }}>
+                    <i className="fas fa-terminal" style={{ marginRight: '6px' }} />
+                    Matrix_Terminal
+                  </span>
+                  <i className="fas fa-lock" style={{ fontSize: '0.58rem', color: '#00ff41' }} />
+                </ScannerItem>
 
-            {/* Audio Volume Slider */}
-            <PanelSection>
-              <SliderContainer>
-                <SliderHeader>
-                  <span>Volume</span>
-                  <span>{volume}%</span>
-                </SliderHeader>
-                <SliderRow>
-                  <i className={`fas fa-${getVolumeIcon()}`} />
-                  <CustomRangeInput 
-                    type="range" 
-                    min="0" 
-                    max="100" 
+                <ScannerItem disabled>
+                  <span style={{ fontSize: '0.68rem', fontFamily: 'monospace' }}>
+                    <i className="fas fa-shield-halved" style={{ marginRight: '6px' }} />
+                    NSA_Surveillance_04
+                  </span>
+                  <i className="fas fa-lock" style={{ fontSize: '0.58rem' }} />
+                </ScannerItem>
+
+                <ScannerItem disabled>
+                  <span style={{ fontSize: '0.68rem', fontFamily: 'monospace' }}>
+                    <i className="fas fa-lock" style={{ marginRight: '6px' }} />
+                    Neighbor_WiFi_Ext
+                  </span>
+                  <i className="fas fa-lock" style={{ fontSize: '0.58rem' }} />
+                </ScannerItem>
+              </div>
+            </SectionCard>
+
+            {/* Minimal Sliders */}
+            <SectionCard>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                {/* Volume Slider */}
+                <SliderWrapper>
+                  <SliderMeta>
+                    <span className="label">
+                      <i className="fas fa-volume-high" /> Volume
+                    </span>
+                    <span className="value">{volume}%</span>
+                  </SliderMeta>
+                  <ModernSlider
+                    type="range"
+                    min="0" max="100"
                     value={volume}
-                    onChange={(e) => handleVolumeChange(parseInt(e.target.value))}
-                    onMouseUp={() => playVolumeSound(volume)}
-                    onTouchEnd={() => playVolumeSound(volume)}
+                    $pct={volume}
+                    onChange={(e) => handleVolumeChange(+e.target.value)}
                   />
-                </SliderRow>
-              </SliderContainer>
-            </PanelSection>
+                </SliderWrapper>
 
-            {/* Brightness Slider */}
-            <PanelSection style={{ borderBottom: 'none', paddingBottom: 0 }}>
-              <SliderContainer>
-                <SliderHeader>
-                  <span>Brightness</span>
-                  <span>{brightness}%</span>
-                </SliderHeader>
-                <SliderRow>
-                  <i className="fas fa-sun" />
-                  <CustomRangeInput 
-                    type="range" 
-                    min="40" 
-                    max="100" 
+                {/* Brightness Slider */}
+                <SliderWrapper>
+                  <SliderMeta>
+                    <span className="label">
+                      <i className="fas fa-sun" /> Brightness
+                    </span>
+                    <span className="value">{brightness}%</span>
+                  </SliderMeta>
+                  <ModernSlider
+                    type="range"
+                    min="40" max="100"
                     value={brightness}
-                    onChange={(e) => setBrightness(parseInt(e.target.value))}
+                    $pct={brtPct}
+                    onChange={(e) => setBrightness(+e.target.value)}
                   />
-                </SliderRow>
-              </SliderContainer>
-            </PanelSection>
-
+                </SliderWrapper>
+              </div>
+            </SectionCard>
           </DropdownPanel>
+        )}
+      </AnimatePresence>
+
+      {/* Fullscreen Hacking Scan HUD */}
+      <AnimatePresence>
+        {isHackingActive && (
+          <HackingHUD
+            onClose={() => setIsHackingActive(false)}
+            onOverrideSuccess={() => {
+              setCurrentTheme('matrix');
+              setIsHackingActive(false);
+            }}
+          />
         )}
       </AnimatePresence>
     </ControlContainer>

@@ -7,6 +7,7 @@ import SystemClock from './SystemClock';
 import SystemControl from './SystemControl';
 import useWindowDimensions from '../hooks/useWindowDimensions';
 import FullscreenModal from './FullscreenModal';
+import NavMusicPlayer from './NavMusicPlayer';
 
 const NavContainer = styled.div`
   position: fixed;
@@ -29,7 +30,7 @@ const Nav = styled(motion.nav)`
   display: flex;
   flex-direction: column;
   width: 100%;
-  max-width: 1100px;
+  max-width: 100%;
   background: ${({ theme }) => theme.colors.background}e6;
   backdrop-filter: blur(24px) saturate(180%);
   -webkit-backdrop-filter: blur(24px) saturate(180%);
@@ -38,7 +39,7 @@ const Nav = styled(motion.nav)`
   box-shadow: 
     0 10px 30px -10px rgba(0, 0, 0, 0.8),
     0 0 2px 1px ${({ theme }) => theme.colors.primary}30 inset;
-  padding: 0 16px;
+  padding: 0 20px;
   box-sizing: border-box;
   transition: border-color 0.3s ease;
 
@@ -61,7 +62,7 @@ const NavRow = styled.div`
 `;
 
 const LogoLink = styled.a`
-  font-family: 'Space Grotesk', sans-serif;
+  font-family: 'Syne', sans-serif;
   font-weight: 800;
   font-size: 1.25rem;
   color: ${({ theme }) => theme.colors.text};
@@ -101,8 +102,8 @@ const CenterLinks = styled.div`
 `;
 
 const NavLink = styled(motion.a)`
-  font-family: 'Space Grotesk', sans-serif;
-  font-weight: 500;
+  font-family: 'Oxanium', sans-serif;
+  font-weight: 600;
   color: ${({ theme, $active }) => $active ? theme.colors.text : theme.colors.textSecondary};
   text-decoration: none;
   font-size: 0.9rem;
@@ -155,7 +156,7 @@ const ActionButton = styled(motion.button)`
   border: 1px solid ${({ theme, $primary }) => $primary ? 'transparent' : `${theme.colors.border}80`};
   padding: 6px 16px;
   border-radius: 12px;
-  font-family: 'Space Grotesk', sans-serif;
+  font-family: 'Oxanium', sans-serif;
   font-size: 0.85rem;
   font-weight: 600;
   cursor: pointer;
@@ -226,7 +227,8 @@ const navItems = [
   { id: 'about', name: 'About' },
   { id: 'achievements', name: 'Achievements' },
   { id: 'certifications', name: 'Certifications' },
-  { id: 'lab', name: 'Lab' }
+  // TODO: Implement and enable the Lab tab/modal later
+  // { id: 'lab', name: 'Lab' }
 ];
 
 export default function Navbar() {
@@ -320,7 +322,7 @@ export default function Navbar() {
         >
           <NavRow>
             <div style={{ display: 'flex', alignItems: 'center', zIndex: 2 }}>
-              <LogoLink href="#home">
+              <LogoLink href="#home" onClick={(e) => handleNavClick(e, 'home')}>
                 <span className="dot" />
                 AN
               </LogoLink>
@@ -375,8 +377,12 @@ export default function Navbar() {
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  Resume
+                  <i className="fas fa-file-pdf" style={{ fontSize: '0.85rem' }} /> Resume
                 </ActionButton>
+              </div>
+
+              <div className="desktop-only">
+                <NavMusicPlayer />
               </div>
               
               <SystemClock />
@@ -424,7 +430,7 @@ export default function Navbar() {
                     target="_blank"
                     rel="noopener noreferrer"
                   >
-                    Resume
+                    <i className="fas fa-file-pdf" style={{ fontSize: '0.85rem' }} /> Resume
                   </ActionButton>
                 </MobileContainer>
               </MobileDropdown>

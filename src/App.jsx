@@ -1,9 +1,10 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { ReactLenis } from 'lenis/react';
 import { AnimatePresence } from 'framer-motion';
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import { ThemeProvider as StyledThemeProvider } from 'styled-components';
 import { ThemeProvider } from './context/ThemeContext';
+import { PlayerProvider } from './context/PlayerContext';
 import { themes } from './themes/themes';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
@@ -52,6 +53,7 @@ function ThemedApp() {
     <StyledThemeProvider theme={themes[currentTheme]}>
       <Router>
         <GlobalStyles />
+        <div className="system-screen-overlay" />
         <AnimatePresence>
           {isLoading ? (
             <SkeletonLoader onComplete={() => setIsLoading(false)} />
@@ -67,9 +69,11 @@ function ThemedApp() {
 function App() {
   return (
     <ThemeProvider>
-      <ReactLenis root options={{ lerp: 0.08, smoothWheel: true }}>
-        <ThemedApp />
-      </ReactLenis>
+      <PlayerProvider>
+        <ReactLenis root options={{ lerp: 0.08, smoothWheel: true }}>
+          <ThemedApp />
+        </ReactLenis>
+      </PlayerProvider>
     </ThemeProvider>
   );
 }

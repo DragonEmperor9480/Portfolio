@@ -35,7 +35,7 @@ export default function AmrutLab() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6 }}
             >
-                <h1>Amrut's Lab</h1>
+                <h1>Amrut&apos;s Lab</h1>
                 <p>Coming soon...</p>
             </Placeholder>
         </LabContainer>

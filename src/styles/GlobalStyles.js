@@ -107,6 +107,22 @@ const GlobalStyles = createGlobalStyle`
       padding: 40px 10px;
     }
   }
+
+  .system-screen-overlay {
+    position: fixed;
+    inset: 0;
+    width: 100vw;
+    height: 100vh;
+    pointer-events: none;
+    z-index: 999999;
+    -webkit-backdrop-filter: brightness(var(--system-brightness, 100%)) 
+                             sepia(var(--system-sepia, 0%)) 
+                             hue-rotate(var(--system-hue-rotate, 0deg));
+    backdrop-filter: brightness(var(--system-brightness, 100%)) 
+                     sepia(var(--system-sepia, 0%)) 
+                     hue-rotate(var(--system-hue-rotate, 0deg));
+    transition: backdrop-filter 0.15s ease, -webkit-backdrop-filter 0.15s ease;
+  }
 `;
 
 export default GlobalStyles;

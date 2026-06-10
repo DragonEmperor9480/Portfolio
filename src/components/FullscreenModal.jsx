@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import styled from 'styled-components';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
@@ -146,7 +147,7 @@ export default function FullscreenModal({ isOpen, onClose }) {
                         <ModalIcon>⛶</ModalIcon>
                         <ModalTitle>Best in Fullscreen</ModalTitle>
                         <ModalText>
-                            Amrut's Lab is designed for an immersive experience. Switch to fullscreen for the best view.
+                            Amrut&apos;s Lab is designed for an immersive experience. Switch to fullscreen for the best view.
                         </ModalText>
                         <ModalPrimaryBtn
                             onClick={handleGoFullscreen}
