@@ -8,6 +8,8 @@ import SystemControl from './SystemControl';
 import useWindowDimensions from '../hooks/useWindowDimensions';
 import FullscreenModal from './FullscreenModal';
 import NavMusicPlayer from './NavMusicPlayer';
+import AppLauncher from './apps/AppLauncher';
+import { useApps } from '../context/AppsContext';
 
 const NavContainer = styled.div`
   position: fixed;
@@ -241,9 +243,11 @@ export default function Navbar() {
   const navRef = useRef(null);
   const buttonRef = useRef(null);
   const lenis = useLenis();
+  const { closeLauncher } = useApps();
 
   const handleNavClick = (e, id) => {
     e.preventDefault();
+    closeLauncher(); // close app selection overlay
     if (id === 'lab') {
       setShowLabModal(true);
       return;
@@ -385,6 +389,7 @@ export default function Navbar() {
                 <NavMusicPlayer />
               </div>
               
+              <AppLauncher />
               <SystemClock />
               <ThemeSwitcher />
               
