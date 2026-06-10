@@ -26,6 +26,7 @@ const SystemMonitorApp = lazy(() => import('./components/apps/SystemMonitorApp')
 const NotesApp = lazy(() => import('./components/apps/NotesApp'));
 const MusicApp = lazy(() => import('./components/apps/MusicApp'));
 const BrowserApp = lazy(() => import('./components/apps/BrowserApp'));
+const HackingHUD = lazy(() => import('./components/HackingHUD'));
 
 const APP_COMPONENTS = {
   terminal: TerminalApp,
@@ -33,6 +34,7 @@ const APP_COMPONENTS = {
   notes: NotesApp,
   music: MusicApp,
   browser: BrowserApp,
+  hackerhub: HackingHUD,
 };
 
 const SkeletonContainer = styled.div`
@@ -75,13 +77,28 @@ function WindowSkeletonLoader() {
 }
 
 function ActiveWindows() {
-  const { runningApps } = useApps();
+  const { runningApps, closeApp } = useApps();
+  const { setCurrentTheme } = useTheme();
 
   return (
     <AnimatePresence>
       {runningApps.map((app, index) => {
         const Component = APP_COMPONENTS[app.id];
         if (!Component) return null;
+
+        if (app.id === 'hackerhub') {
+          return (
+            <Suspense key={app.id} fallback={null}>
+              <Component 
+                onClose={() => closeApp('hackerhub')}
+                onOverrideSuccess={() => {
+                  setCurrentTheme('matrix');
+                  closeApp('hackerhub');
+                }}
+              />
+            </Suspense>
+          );
+        }
 
         return (
           <AppWindow key={app.id} app={app} zIndex={100 + index}>

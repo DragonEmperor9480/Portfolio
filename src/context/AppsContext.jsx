@@ -38,6 +38,13 @@ export const APPS = {
     icon: 'fas fa-globe',
     defaultWidth: 800,
     defaultHeight: 500,
+  },
+  hackerhub: {
+    id: 'hackerhub',
+    title: 'HackerHub',
+    icon: 'fas fa-user-secret',
+    defaultWidth: 600,
+    defaultHeight: 400,
   }
 };
 

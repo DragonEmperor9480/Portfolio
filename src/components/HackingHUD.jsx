@@ -1,8 +1,8 @@
 /* eslint-disable react/prop-types */
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import styled, { keyframes } from 'styled-components';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 
 /* ─── Keyframe Animations ─────────────────────────────────────────── */
 
@@ -528,6 +528,153 @@ const UploadOverlay = styled.div`
   }
 `;
 
+/* ─── Terminal Logger Console ────────────────────────────────────────── */
+const TerminalLogBox = styled.div`
+  position: absolute;
+  bottom: 4%;
+  left: 5%;
+  right: 5%;
+  height: 90px;
+  background: rgba(4, 5, 12, 0.75);
+  border: 1px solid rgba(255, 51, 102, 0.25);
+  border-radius: 6px;
+  padding: 8px 12px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  box-shadow: 0 4px 15px rgba(255, 51, 102, 0.08);
+  backdrop-filter: blur(8px);
+  z-index: 10;
+  box-sizing: border-box;
+
+  &::-webkit-scrollbar {
+    width: 4px;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: rgba(255, 51, 102, 0.3);
+    border-radius: 2px;
+  }
+`;
+
+const LogLine = styled.div`
+  line-height: 1.4;
+  white-space: pre-wrap;
+  font-family: 'Fira Code', 'Courier New', monospace;
+  font-size: 0.55rem;
+  letter-spacing: 0.5px;
+  text-align: left;
+  
+  color: ${props => {
+    if (props.$type === 'system') return '#00f0ff';
+    if (props.$type === 'exe') return '#eab308';
+    if (props.$type === 'success') return '#00ff41';
+    return '#ff668c'; // quotes/dialogue
+  }};
+  
+  &::before {
+    content: '> ';
+    opacity: 0.5;
+  }
+`;
+
+/* ─── Cyberpunk Alert Popup Modal ────────────────────────────────────── */
+const AlertPopup = styled(motion.div)`
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: min(90%, 540px);
+  background: rgba(8, 4, 16, 0.96);
+  border: 1px solid #ff3366;
+  border-left: 5px solid #ff3366;
+  border-radius: 8px;
+  box-shadow: 
+    0 24px 60px rgba(0, 0, 0, 0.9),
+    0 0 30px rgba(255, 51, 102, 0.45),
+    0 0 35px rgba(255, 51, 102, 0.15) inset;
+  padding: 24px 30px;
+  color: #ffffff;
+  z-index: 100000;
+  font-family: 'Fira Code', 'Courier New', monospace;
+  box-sizing: border-box;
+  overflow: hidden;
+  backdrop-filter: blur(20px);
+
+  /* Scanline matrix overlay */
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      rgba(255, 51, 102, 0) 50%, 
+      rgba(255, 51, 102, 0.12) 50%
+    );
+    background-size: 100% 4px;
+    pointer-events: none;
+    z-index: 2;
+  }
+
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid rgba(255, 51, 102, 0.3);
+    padding-bottom: 10px;
+    margin-bottom: 18px;
+    font-size: 0.68rem;
+    font-weight: 800;
+    color: #ff3366;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+
+    .icon {
+      color: #ff3366;
+      animation: alertPulse 1.2s infinite alternate;
+    }
+  }
+
+  .quote-content {
+    font-size: 0.88rem;
+    line-height: 1.6;
+    color: #00f0ff;
+    text-shadow: 0 0 8px rgba(0, 240, 255, 0.5);
+    white-space: pre-wrap;
+    text-align: center;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+  }
+
+  @keyframes alertPulse {
+    0% { opacity: 0.3; transform: scale(0.95); }
+    100% { opacity: 1; transform: scale(1.05); }
+  }
+`;
+
+const AlertButton = styled(motion.button)`
+  background: transparent;
+  border: 1px solid #ff3366;
+  border-radius: 4px;
+  color: #ff3366;
+  padding: 8px 24px;
+  font-family: inherit;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  cursor: pointer;
+  margin-top: 20px;
+  transition: all 0.2s ease;
+  box-shadow: 0 0 10px rgba(255, 51, 102, 0.15);
+
+  &:hover {
+    background: rgba(255, 51, 102, 0.12);
+    box-shadow: 0 0 20px rgba(255, 51, 102, 0.45);
+    border-color: #ff3366;
+    color: #ffffff;
+  }
+`;
+
 /* ─── Glitch Visual Screen Wrapper (Full Screen Shock) ───────────── */
 const FullScreenGlitchEffect = styled.div`
   position: fixed;
@@ -748,13 +895,60 @@ const QUICKHACKS_DATA = [
   }
 ];
 
+const GAME_QUOTES = [
+  'Nothing is True, Everything is Permitted.',
+  'Grace: Are you fine?\nLeon: Me? Feel like a million bucks.',
+  'Wake up, Samurai. We have a city to burn.',
+  'War... war never changes.',
+  'A man chooses, a slave obeys.',
+  'What is a man? A miserable little pile of secrets!',
+  'The right man in the wrong place can make all the difference in the world.',
+  'Protocol 3: I will not lose another Pilot.',
+  'Kept you waiting, huh?',
+  "It's time to kick ass and chew bubble gum... and I'm all out of gum.",
+  'Snake? Snake? SNAAAAAAAKE!',
+  'The cake is a lie.',
+  'Praise the Sun!'
+];
+
 export default function HackingHUD({ onClose, onOverrideSuccess }) {
   const [selectedIdx, setSelectedIdx] = useState(0);
-  const [ramValue] = useState(26); // 26 / 27 blocks filled
+  const [ramValue, setRamValue] = useState(26); // Current active RAM slots
   const [isUploading, setIsUploading] = useState(false);
   const [uploadPct, setUploadPct] = useState(0);
   const [activeEffect, setActiveEffect] = useState(null); // 'blackout' | 'shock' | 'malfunction' | 'bsod'
   const [sysCollapseUnlocked, setSysCollapseUnlocked] = useState(false);
+
+  // Terminal logs state
+  const [logs, setLogs] = useState([
+    { id: '1', type: 'system', text: '[SYSTEM] OPTICAL SCANNER INTERFACE ACTIVE (v1.4)...' },
+    { id: '2', type: 'system', text: '[SYSTEM] ACCESSING LOCAL CYBERDECK SUITE...' },
+    { id: '3', type: 'system', text: '[SYSTEM] RAM CAALLOCATION NOMINAL. DECK READY.' }
+  ]);
+  const logEndRef = useRef(null);
+  
+  // Alert popup states
+  const [popupQuote, setPopupQuote] = useState(null);
+
+  // Auto-scroll logs to bottom
+  useEffect(() => {
+    if (logEndRef.current) {
+      logEndRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, [logs]);
+
+  // Regenerate RAM over time (1 RAM per 1.5 seconds)
+  useEffect(() => {
+    const maxRam = sysCollapseUnlocked ? 30 : 26;
+    const interval = setInterval(() => {
+      setRamValue(prev => {
+        if (prev < maxRam) return prev + 1;
+        return prev;
+      });
+    }, 1500);
+
+    return () => clearInterval(interval);
+  }, [sysCollapseUnlocked]);
 
   const activeHack = sysCollapseUnlocked && selectedIdx === 7
     ? { ...QUICKHACKS_DATA[7], locked: false, status: 'Ready' }
@@ -826,10 +1020,22 @@ export default function HackingHUD({ onClose, onOverrideSuccess }) {
 
   // Handle upload progress bar
   const handleExecute = () => {
-    if (activeHack.locked) {
-      playTone(180, 0.25, 'sawtooth', 0.15); // buzz
+    if (activeHack.locked || isUploading || ramValue < activeHack.ram) {
+      playTone(180, 0.25, 'sawtooth', 0.15); // buzz for locked or insufficient RAM
       return;
     }
+    setRamValue(prev => Math.max(0, prev - activeHack.ram));
+
+    // Add execution log
+    setLogs(prev => [
+      ...prev,
+      {
+        id: Math.random().toString(),
+        type: 'exe',
+        text: `[EXE] DEPLOYING ${activeHack.title.toUpperCase()} (COST: ${activeHack.ram} RAM)...`
+      }
+    ]);
+
     playExecuteSound();
     setIsUploading(true);
     setUploadPct(0);
@@ -861,6 +1067,25 @@ export default function HackingHUD({ onClose, onOverrideSuccess }) {
   const triggerHackEffect = () => {
     playUploadSuccessSound();
     const hackId = activeHack.id;
+
+    // Pick a random quote and add it to the console log
+    const randomQuote = GAME_QUOTES[Math.floor(Math.random() * GAME_QUOTES.length)];
+    setLogs(prev => [
+      ...prev,
+      {
+        id: Math.random().toString(),
+        type: 'success',
+        text: `[SUCCESS] ${activeHack.title.toUpperCase()} DEPLOYED SUCCESSFULLY.`
+      },
+      ...randomQuote.split('\n').map((line, idx) => ({
+        id: `${Math.random()}-${idx}`,
+        type: 'quote',
+        text: line.startsWith('Grace:') || line.startsWith('Leon:') ? `[COMM] ${line}` : `[DECRYPTED] "${line}"`
+      }))
+    ]);
+
+    // Show cyberpunk theme quote popup toast
+    setPopupQuote(randomQuote);
 
     if (hackId === 'matrix_override') {
       onOverrideSuccess(); // switch theme to Matrix
@@ -904,6 +1129,7 @@ export default function HackingHUD({ onClose, onOverrideSuccess }) {
     if (sysCollapseUnlocked) return;
     playVictory();
     setSysCollapseUnlocked(true);
+    setRamValue(30); // Instantly set current RAM to new max (30) on upgrade
   };
 
   const hudContent = (
@@ -915,6 +1141,38 @@ export default function HackingHUD({ onClose, onOverrideSuccess }) {
         transition={{ duration: 0.35 }}
       >
         <ScanlineOverlay />
+
+        {/* ── Signal Intercept Cyberpunk Alert Popup ── */}
+        <AnimatePresence>
+          {popupQuote && (
+            <AlertPopup
+              initial={{ opacity: 0, scale: 0.9, y: '-60%', x: '-50%' }}
+              animate={{ opacity: 1, scale: 1, y: '-50%', x: '-50%' }}
+              exit={{ opacity: 0, scale: 0.9, y: '-40%', x: '-50%' }}
+              transition={{ duration: 0.3, ease: 'easeOut' }}
+            >
+              <div className="header">
+                <span>
+                  <i className="fas fa-satellite-dish icon" style={{ marginRight: '6px' }} />
+                  SIGNAL INTERCEPTED
+                </span>
+                <span style={{ color: '#ff3366', opacity: 0.8 }}>DECRYPTED</span>
+              </div>
+              <div className="quote-content">
+                {popupQuote}
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'center' }}>
+                <AlertButton
+                  onClick={() => setPopupQuote(null)}
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  Uhh....Okayy?
+                </AlertButton>
+              </div>
+            </AlertPopup>
+          )}
+        </AnimatePresence>
 
         {/* ── Top Header Bar ── */}
         <HeaderPanel>
@@ -933,13 +1191,13 @@ export default function HackingHUD({ onClose, onOverrideSuccess }) {
 
           <HeaderCenter>
             <RAMTitle onClick={triggerRamUpgrade} style={{ cursor: 'pointer' }}>
-              CYBERDECK RAM: {sysCollapseUnlocked ? '27/27' : '26/27'}
+              CYBERDECK RAM: {ramValue}/{sysCollapseUnlocked ? 30 : 26}
             </RAMTitle>
             <RAMBar>
-              {Array.from({ length: 27 }).map((_, i) => (
+              {Array.from({ length: sysCollapseUnlocked ? 30 : 26 }).map((_, i) => (
                 <RAMSlot 
                   key={i} 
-                  $filled={i < (sysCollapseUnlocked ? 27 : ramValue)} 
+                  $filled={i < ramValue} 
                 />
               ))}
             </RAMBar>
@@ -960,19 +1218,25 @@ export default function HackingHUD({ onClose, onOverrideSuccess }) {
             {QUICKHACKS_DATA.map((h, i) => {
               const currentActive = i === selectedIdx;
               const isLocked = h.locked && !(sysCollapseUnlocked && i === 7);
+              const hasInsufficientRam = ramValue < h.ram;
+              const statusText = isLocked 
+                ? 'LOCKED' 
+                : hasInsufficientRam 
+                  ? 'INSUFFICIENT RAM' 
+                  : 'READY';
               
               return (
                 <QuickhackButton
                   key={h.id}
                   $active={currentActive}
-                  $locked={isLocked}
+                  $locked={isLocked || hasInsufficientRam}
                   onClick={() => selectHack(i)}
-                  whileHover={!isLocked ? { scale: 1.02, x: 4 } : {}}
-                  whileTap={!isLocked ? { scale: 0.98 } : {}}
+                  whileHover={!(isLocked || hasInsufficientRam) ? { scale: 1.02, x: 4 } : {}}
+                  whileTap={!(isLocked || hasInsufficientRam) ? { scale: 0.98 } : {}}
                 >
                   <div className="name-block">
                     <span className="title">{h.title}</span>
-                    <span className="status-tag">{isLocked ? 'INSUFFICIENT RAM' : 'READY'}</span>
+                    <span className="status-tag">{statusText}</span>
                   </div>
                   <div className="ram-cost">
                     {h.ram}
@@ -1008,11 +1272,21 @@ export default function HackingHUD({ onClose, onOverrideSuccess }) {
             </TargetOutline>
             
             {/* Telemetry metadata overlay */}
-            <div style={{ position: 'absolute', bottom: '15%', fontSize: '0.62rem', color: '#ff3366', opacity: 0.75, display: 'flex', flexDirection: 'column', gap: '3px', border: '1px solid rgba(255,51,102,0.15)', padding: '6px 12px', background: 'rgba(0,0,0,0.4)', borderRadius: '4px' }}>
+            <div style={{ position: 'absolute', bottom: 'calc(4% + 96px)', fontSize: '0.62rem', color: '#ff3366', opacity: 0.75, display: 'flex', flexDirection: 'column', gap: '3px', border: '1px solid rgba(255,51,102,0.15)', padding: '6px 12px', background: 'rgba(0,0,0,0.4)', borderRadius: '4px' }}>
               <div>HP: 100/100</div>
               <div>LOC: BENGALURU, IN</div>
               <div>LEVEL: 42</div>
             </div>
+
+            {/* Terminal Logs Panel */}
+            <TerminalLogBox>
+              {logs.map((log) => (
+                <LogLine key={log.id} $type={log.type}>
+                  {log.text}
+                </LogLine>
+              ))}
+              <div ref={logEndRef} />
+            </TerminalLogBox>
 
             {/* Fake progress bar overlay during executing uploads */}
             {isUploading && (
@@ -1065,13 +1339,15 @@ export default function HackingHUD({ onClose, onOverrideSuccess }) {
             <SpecsFooter>
               <SpecsExecuteBtn
                 onClick={handleExecute}
-                disabled={activeHack.locked || isUploading}
-                whileHover={!activeHack.locked && !isUploading ? { scale: 1.03 } : {}}
-                whileTap={!activeHack.locked && !isUploading ? { scale: 0.97 } : {}}
-                style={{ opacity: activeHack.locked ? 0.45 : 1 }}
+                disabled={activeHack.locked || isUploading || ramValue < activeHack.ram}
+                whileHover={!(activeHack.locked || isUploading || ramValue < activeHack.ram) ? { scale: 1.03 } : {}}
+                whileTap={!(activeHack.locked || isUploading || ramValue < activeHack.ram) ? { scale: 0.97 } : {}}
+                style={{ opacity: (activeHack.locked || isUploading || ramValue < activeHack.ram) ? 0.45 : 1 }}
               >
                 <i className="fas fa-terminal" />
-                <span>[F] Execute Hack</span>
+                <span>
+                  {ramValue < activeHack.ram && !activeHack.locked ? 'INSUFFICIENT RAM' : '[F] Execute Hack'}
+                </span>
               </SpecsExecuteBtn>
             </SpecsFooter>
           </SpecsPanel>

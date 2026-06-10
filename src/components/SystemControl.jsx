@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { motion, AnimatePresence } from 'framer-motion';
 import { usePlayer } from '../context/PlayerContext';
 import { useTheme } from '../context/ThemeContext';
-import HackingHUD from './HackingHUD';
+import { useApps } from '../context/AppsContext';
 
 /* ─── Tray Button ─────────────────────────────────────────────────── */
 const ControlContainer = styled.div`
@@ -279,10 +279,10 @@ const ModernSlider = styled.input`
 export default function SystemControl() {
   const [isOpen, setIsOpen] = useState(false);
   const [isOnline, setIsOnline] = useState(navigator.onLine);
-  const [isHackingActive, setIsHackingActive] = useState(false);
   const [brightness, setBrightness] = useState(100);
   const { volume, setVolume } = usePlayer();
   const { setCurrentTheme } = useTheme();
+  const { launchApp } = useApps();
 
   const containerRef = useRef(null);
   const buttonRef = useRef(null);
@@ -319,6 +319,7 @@ export default function SystemControl() {
   const startHacking = () => {
     setIsOpen(false);
     playTone(180, 0.25, 'sawtooth', 0.08);
+    launchApp('hackerhub');
   };
 
   // Sync online status
@@ -472,19 +473,6 @@ export default function SystemControl() {
               </div>
             </SectionCard>
           </DropdownPanel>
-        )}
-      </AnimatePresence>
-
-      {/* Fullscreen Hacking Scan HUD */}
-      <AnimatePresence>
-        {isHackingActive && (
-          <HackingHUD
-            onClose={() => setIsHackingActive(false)}
-            onOverrideSuccess={() => {
-              setCurrentTheme('matrix');
-              setIsHackingActive(false);
-            }}
-          />
         )}
       </AnimatePresence>
     </ControlContainer>
