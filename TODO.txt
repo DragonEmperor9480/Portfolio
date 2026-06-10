@@ -1,0 +1,12 @@
+PORTFOLIO WORKSPACE TODO LIST
+=============================
+
+1. [ ] RE-ENABLE HACKING HUD TRIGGER
+   - Location: src/components/SystemControl.jsx (startHacking function)
+   - Goal: Connect the Matrix_Terminal WiFi network scanner click event back to mounting HackingHUD overlay.
+   - Note: Clean up the connection refused sawtooth error chime and integrate any new visual override ideas.
+
+2. [ ] IMPLEMENT & ENABLE LAB SECTION
+   - Location: src/components/Navbar.jsx (navItems list)
+   - Goal: Uncomment `{ id: 'lab', name: 'Lab' }` in Navbar's menu items list and implement AmrutLab.jsx.
+   - Note: Standardize modal transitions and fullscreen behavior.
