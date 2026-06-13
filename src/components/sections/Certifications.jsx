@@ -51,13 +51,13 @@ const VSCodeWindow = styled(motion.div)`
   }
 
   @media (max-width: 768px) {
-    height: 700px;
+    height: 750px;
     border-radius: 8px;
     max-width: calc(100vw - 2rem);
   }
 
   @media (max-width: 480px) {
-    height: 550px;
+    height: 600px;
     border-radius: 6px;
     max-width: calc(100vw - 1rem);
   }
@@ -87,10 +87,11 @@ const WindowButton = styled.div`
 
 const WindowTitle = styled.div`
   color: ${({ theme }) => theme.colors.text};
-  font-size: 0.9rem;
+  font-size: 0.8rem;
   font-family: 'JetBrains Mono', monospace;
   text-align: center;
   flex: 1;
+  opacity: 0.8;
 `;
 
 const MainContent = styled.div`
@@ -105,7 +106,7 @@ const MainContent = styled.div`
 `;
 
 const Sidebar = styled.div`
-  width: 350px;
+  width: 300px;
   background: ${({ theme }) => theme.colors.background};
   border-right: 1px solid ${({ theme }) => theme.colors.border};
   display: flex;
@@ -113,15 +114,15 @@ const Sidebar = styled.div`
   flex-shrink: 0;
 
   @media (max-width: 1024px) {
-    width: 280px;
+    width: 240px;
   }
 
   @media (max-width: 768px) {
-    width: 220px;
+    width: 200px;
   }
 
   @media (max-width: 480px) {
-    width: 160px;
+    width: 140px;
   }
 `;
 
@@ -130,10 +131,37 @@ const SidebarHeader = styled.div`
   background: ${({ theme }) => theme.colors.glass};
   border-bottom: 1px solid ${({ theme }) => theme.colors.border};
   color: ${({ theme }) => theme.colors.text};
-  font-size: 0.85rem;
+  font-size: 0.75rem;
   font-family: 'JetBrains Mono', monospace;
   text-transform: uppercase;
   letter-spacing: 0.5px;
+  opacity: 0.8;
+`;
+
+const ExplorerFolder = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 16px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: ${({ theme }) => theme.colors.text};
+  opacity: 0.85;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  
+  .chevron {
+    font-size: 0.6rem;
+    transition: transform 0.2s ease;
+  }
+`;
+
+const ExplorerSubFolder = styled(ExplorerFolder)`
+  padding-left: 28px;
+  font-weight: 600;
+  text-transform: none;
+  opacity: 0.75;
 `;
 
 const FileList = styled.div`
@@ -148,23 +176,24 @@ const FileItem = styled.div`
   cursor: pointer;
   transition: all 0.2s ease;
   border-left: ${props => props.$isActive ? `2px solid ${props.theme.colors.primary}` : '2px solid transparent'};
-  background: ${props => props.$isActive ? `${props.theme.colors.primary}20` : 'transparent'};
+  background: ${props => props.$isActive ? `${props.theme.colors.primary}15` : 'transparent'};
   
   &:hover {
-    background: ${props => props.$isActive ? `${props.theme.colors.primary}20` : `${props.theme.colors.primary}08`};
+    background: ${props => props.$isActive ? `${props.theme.colors.primary}15` : `${props.theme.colors.primary}08`};
   }
   
   .file-icon {
-    width: 16px;
-    height: 16px;
+    width: 14px;
+    height: 14px;
     margin-right: 8px;
     color: ${props => props.$iconColor || props.theme.colors.text};
-    font-size: 0.8rem;
+    font-size: 0.78rem;
+    flex-shrink: 0;
   }
   
   .file-name {
     color: ${props => props.$isActive ? props.theme.colors.primary : props.theme.colors.text};
-    font-size: 0.85rem;
+    font-size: 0.8rem;
     font-family: 'JetBrains Mono', monospace;
     white-space: nowrap;
     overflow: hidden;
@@ -174,7 +203,8 @@ const FileItem = styled.div`
   .file-extension {
     color: ${({ theme }) => theme.colors.textSecondary};
     margin-left: auto;
-    font-size: 0.75rem;
+    font-size: 0.72rem;
+    opacity: 0.7;
   }
 `;
 
@@ -184,21 +214,21 @@ const EditorArea = styled.div`
   flex-direction: column;
   background: ${({ theme }) => theme.colors.background};
   position: relative;
-  width: calc(100% - 350px);
+  width: calc(100% - 300px);
   min-width: 0;
   overflow: hidden;
   box-sizing: border-box;
 
   @media (max-width: 1024px) {
-    width: calc(100% - 280px);
+    width: calc(100% - 240px);
   }
 
   @media (max-width: 768px) {
-    width: calc(100% - 220px);
+    width: calc(100% - 200px);
   }
 
   @media (max-width: 480px) {
-    width: calc(100% - 160px);
+    width: calc(100% - 140px);
   }
 `;
 
@@ -216,7 +246,7 @@ const TabBar = styled.div`
   flex-shrink: 0;
   
   &::-webkit-scrollbar {
-    height: 6px;
+    height: 4px;
   }
   
   &::-webkit-scrollbar-track {
@@ -225,44 +255,41 @@ const TabBar = styled.div`
   
   &::-webkit-scrollbar-thumb {
     background: ${({ theme }) => theme.colors.border};
-    border-radius: 3px;
-  }
-  
-  &::-webkit-scrollbar-thumb:hover {
-    background: ${({ theme }) => theme.colors.textSecondary};
+    border-radius: 2px;
   }
 `;
 
 const Tab = styled.div`
   display: flex;
   align-items: center;
-  padding: 0 16px;
-  background: ${props => props.$isActive ? props.theme.colors.background : props.theme.colors.glass};
+  padding: 0 14px;
+  background: ${props => props.$isActive ? props.theme.colors.background : 'transparent'};
   border-right: 1px solid ${({ theme }) => theme.colors.border};
   cursor: pointer;
   position: relative;
   flex-shrink: 0;
-  min-width: 160px;
+  min-width: 150px;
   max-width: 200px;
-  width: 180px;
+  width: 170px;
   box-sizing: border-box;
+  border-top: ${props => props.$isActive ? `2px solid ${props.theme.colors.primary}` : '2px solid transparent'};
   
   &:hover {
-    background: ${props => props.$isActive ? props.theme.colors.background : `${props.theme.colors.primary}10`};
+    background: ${props => props.$isActive ? props.theme.colors.background : `${props.theme.colors.primary}08`};
   }
   
   .tab-icon {
-    width: 16px;
-    height: 16px;
+    width: 14px;
+    height: 14px;
     margin-right: 8px;
     color: ${props => props.$iconColor || props.theme.colors.text};
-    font-size: 0.8rem;
+    font-size: 0.78rem;
     flex-shrink: 0;
   }
   
   .tab-name {
     color: ${props => props.$isActive ? props.theme.colors.primary : props.theme.colors.text};
-    font-size: 0.85rem;
+    font-size: 0.8rem;
     font-family: 'JetBrains Mono', monospace;
     white-space: nowrap;
     overflow: hidden;
@@ -287,77 +314,146 @@ const Tab = styled.div`
     }
   }
 
-  @media (max-width: 1024px) {
-    min-width: 140px;
-    max-width: 180px;
-    width: 160px;
-    padding: 0 12px;
-  }
-
   @media (max-width: 768px) {
-    min-width: 120px;
-    max-width: 140px;
-    width: 130px;
+    min-width: 110px;
+    max-width: 130px;
+    width: 120px;
     padding: 0 8px;
     
-    .tab-icon {
-      width: 14px;
-      height: 14px;
-      margin-right: 6px;
-    }
-    
-    .tab-name {
-      font-size: 0.75rem;
-    }
-    
-    .close-button {
-      width: 14px;
-      height: 14px;
-      margin-left: 6px;
-    }
-  }
-
-  @media (max-width: 480px) {
-    min-width: 100px;
-    max-width: 120px;
-    width: 110px;
-    padding: 0 6px;
-
     .tab-icon {
       width: 12px;
       height: 12px;
       margin-right: 4px;
     }
-
     .tab-name {
-      font-size: 0.7rem;
+      font-size: 0.72rem;
     }
+  }
+`;
 
-    .close-button {
-      width: 12px;
-      height: 12px;
-      margin-left: 4px;
-    }
+const Breadcrumbs = styled.div`
+  background: ${({ theme }) => theme.colors.background};
+  border-bottom: 1px solid ${({ theme }) => theme.colors.border};
+  padding: 4px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.7rem;
+  color: ${({ theme }) => theme.colors.textSecondary};
+  min-height: 28px;
+  max-height: 28px;
+  box-sizing: border-box;
+  opacity: 0.85;
+
+  .path-container {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .item {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+  
+  .separator {
+    opacity: 0.45;
+    font-size: 0.6rem;
+  }
+  
+  .file {
+    color: ${({ theme }) => theme.colors.text};
+    font-weight: 500;
+  }
+`;
+
+const ActionIcon = styled.button`
+  background: transparent;
+  border: none;
+  color: ${({ theme }) => theme.colors.textSecondary};
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.68rem;
+  padding: 2px 8px;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+
+  &:hover {
+    color: ${({ theme }) => theme.colors.primary};
+    background: ${({ theme }) => theme.colors.primary}15;
   }
 `;
 
 const Editor = styled.div`
   flex: 1;
-  padding: 16px;
   overflow: hidden;
   background: ${({ theme }) => theme.colors.background};
   position: relative;
   width: 100%;
   display: flex;
   flex-direction: column;
+`;
 
-  @media (max-width: 768px) {
-    padding: 12px;
-  }
+const CodePane = styled.div`
+  flex: 1;
+  padding: 16px;
+  overflow: auto;
+  display: flex;
+  gap: 14px;
+  font-family: 'JetBrains Mono', 'Fira Code', 'Space Mono', monospace;
+  background: ${({ theme }) => theme.colors.background};
+`;
 
-  @media (max-width: 480px) {
-    padding: 8px;
+const LineNumbers = styled.div`
+  color: ${({ theme }) => theme.name === 'Light Mode' ? '#a0a0a0' : '#858585'};
+  text-align: right;
+  user-select: none;
+  font-size: 0.8rem;
+  line-height: 1.5;
+  display: flex;
+  flex-direction: column;
+  min-width: 20px;
+`;
+
+const SyntaxHighlightedCode = styled.pre`
+  margin: 0;
+  font-family: inherit;
+  font-size: 0.8rem;
+  line-height: 1.5;
+  color: ${({ theme }) => theme.name === 'Light Mode' ? '#1e1e1e' : '#d4d4d4'};
+  white-space: pre;
+  
+  .keyword {
+    color: ${({ theme }) => theme.name === 'Light Mode' ? '#0000ff' : '#569cd6'};
   }
+  .string {
+    color: ${({ theme }) => theme.name === 'Light Mode' ? '#a31515' : '#ce9178'};
+  }
+  .comment {
+    color: ${({ theme }) => theme.name === 'Light Mode' ? '#008000' : '#6a9955'};
+  }
+  .type {
+    color: ${({ theme }) => theme.name === 'Light Mode' ? '#267f99' : '#4ec9b0'};
+  }
+  .variable {
+    color: ${({ theme }) => theme.name === 'Light Mode' ? '#0070c1' : '#9cdcfe'};
+  }
+  .property {
+    color: ${({ theme }) => theme.name === 'Light Mode' ? '#0451a5' : '#9cdcfe'};
+  }
+`;
+
+const PreviewPane = styled.div`
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  background: ${({ theme }) => theme.colors.glass};
 `;
 
 const CertificatePreview = styled.div`
@@ -369,29 +465,30 @@ const CertificatePreview = styled.div`
 `;
 
 const PreviewHeader = styled.div`
-  padding: 16px;
+  padding: 16px 20px;
   border-bottom: 1px solid ${({ theme }) => theme.colors.border};
   background: ${({ theme }) => theme.colors.glass};
 `;
 
 const CertTitle = styled.h2`
   color: ${({ theme }) => theme.colors.primary};
-  font-size: 1.2rem;
+  font-size: 1.15rem;
   margin-bottom: 8px;
   font-family: 'JetBrains Mono', monospace;
 `;
 
 const CertMeta = styled.div`
   display: flex;
+  flex-wrap: wrap;
   gap: 16px;
-  margin-bottom: 12px;
+  margin-bottom: 14px;
   
   .meta-item {
     display: flex;
     align-items: center;
     gap: 6px;
     color: ${({ theme }) => theme.colors.text};
-    font-size: 0.85rem;
+    font-size: 0.8rem;
     font-family: 'JetBrains Mono', monospace;
     
     .icon {
@@ -410,37 +507,31 @@ const ActionButtons = styled.div`
     color: ${({ theme }) => theme.colors.background};
     border: none;
     border-radius: 4px;
-    font-size: 0.8rem;
+    font-size: 0.78rem;
     cursor: pointer;
     font-family: 'JetBrains Mono', monospace;
     transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 6px;
     
     &:hover {
-      opacity: 0.8;
+      opacity: 0.9;
       transform: translateY(-1px);
-    }
-    
-    &.secondary {
-      background: ${({ theme }) => theme.colors.border};
-      color: ${({ theme }) => theme.colors.text};
-      
-      &:hover {
-        background: ${({ theme }) => theme.colors.textSecondary};
-      }
     }
   }
 `;
 
 const PreviewContent = styled.div`
   flex: 1;
-  padding: 16px;
-  overflow: hidden;
+  padding: 20px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
   width: 100%;
   position: relative;
+  box-sizing: border-box;
 `;
 
 const CertificateImageContainer = styled.div`
@@ -450,28 +541,22 @@ const CertificateImageContainer = styled.div`
   margin-bottom: 16px;
   width: 100%;
   position: relative;
-  left: 0;
-  right: 0;
 `;
 
 const shimmer = keyframes`
-  0% {
-    background-position: -1000px 0;
-  }
-  100% {
-    background-position: 1000px 0;
-  }
+  0% { background-position: -1000px 0; }
+  100% { background-position: 1000px 0; }
 `;
 
 const ImageSkeleton = styled.div`
   width: 100%;
   max-width: 900px;
-  height: 600px;
+  height: 480px;
   border-radius: 12px;
   background: linear-gradient(
     90deg,
     ${({ theme }) => theme.colors.glass} 0%,
-    rgba(100, 255, 218, 0.1) 50%,
+    rgba(100, 255, 218, 0.08) 50%,
     ${({ theme }) => theme.colors.glass} 100%
   );
   background-size: 1000px 100%;
@@ -486,8 +571,8 @@ const ImageSkeleton = styled.div`
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width: 60px;
-    height: 60px;
+    width: 40px;
+    height: 40px;
     border: 3px solid ${({ theme }) => theme.colors.border};
     border-top-color: ${({ theme }) => theme.colors.primary};
     border-radius: 50%;
@@ -495,20 +580,12 @@ const ImageSkeleton = styled.div`
   }
 
   @keyframes spin {
-    to {
-      transform: translate(-50%, -50%) rotate(360deg);
-    }
+    to { transform: translate(-50%, -50%) rotate(360deg); }
   }
 
   @media (max-width: 768px) {
     max-width: 100%;
-    height: 400px;
-    border-radius: 8px;
-  }
-
-  @media (max-width: 480px) {
-    height: 300px;
-    border-radius: 6px;
+    height: 320px;
   }
 `;
 
@@ -516,22 +593,12 @@ const CertificateImage = styled.img`
   width: 100%;
   max-width: 900px;
   height: auto;
-  border-radius: 12px;
+  border-radius: 8px;
   border: 1px solid ${({ theme }) => theme.colors.border};
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
   display: ${({ $loaded }) => ($loaded ? 'block' : 'none')};
   transition: opacity 0.3s ease-in;
-
-  @media (max-width: 768px) {
-    max-width: 100%;
-    border-radius: 8px;
-  }
-
-  @media (max-width: 480px) {
-    border-radius: 6px;
-  }
 `;
-
 
 const WelcomeScreen = styled.div`
   display: flex;
@@ -542,22 +609,60 @@ const WelcomeScreen = styled.div`
   color: ${({ theme }) => theme.colors.textSecondary};
   text-align: center;
   font-family: 'JetBrains Mono', monospace;
+  padding: 40px;
   
   .icon {
-    font-size: 4rem;
+    font-size: 3.5rem;
     margin-bottom: 16px;
     color: ${({ theme }) => theme.colors.primary};
+    opacity: 0.8;
   }
   
   h3 {
-    font-size: 1.2rem;
+    font-size: 1.15rem;
     margin-bottom: 8px;
     color: ${({ theme }) => theme.colors.text};
   }
   
   p {
-    font-size: 0.9rem;
-    line-height: 1.5;
+    font-size: 0.82rem;
+    line-height: 1.6;
+    max-width: 400px;
+    margin: 0 auto;
+    opacity: 0.85;
+  }
+`;
+
+const StatusBar = styled.div`
+  background: ${({ theme }) => theme.colors.primary};
+  color: ${({ theme }) => theme.colors.background};
+  height: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 10px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.68rem;
+  font-weight: 500;
+  box-sizing: border-box;
+  flex-shrink: 0;
+  user-select: none;
+  
+  .left-side, .right-side {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  
+  .status-item {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    cursor: pointer;
+    
+    &:hover {
+      opacity: 0.85;
+    }
   }
 `;
 
@@ -573,12 +678,11 @@ const getFileIconColor = (provider) => {
   return colors[provider] || '#cccccc';
 };
 
-
-
 export default function Certifications() {
   const [activeTab, setActiveTab] = useState(null);
   const [openTabs, setOpenTabs] = useState([]);
   const [imageLoaded, setImageLoaded] = useState({});
+  const [viewMode, setViewMode] = useState('preview');
 
   const openCertificate = (cert, index) => {
     const tabId = `cert-${index}`;
@@ -588,6 +692,7 @@ export default function Certifications() {
       setImageLoaded(prev => ({ ...prev, [tabId]: false }));
     }
     setActiveTab(tabId);
+    setViewMode('preview');
   };
 
   const handleImageLoad = (tabId) => {
@@ -609,18 +714,95 @@ export default function Certifications() {
     const tabBar = e.currentTarget;
     const hasHorizontalScroll = tabBar.scrollWidth > tabBar.clientWidth;
     
-    // Always prevent default when over tab bar to stop website scrolling
     e.preventDefault();
     e.stopPropagation();
     
-    // Only actually scroll the tabs if there's overflow
     if (hasHorizontalScroll) {
-      const scrollAmount = e.deltaY * 0.5; // Reduce scroll sensitivity
+      const scrollAmount = e.deltaY * 0.5;
       tabBar.scrollLeft += scrollAmount;
     }
   };
 
   const activeCert = openTabs.find(tab => tab.id === activeTab)?.cert;
+
+  const generateCode = (cert) => {
+    return `import { Certificate } from 'portfolio/os/credentials';
+
+// Verified Professional Credential
+const credential = new Certificate({
+  name: "${cert.name}",
+  provider: "${cert.provider}",
+  duration: "${cert.duration || 'Self-paced'}",
+  verified: true,
+  credentialUrl: "${cert.link}"
+});
+
+export default credential;`;
+  };
+
+  const highlightJS = (code) => {
+    const lines = code.split('\n');
+    
+    return lines.map((line, idx) => {
+      if (line.trim().startsWith('//')) {
+        return (
+          <div key={idx} className="line">
+            <span className="comment">{line}</span>
+          </div>
+        );
+      }
+      
+      const words = line.split(/(\s+|[{}[\]().,;:"'])/);
+      let isString = false;
+      let stringDelimiter = null;
+      let lineElements = [];
+      let currentStr = '';
+      
+      for (let i = 0; i < words.length; i++) {
+        const w = words[i];
+        if (!w) continue;
+        
+        if (isString) {
+          currentStr += w;
+          if (w === stringDelimiter) {
+            isString = false;
+            lineElements.push(<span key={i} className="string">{currentStr}</span>);
+            currentStr = '';
+          }
+          continue;
+        }
+        
+        if (w === '"' || w === "'") {
+          isString = true;
+          stringDelimiter = w;
+          currentStr = w;
+          continue;
+        }
+        
+        if (['const', 'import', 'from', 'export', 'default', 'new'].includes(w)) {
+          lineElements.push(<span key={i} className="keyword">{w}</span>);
+        } else if (['Certificate'].includes(w)) {
+          lineElements.push(<span key={i} className="type">{w}</span>);
+        } else if (['credential'].includes(w)) {
+          lineElements.push(<span key={i} className="variable">{w}</span>);
+        } else if (['name', 'provider', 'duration', 'verified', 'credentialUrl'].includes(w)) {
+          lineElements.push(<span key={i} className="property">{w}</span>);
+        } else {
+          lineElements.push(w);
+        }
+      }
+      
+      if (isString) {
+        lineElements.push(<span key="str" className="string">{currentStr}</span>);
+      }
+      
+      return (
+        <div key={idx} className="line">
+          {lineElements}
+        </div>
+      );
+    });
+  };
 
   return (
     <CertificationsContainer id="certifications">
@@ -642,10 +824,26 @@ export default function Certifications() {
         
         <MainContent>
           <Sidebar>
-            <SidebarHeader>
-              <i className="fas fa-certificate" style={{ marginRight: '8px' }}></i>
-              Certifications
-            </SidebarHeader>
+            <SidebarHeader>Explorer</SidebarHeader>
+            <ExplorerFolder>
+              <i className="fas fa-chevron-down chevron" />
+              <span>Portfolio [Workspace]</span>
+            </ExplorerFolder>
+            <ExplorerSubFolder>
+              <i className="fas fa-chevron-down chevron" />
+              <i className="fas fa-folder" style={{ color: '#dcb67a', marginRight: '2px' }} />
+              <span>src</span>
+            </ExplorerSubFolder>
+            <ExplorerSubFolder style={{ paddingLeft: '40px' }}>
+              <i className="fas fa-chevron-down chevron" />
+              <i className="fas fa-folder" style={{ color: '#dcb67a', marginRight: '2px' }} />
+              <span>sections</span>
+            </ExplorerSubFolder>
+            <ExplorerSubFolder style={{ paddingLeft: '52px' }}>
+              <i className="fas fa-chevron-down chevron" />
+              <i className="fas fa-folder-open" style={{ color: '#dcb67a', marginRight: '2px' }} />
+              <span>certifications</span>
+            </ExplorerSubFolder>
             <FileList>
               {certificates.certificates.map((cert, index) => (
                 <FileItem
@@ -653,6 +851,7 @@ export default function Certifications() {
                   $isActive={activeTab === `cert-${index}`}
                   $iconColor={getFileIconColor(cert.provider)}
                   onClick={() => openCertificate(cert, index)}
+                  style={{ paddingLeft: '64px' }}
                 >
                   <i className={`${cert.icon} file-icon`}></i>
                   <span className="file-name">
@@ -684,48 +883,94 @@ export default function Certifications() {
               ))}
             </TabBar>
 
+            {activeCert && (
+              <Breadcrumbs>
+                <div className="path-container">
+                  <div className="item">
+                    <i className="fas fa-folder" style={{ color: '#dcb67a', fontSize: '0.75rem' }} />
+                    <span>src</span>
+                  </div>
+                  <span className="separator">&gt;</span>
+                  <div className="item">
+                    <i className="fas fa-folder" style={{ color: '#dcb67a', fontSize: '0.75rem' }} />
+                    <span>sections</span>
+                  </div>
+                  <span className="separator">&gt;</span>
+                  <div className="item">
+                    <i className="fas fa-folder-open" style={{ color: '#dcb67a', fontSize: '0.75rem' }} />
+                    <span>certifications</span>
+                  </div>
+                  <span className="separator">&gt;</span>
+                  <div className="item file">
+                    <i className={`${activeCert.icon} icon`} style={{ color: getFileIconColor(activeCert.provider), fontSize: '0.75rem' }} />
+                    <span>{activeCert.fileName}.cert.js</span>
+                  </div>
+                </div>
+
+                <ActionIcon onClick={() => setViewMode(prev => prev === 'preview' ? 'code' : 'preview')}>
+                  <i className={viewMode === 'preview' ? 'fas fa-code' : 'fas fa-eye'} style={{ fontSize: '0.75rem' }} />
+                  <span>{viewMode === 'preview' ? 'Show Code' : 'Show Preview'}</span>
+                </ActionIcon>
+              </Breadcrumbs>
+            )}
+
             <Editor>
               {activeCert ? (
-                <CertificatePreview>
-                  <PreviewHeader>
-                    <CertTitle>{activeCert.name}</CertTitle>
-                    <CertMeta>
-                      <div className="meta-item">
-                        <i className={`${activeCert.icon} icon`}></i>
-                        <span>{activeCert.provider}</span>
-                      </div>
-                      {activeCert.duration && (
-                        <div className="meta-item">
-                          <i className="fas fa-clock icon"></i>
-                          <span>{activeCert.duration}</span>
-                        </div>
-                      )}
-                      <div className="meta-item">
-                        <i className="fas fa-certificate icon"></i>
-                        <span>Verified</span>
-                      </div>
-                    </CertMeta>
-                    <ActionButtons>
-                      <button onClick={() => window.open(activeCert.link, '_blank')}>
-                        <i className="fas fa-external-link-alt" style={{ marginRight: '6px' }}></i>
-                        View Original
-                      </button>
-                    </ActionButtons>
-                  </PreviewHeader>
-                  
-                  <PreviewContent>
-                    <CertificateImageContainer>
-                      {!imageLoaded[activeTab] && <ImageSkeleton />}
-                      <CertificateImage 
-                        src={activeCert.thumbnail} 
-                        alt={activeCert.name}
-                        $loaded={imageLoaded[activeTab]}
-                        onLoad={() => handleImageLoad(activeTab)}
-                        onError={() => handleImageLoad(activeTab)}
-                      />
-                    </CertificateImageContainer>
-                  </PreviewContent>
-                </CertificatePreview>
+                viewMode === 'code' ? (
+                  <CodePane>
+                    <LineNumbers>
+                      {Array.from({ length: 13 }).map((_, i) => (
+                        <span key={i}>{i + 1}</span>
+                      ))}
+                    </LineNumbers>
+                    <SyntaxHighlightedCode>
+                      {highlightJS(generateCode(activeCert))}
+                    </SyntaxHighlightedCode>
+                  </CodePane>
+                ) : (
+                  <PreviewPane>
+                    <CertificatePreview>
+                      <PreviewHeader>
+                        <CertTitle>{activeCert.name}</CertTitle>
+                        <CertMeta>
+                          <div className="meta-item">
+                            <i className={`${activeCert.icon} icon`}></i>
+                            <span>{activeCert.provider}</span>
+                          </div>
+                          {activeCert.duration && (
+                            <div className="meta-item">
+                              <i className="fas fa-clock icon"></i>
+                              <span>{activeCert.duration}</span>
+                            </div>
+                          )}
+                          <div className="meta-item">
+                            <i className="fas fa-certificate icon"></i>
+                            <span>Verified</span>
+                          </div>
+                        </CertMeta>
+                        <ActionButtons>
+                          <button onClick={() => window.open(activeCert.link, '_blank')}>
+                            <i className="fas fa-external-link-alt" style={{ marginRight: '4px' }}></i>
+                            View Original
+                          </button>
+                        </ActionButtons>
+                      </PreviewHeader>
+                      
+                      <PreviewContent>
+                        <CertificateImageContainer>
+                          {!imageLoaded[activeTab] && <ImageSkeleton />}
+                          <CertificateImage 
+                            src={activeCert.thumbnail} 
+                            alt={activeCert.name}
+                            $loaded={imageLoaded[activeTab]}
+                            onLoad={() => handleImageLoad(activeTab)}
+                            onError={() => handleImageLoad(activeTab)}
+                          />
+                        </CertificateImageContainer>
+                      </PreviewContent>
+                    </CertificatePreview>
+                  </PreviewPane>
+                )
               ) : (
                 <WelcomeScreen>
                   <i className="fas fa-certificate icon"></i>
@@ -737,7 +982,42 @@ export default function Certifications() {
             </Editor>
           </EditorArea>
         </MainContent>
+
+        <StatusBar>
+          <div className="left-side">
+            <div className="status-item">
+              <i className="fas fa-code-branch" />
+              <span>main</span>
+            </div>
+            <div className="status-item">
+              <i className="fas fa-sync-alt" />
+            </div>
+            <div className="status-item">
+              <i className="fas fa-times-circle" />
+              <span>0</span>
+              <i className="fas fa-exclamation-triangle" />
+              <span>0</span>
+            </div>
+          </div>
+          <div className="right-side">
+            <div className="status-item">
+              <span>Ln {activeCert ? '13' : '1'}, Col {activeCert ? '24' : '1'}</span>
+            </div>
+            <div className="status-item">
+              <span>Spaces: 2</span>
+            </div>
+            <div className="status-item">
+              <span>UTF-8</span>
+            </div>
+            <div className="status-item">
+              <span>JavaScript</span>
+            </div>
+            <div className="status-item">
+              <i className="fas fa-bell" />
+            </div>
+          </div>
+        </StatusBar>
       </VSCodeWindow>
     </CertificationsContainer>
   );
-} 
+}

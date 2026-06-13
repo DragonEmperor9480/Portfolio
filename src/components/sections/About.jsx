@@ -764,7 +764,7 @@ const bootLogs = [
 /* ── Component ────────────────────────────────────────────── */
 
 export default function About() {
-  const [activeTab, setActiveTab] = useState('bio.md');
+  const [activeTab, setActiveTab] = useState('skills.json');
   const [selectedSkillCat, setSelectedSkillCat] = useState(0);
   const [skillsViewMode, setSkillsViewMode] = useState('visual');
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
@@ -773,40 +773,6 @@ export default function About() {
   const currentCategory = categories[selectedSkillCat] || categories[0] || '';
   const currentCategoryData = skillsData?.[currentCategory] || { description: '', color: '', skills: [] };
   const currentSkills = currentCategoryData.skills || [];
-
-  // Syntax Highlights
-  const renderBioLine = (line, idx) => {
-    const matchHash = line.match(/^(#+)\s+(.*)$/);
-    if (matchHash) {
-      const hashes = matchHash[1];
-      const text = matchHash[2];
-      return (
-        <CodeLine key={idx}>
-          <LineNumber>{idx + 1}</LineNumber>
-          <LineCode>
-            <span style={{ color: 'rgba(100, 255, 218, 0.4)' }}>{hashes} </span>
-            <span style={{ color: '#ffffff', fontWeight: 'bold' }}>{text}</span>
-          </LineCode>
-        </CodeLine>
-      );
-    }
-
-    // Inline Highlight parser
-    const parts = line.split(/(\*\*.*?\*\*)/);
-    const parsedText = parts.map((part, i) => {
-      if (part.startsWith('**') && part.endsWith('**')) {
-        return <HighlightWord key={i}>{part.slice(2, -2)}</HighlightWord>;
-      }
-      return part;
-    });
-
-    return (
-      <CodeLine key={idx}>
-        <LineNumber>{idx + 1}</LineNumber>
-        <LineCode style={{ color: 'rgba(230, 230, 230, 0.85)' }}>{parsedText}</LineCode>
-      </CodeLine>
-    );
-  };
 
   const styledTheme = useStyledTheme();
   const isLight = styledTheme?.name === 'Light Mode';
@@ -1049,24 +1015,6 @@ export default function About() {
     );
   };
 
-  const bioContent = [
-    '# WHO_I_AM.md',
-    '',
-    'I am a **backend engineer** focused on building performant, scalable, and resilient systems.',
-    'My primary focus centers on cloud-native architectures — designing and deploying microservices',
-    'and serverless APIs with **Go** and **AWS** backend resources.',
-    '',
-    '## System Administration & Systems Engineering',
-    'Outside of commercial engineering, I live and breathe open-source. I have been running',
-    '**Arch Linux** as my main system for over a decade. I have a passion for diving deep into systems',
-    'architecture, automating workflows, and optimizing device/memory runtimes.',
-    '',
-    '## Custom ROM Developer',
-    'I build, maintain, and flash custom Android operating systems. Over the years, I have successfully',
-    'distributed **100+ public releases** for custom Android ROMs, supporting thousands of users,',
-    'compiling custom Android kernels, and contributing to the **AOSP** ecosystem.'
-  ];
-
   const logContent = [
     '[2017-06-06] [INIT] Started computer programming & shell scripting',
     '[2019-10-15] [OK] Configured desktop environment on standalone Arch Linux',
@@ -1194,13 +1142,6 @@ export default function About() {
                   <FolderIcon /> info
                 </TreeItem>
                 <TreeItem 
-                  $active={activeTab === 'bio.md'} 
-                  $depth={2} 
-                  onClick={() => setActiveTab('bio.md')}
-                >
-                  <FileIcon type="md" /> bio.md
-                </TreeItem>
-                <TreeItem 
                   $active={activeTab === 'stats.log'} 
                   $depth={2} 
                   onClick={() => setActiveTab('stats.log')}
@@ -1225,9 +1166,6 @@ export default function About() {
                 
                 {/* Tabs */}
                 <TabsRow>
-                  <EditorTab $active={activeTab === 'bio.md'} onClick={() => setActiveTab('bio.md')}>
-                    <FileIcon type="md" /> bio.md
-                  </EditorTab>
                   <EditorTab $active={activeTab === 'skills.json'} onClick={() => setActiveTab('skills.json')}>
                     <FileIcon type="json" /> skills.json
                   </EditorTab>
@@ -1247,7 +1185,6 @@ export default function About() {
                       transition={{ duration: 0.18 }}
                       style={{ height: '100%' }}
                     >
-                      {activeTab === 'bio.md' && bioContent.map((line, idx) => renderBioLine(line, idx))}
                       {activeTab === 'skills.json' && renderSkillsJson()}
                       {activeTab === 'stats.log' && logContent.map((line, idx) => renderStatsLog(line, idx))}
                     </motion.div>
@@ -1257,14 +1194,12 @@ export default function About() {
                 {/* Status Bar */}
                 <EditorStatusBar>
                   <div>
-                    Normal | {activeTab === 'bio.md' ? 'Markdown' : activeTab === 'skills.json' ? 'JSON' : 'Log'}
+                    Normal | {activeTab === 'skills.json' ? 'JSON' : 'Log'}
                   </div>
                   <div>
-                    Ln {activeTab === 'bio.md' 
-                      ? bioContent.length 
-                      : activeTab === 'skills.json' 
-                        ? (skillsViewMode === 'visual' ? 15 : 8 + currentSkills.length) 
-                        : logContent.length}, Col 1 | UTF-8 | Git:master*
+                    Ln {activeTab === 'skills.json' 
+                      ? (skillsViewMode === 'visual' ? 15 : 8 + currentSkills.length) 
+                      : logContent.length}, Col 1 | UTF-8 | Git:master*
                   </div>
                 </EditorStatusBar>
 
