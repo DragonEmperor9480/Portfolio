@@ -10,8 +10,8 @@ const ClockContainer = styled.div`
 
 const ClockButton = styled(motion.button)`
   background: ${({ theme }) => `${theme?.colors?.primary || '#64ffda'}10`};
-  border: 1px solid ${({ theme }) => `${theme?.colors?.border || 'rgba(100,255,218,0.1)'}a0`};
-  color: ${({ theme }) => theme?.colors?.text || '#E6E6E6'};
+  border: 1px solid ${({ theme }) => `${theme?.colors?.primary || '#64ffda'}40`};
+  color: ${({ theme }) => theme?.colors?.primary || '#64ffda'};
   padding: 6px 14px;
   border-radius: 12px;
   cursor: pointer;
@@ -28,7 +28,7 @@ const ClockButton = styled(motion.button)`
   .icon {
     font-size: 0.9rem;
     color: ${({ theme }) => theme?.colors?.primary || '#64ffda'};
-    filter: drop-shadow(0 0 4px ${({ theme }) => theme?.colors?.primary || '#64ffda'});
+    filter: drop-shadow(0 0 4px ${({ theme }) => theme?.colors?.primary || '#64ffda'}80);
   }
 
   .time-text {
@@ -65,7 +65,7 @@ const StatusMenu = styled(motion.div)`
   position: absolute;
   top: calc(100% + 10px);
   right: 0;
-  background: #0d0d10e6;
+  background: ${({ theme }) => `${theme.colors.background}f2`};
   backdrop-filter: blur(28px) saturate(200%);
   -webkit-backdrop-filter: blur(28px) saturate(200%);
   border: 1.5px solid ${({ theme }) => theme?.colors?.primary || '#64ffda'};
@@ -76,8 +76,8 @@ const StatusMenu = styled(motion.div)`
   gap: 12px;
   width: 320px;
   box-shadow: 
-    0 15px 40px -10px rgba(0, 0, 0, 0.9),
-    0 0 2px 1px rgba(255, 255, 255, 0.05) inset;
+    0 15px 40px -10px rgba(0, 0, 0, 0.4),
+    0 0 2px 1px ${({ theme }) => theme.colors.primary}15 inset;
   z-index: 101;
   font-family: 'IBM Plex Mono', 'Fira Code', 'Space Mono', monospace;
 
@@ -93,7 +93,7 @@ const StatusMenu = styled(motion.div)`
     background-size: 100% 4px;
     pointer-events: none;
     z-index: 10;
-    opacity: 0.5;
+    opacity: 0.15;
   }
 
   will-change: transform, opacity;
@@ -115,7 +115,7 @@ const MenuHeader = styled.div`
   font-size: 0.72rem;
   font-weight: 800;
   color: ${({ theme }) => theme?.colors?.primary || '#64ffda'};
-  border-bottom: 1.5px solid rgba(255, 255, 255, 0.08);
+  border-bottom: 1.5px solid ${({ theme }) => `${theme.colors.primary}15`};
   padding-bottom: 8px;
   margin-bottom: 2px;
   display: flex;
@@ -128,12 +128,12 @@ const MenuHeader = styled.div`
 const NeofetchWrapper = styled.div`
   display: flex;
   gap: 16px;
-  background: rgba(0, 0, 0, 0.45);
-  border: 1px solid rgba(255, 255, 255, 0.04);
+  background: ${({ theme }) => `${theme.colors.primary}05`};
+  border: 1px solid ${({ theme }) => `${theme.colors.primary}15`};
   border-radius: 8px;
   padding: 10px 12px;
   align-items: flex-start;
-  box-shadow: inset 0 0 8px rgba(0,0,0,0.8);
+  box-shadow: inset 0 0 8px rgba(0, 0, 0, 0.05);
 `;
 
 const AsciiArt = styled.pre`
@@ -155,8 +155,8 @@ const InfoList = styled.div`
 
   .user-host {
     font-weight: 700;
-    color: #ffffff;
-    border-bottom: 1px dashed rgba(255, 255, 255, 0.15);
+    color: ${({ theme }) => theme?.colors?.text || '#ffffff'};
+    border-bottom: 1px dashed ${({ theme }) => `${theme?.colors?.primary || '#64ffda'}25`};
     padding-bottom: 2px;
     margin-bottom: 2px;
     
@@ -171,11 +171,11 @@ const InfoList = styled.div`
   }
 
   .stat-lbl {
-    color: rgba(255, 255, 255, 0.4);
+    color: ${({ theme }) => `${theme?.colors?.textSecondary || '#B3B3B3'}a0`};
   }
 
   .stat-val {
-    color: #ffffff;
+    color: ${({ theme }) => theme?.colors?.text || '#ffffff'};
     font-weight: 500;
   }
 `;
@@ -194,8 +194,8 @@ const MetricSection = styled.div`
   flex-direction: column;
   gap: 8px;
   padding: 10px 12px;
-  background: rgba(0, 0, 0, 0.3);
-  border: 1px solid rgba(255, 255, 255, 0.03);
+  background: ${({ theme }) => `${theme.colors.primary}04`};
+  border: 1px solid ${({ theme }) => `${theme.colors.primary}10`};
   border-radius: 8px;
 `;
 
@@ -216,7 +216,7 @@ const MetricLabel = styled.div`
   
   .val {
     font-family: monospace;
-    color: #ffffff;
+    color: ${({ theme }) => theme?.colors?.text || '#ffffff'};
   }
 `;
 
@@ -230,7 +230,7 @@ const SegmentedBar = styled.div`
 
 const LogTerminal = styled.div`
   background: #040406;
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid ${({ theme }) => `${theme.colors.primary}20`};
   border-radius: 8px;
   padding: 8px;
   font-family: 'Fira Code', 'Space Mono', monospace;
@@ -253,10 +253,10 @@ const LogTerminal = styled.div`
 `;
 
 const FormatToggleButton = styled(motion.button)`
-  background: linear-gradient(180deg, #2a2a2e 0%, #17171a 100%);
-  border: 1px solid #3f3f46;
-  border-bottom: 3px solid #000000;
-  color: #ffffff;
+  background: ${({ theme }) => `linear-gradient(180deg, ${theme.colors.primary}15 0%, ${theme.colors.primary}05 100%)`};
+  border: 1px solid ${({ theme }) => `${theme.colors.primary}35`};
+  border-bottom: 3px solid ${({ theme }) => `${theme.colors.primary}80`};
+  color: ${({ theme }) => theme.colors.text};
   padding: 8px 12px;
   border-radius: 8px;
   cursor: pointer;
@@ -266,17 +266,17 @@ const FormatToggleButton = styled(motion.button)`
   width: 100%;
   text-align: center;
   transition: all 0.1s ease;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.5);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 
   &:hover {
     color: ${({ theme }) => theme?.colors?.primary || '#64ffda'};
-    border-color: #52525b;
+    border-color: ${({ theme }) => theme?.colors?.primary || '#64ffda'}80;
   }
 
   &:active {
     border-bottom-width: 1px;
     transform: translateY(2px);
-    box-shadow: 0 1px 2px rgba(0,0,0,0.5);
+    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
   }
 `;
 

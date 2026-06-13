@@ -155,7 +155,7 @@ const RightControls = styled.div`
 const ActionButton = styled(motion.button)`
   background: ${({ theme, $primary }) => $primary ? theme.colors.text : 'transparent'};
   color: ${({ theme, $primary }) => $primary ? theme.colors.background : theme.colors.text};
-  border: 1px solid ${({ theme, $primary }) => $primary ? 'transparent' : `${theme.colors.border}80`};
+  border: 1px solid ${({ theme, $primary }) => $primary ? 'transparent' : `${theme.colors.primary}40`};
   padding: 6px 16px;
   border-radius: 12px;
   font-family: 'Oxanium', sans-serif;
@@ -221,7 +221,7 @@ const MobileContainer = styled.div`
   flex-direction: column;
   gap: 12px;
   padding: 16px 0 24px;
-  border-top: 1px solid ${({ theme }) => `${theme.colors.border}40`};
+  border-top: 1px solid ${({ theme }) => `${theme.colors.primary}20`};
 `;
 
 const navItems = [

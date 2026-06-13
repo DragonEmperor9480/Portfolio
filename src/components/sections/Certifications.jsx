@@ -151,7 +151,7 @@ const FileItem = styled.div`
   background: ${props => props.$isActive ? `${props.theme.colors.primary}20` : 'transparent'};
   
   &:hover {
-    background: ${props => props.$isActive ? `${props.theme.colors.primary}20` : `${props.theme.colors.border}30`};
+    background: ${props => props.$isActive ? `${props.theme.colors.primary}20` : `${props.theme.colors.primary}08`};
   }
   
   .file-icon {
@@ -248,7 +248,7 @@ const Tab = styled.div`
   box-sizing: border-box;
   
   &:hover {
-    background: ${props => props.$isActive ? props.theme.colors.background : `${props.theme.colors.border}50`};
+    background: ${props => props.$isActive ? props.theme.colors.background : `${props.theme.colors.primary}10`};
   }
   
   .tab-icon {

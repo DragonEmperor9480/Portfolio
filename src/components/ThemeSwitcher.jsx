@@ -13,7 +13,7 @@ const ThemeToggle = styled.div`
 
 const ThemeButton = styled(motion.button)`
   background: ${({ theme }) => `${theme.colors.primary}10`};
-  border: 1px solid ${({ theme }) => `${theme.colors.border}80`};
+  border: 1px solid ${({ theme }) => `${theme.colors.primary}40`};
   color: ${({ theme }) => theme.colors.primary};
   padding: 6px 14px;
   border-radius: 12px;
