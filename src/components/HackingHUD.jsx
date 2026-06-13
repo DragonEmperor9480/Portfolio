@@ -1,8 +1,11 @@
-/* eslint-disable react/prop-types */
 import { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import styled, { keyframes } from 'styled-components';
 import { motion, AnimatePresence } from 'framer-motion';
+import adamModelUrl from '../assets/3dmodels/adam_smasher_gmod_playermodel.glb?url';
+import ModelViewer from './ui/ModelViewer';
+import hitSoundUrl from '../assets/music/minecraft-mob-villager-hit-2-gaming-sound-effect-minecraft-hd-sound-effects.mp3';
+import deathSoundUrl from '../assets/music/villager-death.mp3';
 
 /* ─── Keyframe Animations ─────────────────────────────────────────── */
 
@@ -256,7 +259,7 @@ const CenterPanel = styled.div`
 `;
 
 const TargetOutline = styled.div`
-  width: 280px;
+  width: 360px;
   height: 380px;
   position: relative;
   display: flex;
@@ -772,11 +775,12 @@ const QUICKHACKS_DATA = [
     status: 'Ready',
     traceable: true,
     damageType: 'Deafening / Blinding',
+    damage: 20,
     duration: '3.0 sec',
     upload: '1.5 sec',
     desc: [
       'Resets targeted optic modules, completely blinding optical receptors.',
-      'Triggers a full viewport blackout on the portfolio site.',
+      'Deals 20 damage on upload success.',
       'Clears active tracking indicators and hides site navigation.',
     ]
   },
@@ -788,11 +792,12 @@ const QUICKHACKS_DATA = [
     status: 'Ready',
     traceable: false,
     damageType: 'Acoustic Malfunction',
+    damage: 15,
     duration: '4.0 sec',
     upload: '1.0 sec',
     desc: [
       'Deafens target, preventing communication of threat levels.',
-      'Shuts off all active background sound chimes and navbar player audio.',
+      'Deals 15 damage on upload success.',
       'Isolates local site sensors, executing in complete stealth.',
     ]
   },
@@ -804,11 +809,12 @@ const QUICKHACKS_DATA = [
     status: 'Ready',
     traceable: true,
     damageType: '164 Physical Damage',
+    damage: 45,
     duration: '7.5 sec',
     upload: '3.0 sec',
     desc: [
-      'Deals physical damage that scales higher with spent RAM.',
       'Forces synaptic circuits to overheat, causing heavy glitch ripples.',
+      'Deals 45 damage on upload success (scales with RAM cost).',
       'Increases overload thresholds, generating flashing color noise alerts.',
     ]
   },
@@ -820,12 +826,13 @@ const QUICKHACKS_DATA = [
     status: 'Ready',
     traceable: false,
     damageType: 'Electrostatic Shock',
+    damage: 30,
     duration: '1.5 sec',
     upload: '2.0 sec',
     desc: [
       'Discharges electrical load into targeted hardware components.',
+      'Deals 30 damage on upload success.',
       'Triggers a violent CSS screen-shaking and glitch distortion ripple.',
-      'Deals critical damage to layout alignments, centering indices.',
     ]
   },
   {
@@ -836,12 +843,13 @@ const QUICKHACKS_DATA = [
     status: 'Ready',
     traceable: true,
     damageType: 'System Scramble',
+    damage: 10,
     duration: '5.0 sec',
     upload: '1.0 sec',
     desc: [
       'Disables cyberware implants, scrambling targeted text drivers.',
+      'Deals 10 damage on upload success.',
       'Causes all portfolio heading text to scramble into random characters.',
-      'Reduces armor attributes, making grid panels semi-transparent.',
     ]
   },
   {
@@ -852,12 +860,13 @@ const QUICKHACKS_DATA = [
     status: 'Ready',
     traceable: true,
     damageType: 'Core Theme Hijack',
+    damage: 75,
     duration: 'Permanent',
     upload: '2.5 sec',
     desc: [
       'Bypasses core styling modules, injecting matrix shell scripts.',
+      'Deals 75 damage on upload success.',
       'Overrides current design themes, painting the interface in neon green.',
-      'Establishes permanent root control access on the portfolio node.',
     ]
   },
   {
@@ -868,10 +877,12 @@ const QUICKHACKS_DATA = [
     status: 'Insufficient RAM',
     traceable: false,
     damageType: 'System Lock',
+    damage: 100,
     duration: 'N/A',
     upload: 'N/A',
     desc: [
       'Forces target to exit active alert states, wiping sensor logs.',
+      'Deals 100 damage on upload success.',
       'Requires 31 RAM. Current cyberdeck RAM levels insufficient.',
     ],
     locked: true
@@ -884,12 +895,13 @@ const QUICKHACKS_DATA = [
     status: 'Insufficient RAM',
     traceable: true,
     damageType: 'Kernel Panic',
+    damage: 100,
     duration: 'Permanent',
     upload: '4.0 sec',
     desc: [
       'Crashes targeted system drivers, forcing kernel shutoff.',
+      'Deals 100 damage on upload success (instant defeat).',
       'Triggers a blue screen of death crash simulation on the viewport.',
-      'Can only be run with ultimate RAM level upgrades.',
     ],
     locked: true // We will unlock system collapse for gameplay fun if they have over 28 RAM, but initially locked
   }
@@ -911,6 +923,8 @@ const GAME_QUOTES = [
   'Praise the Sun!'
 ];
 
+
+
 export default function HackingHUD({ onClose, onOverrideSuccess }) {
   const [selectedIdx, setSelectedIdx] = useState(0);
   const [ramValue, setRamValue] = useState(26); // Current active RAM slots
@@ -918,6 +932,8 @@ export default function HackingHUD({ onClose, onOverrideSuccess }) {
   const [uploadPct, setUploadPct] = useState(0);
   const [activeEffect, setActiveEffect] = useState(null); // 'blackout' | 'shock' | 'malfunction' | 'bsod'
   const [sysCollapseUnlocked, setSysCollapseUnlocked] = useState(false);
+  const [targetHp, setTargetHp] = useState(100);
+  const [damageFlash, setDamageFlash] = useState(false);
 
   // Terminal logs state
   const [logs, setLogs] = useState([
@@ -950,6 +966,55 @@ export default function HackingHUD({ onClose, onOverrideSuccess }) {
     return () => clearInterval(interval);
   }, [sysCollapseUnlocked]);
 
+  // Handler for custom animation / styling overrides based on active hacks
+  const handleHUDAnimate = (model, group, elapsed) => {
+    let activeColor = 0xffffff; // default white (preserves original GLB textures/colors)
+    let opacity = 1.0;
+
+    if (targetHp === 0) {
+      // Target Defeated / Offline - heavy flickering, static dark/malfunctioning red color
+      const offlineColors = [0x550011, 0x990022, 0xff3366, 0x000000];
+      const strobeIdx = Math.floor(elapsed * 15) % offlineColors.length;
+      activeColor = offlineColors[strobeIdx];
+      opacity = Math.sin(elapsed * 8) > -0.2 ? 0.25 : 0.05;
+    } else if (damageFlash) {
+      // Strobe fast between neon pink, cyan, green and white on impact
+      const flashColors = [0xff3366, 0x00f0ff, 0x00ff41, 0xffffff];
+      const flashIdx = Math.floor(elapsed * 45) % flashColors.length;
+      activeColor = flashColors[flashIdx];
+      opacity = Math.sin(elapsed * 60) > 0 ? 0.95 : 0.3;
+    } else if (activeEffect === 'success') {
+      activeColor = 0x00ff41; // Matrix green
+    } else if (activeEffect === 'shock') {
+      // Fast warning strobe effect
+      activeColor = Math.sin(elapsed * 35) > 0 ? 0xeab308 : 0xff3366;
+    } else if (activeEffect === 'malfunction') {
+      // Glitched outline transparency + malfunction tint
+      opacity = Math.sin(elapsed * 25) > 0 ? 0.9 : 0.12;
+      activeColor = 0xff3366;
+    } else if (activeEffect === 'blackout') {
+      opacity = 0;
+    } else if (activeEffect === 'bsod') {
+      activeColor = 0x00f0ff; // kernel panic cyan
+    }
+
+    model.traverse((child) => {
+      if (child.isMesh && child.material) {
+        const applyProps = (mat) => {
+          if (mat.color) mat.color.setHex(activeColor);
+          mat.opacity = opacity;
+          mat.transparent = opacity < 1.0;
+        };
+
+        if (Array.isArray(child.material)) {
+          child.material.forEach(applyProps);
+        } else {
+          applyProps(child.material);
+        }
+      }
+    });
+  };
+
   const activeHack = sysCollapseUnlocked && selectedIdx === 7
     ? { ...QUICKHACKS_DATA[7], locked: false, status: 'Ready' }
     : QUICKHACKS_DATA[selectedIdx];
@@ -970,6 +1035,14 @@ export default function HackingHUD({ onClose, onOverrideSuccess }) {
       gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + duration);
       osc.start();
       osc.stop(ctx.currentTime + duration);
+    } catch { /* silent */ }
+  };
+
+  const playSoundEffect = (url) => {
+    try {
+      const audio = new Audio(url);
+      audio.volume = 0.45;
+      audio.play().catch(() => {});
     } catch { /* silent */ }
   };
 
@@ -1067,25 +1140,68 @@ export default function HackingHUD({ onClose, onOverrideSuccess }) {
   const triggerHackEffect = () => {
     playUploadSuccessSound();
     const hackId = activeHack.id;
+    const dmg = activeHack.damage || 20;
 
-    // Pick a random quote and add it to the console log
+    // Pick a random quote
     const randomQuote = GAME_QUOTES[Math.floor(Math.random() * GAME_QUOTES.length)];
-    setLogs(prev => [
-      ...prev,
-      {
-        id: Math.random().toString(),
-        type: 'success',
-        text: `[SUCCESS] ${activeHack.title.toUpperCase()} DEPLOYED SUCCESSFULLY.`
-      },
-      ...randomQuote.split('\n').map((line, idx) => ({
-        id: `${Math.random()}-${idx}`,
-        type: 'quote',
-        text: line.startsWith('Grace:') || line.startsWith('Leon:') ? `[COMM] ${line}` : `[DECRYPTED] "${line}"`
-      }))
-    ]);
 
-    // Show cyberpunk theme quote popup toast
-    setPopupQuote(randomQuote);
+    const nextHp = Math.max(0, targetHp - dmg);
+    if (nextHp === 0) {
+      playSoundEffect(deathSoundUrl);
+    } else {
+      playSoundEffect(hitSoundUrl);
+    }
+
+    setTargetHp(prev => {
+      const newHp = Math.max(0, prev - dmg);
+
+      // Append logs
+      setLogs(logPrev => {
+        const updatedLogs = [
+          ...logPrev,
+          {
+            id: Math.random().toString(),
+            type: 'success',
+            text: `[SUCCESS] ${activeHack.title.toUpperCase()} DEPLOYED SUCCESSFULLY.`
+          },
+          {
+            id: Math.random().toString(),
+            type: 'exe',
+            text: `[DAMAGE] SCAN TARGET IMPACT: -${dmg} HP (HP: ${newHp}/100)`
+          }
+        ];
+
+        // If target HP reached 0, trigger victory sequence logs
+        if (newHp === 0) {
+          updatedLogs.push({
+            id: Math.random().toString(),
+            type: 'system',
+            text: `[SYSTEM] TARGET DEFEATED. DECRYPTING DATA STREAM...`
+          });
+
+          randomQuote.split('\n').forEach((line, idx) => {
+            updatedLogs.push({
+              id: `${Math.random()}-${idx}`,
+              type: 'quote',
+              text: line.startsWith('Grace:') || line.startsWith('Leon:') ? `[COMM] ${line}` : `[DECRYPTED] "${line}"`
+            });
+          });
+        }
+
+        return updatedLogs;
+      });
+
+      // Show cyberpunk theme quote popup toast ONLY if HP reaches 0
+      if (newHp === 0) {
+        setPopupQuote(randomQuote);
+      }
+
+      return newHp;
+    });
+
+    // Flash Smasher visual mesh
+    setDamageFlash(true);
+    setTimeout(() => setDamageFlash(false), 600);
 
     if (hackId === 'matrix_override') {
       onOverrideSuccess(); // switch theme to Matrix
@@ -1093,8 +1209,9 @@ export default function HackingHUD({ onClose, onOverrideSuccess }) {
       setActiveEffect('success');
       setTimeout(() => setActiveEffect(null), 3000);
     } else if (hackId === 'reboot_optics') {
-      setActiveEffect('blackout');
-      setTimeout(() => setActiveEffect(null), 3500);
+      playGlitchSound();
+      setActiveEffect('shock');
+      setTimeout(() => setActiveEffect(null), 1800);
     } else if (hackId === 'short_circuit') {
       playGlitchSound();
       setActiveEffect('shock');
@@ -1109,9 +1226,14 @@ export default function HackingHUD({ onClose, onOverrideSuccess }) {
         setActiveEffect(null);
       }, 5000);
     } else if (hackId === 'sonic_shock') {
-      // Toggle a sound mute effect or play a damp blip
-      setActiveEffect('success');
-      setTimeout(() => setActiveEffect(null), 2000);
+      playGlitchSound();
+      setActiveEffect('malfunction');
+      // Apply body level text scramble class
+      document.body.classList.add('cyberdeck-malfunction');
+      setTimeout(() => {
+        document.body.classList.remove('cyberdeck-malfunction');
+        setActiveEffect(null);
+      }, 3000);
     } else if (hackId === 'system_collapse') {
       setActiveEffect('bsod');
     }
@@ -1163,7 +1285,18 @@ export default function HackingHUD({ onClose, onOverrideSuccess }) {
               </div>
               <div style={{ display: 'flex', justifyContent: 'center' }}>
                 <AlertButton
-                  onClick={() => setPopupQuote(null)}
+                  onClick={() => {
+                    setPopupQuote(null);
+                    setTargetHp(100);
+                    setLogs(prev => [
+                      ...prev,
+                      {
+                        id: Math.random().toString(),
+                        type: 'system',
+                        text: '[SYSTEM] REBOOTING SCAN TARGET... HP RESTORED.'
+                      }
+                    ]);
+                  }}
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                 >
@@ -1251,31 +1384,65 @@ export default function HackingHUD({ onClose, onOverrideSuccess }) {
           <CenterPanel>
             <TargetHeader>
               <i className="fas fa-caret-down caret" />
-              <span>AMRUTESH NAREGAL // FULL-STACK DEV</span>
+              <span>ADAM SMASHER // FINAL BOSS</span>
             </TargetHeader>
             <TargetOutline>
               <ReticleRing />
-              <TargetVector viewBox="0 0 280 380">
-                {/* Neon silhouette vector */}
-                <path 
-                  className="target-outline"
-                  d="M140 30 C155 30 165 42 165 58 C165 74 155 86 140 86 C125 86 115 74 115 58 C115 42 125 30 140 30 Z M115 88 L165 88 L185 130 C190 140 180 160 170 160 L165 160 L165 250 L180 350 L145 350 L140 270 L135 350 L100 350 L115 250 L115 160 L110 160 C100 160 90 140 95 130 Z" 
-                />
+              <ModelViewer
+                modelUrl={adamModelUrl}
+                renderMode="original"
+                color={0xff3366}
+                opacity={0.85}
+                interactive={false}
+                autoRotate={true}
+                rotateSpeed={0.012}
+                floatAnimation={true}
+                cameraY={0.5}
+                onAnimate={handleHUDAnimate}
+              />
+              <TargetVector viewBox="0 0 360 380">
                 {/* Horizontal scanner trace bar */}
-                <line className="scanning-line" x1="20" y1="190" x2="260" y2="190" />
+                <line className="scanning-line" x1="20" y1="190" x2="340" y2="190" />
                 {/* Reticle corner ticks */}
                 <path d="M 10 10 L 30 10 M 10 10 L 10 30" strokeWidth="2.5" />
-                <path d="M 270 10 L 250 10 M 270 10 L 270 30" strokeWidth="2.5" />
+                <path d="M 350 10 L 330 10 M 350 10 L 350 30" strokeWidth="2.5" />
                 <path d="M 10 370 L 30 370 M 10 370 L 10 350" strokeWidth="2.5" />
-                <path d="M 270 370 L 250 370 M 270 370 L 270 350" strokeWidth="2.5" />
+                <path d="M 350 370 L 330 370 M 350 370 L 350 350" strokeWidth="2.5" />
               </TargetVector>
             </TargetOutline>
             
             {/* Telemetry metadata overlay */}
-            <div style={{ position: 'absolute', bottom: 'calc(4% + 96px)', fontSize: '0.62rem', color: '#ff3366', opacity: 0.75, display: 'flex', flexDirection: 'column', gap: '3px', border: '1px solid rgba(255,51,102,0.15)', padding: '6px 12px', background: 'rgba(0,0,0,0.4)', borderRadius: '4px' }}>
-              <div>HP: 100/100</div>
-              <div>LOC: BENGALURU, IN</div>
-              <div>LEVEL: 42</div>
+            <div style={{ position: 'absolute', bottom: 'calc(4% + 96px)', fontSize: '0.62rem', color: '#ff3366', opacity: 0.75, display: 'flex', flexDirection: 'column', gap: '5px', border: '1px solid rgba(255,51,102,0.15)', padding: '8px 14px', background: 'rgba(0,0,0,0.6)', borderRadius: '4px', minWidth: '130px', boxSizing: 'border-box' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <span>HP:</span>
+                <span style={{ 
+                  fontWeight: 'bold', 
+                  color: targetHp > 50 ? '#00ff41' : targetHp > 20 ? '#eab308' : '#ff3366',
+                  textShadow: `0 0 5px ${targetHp > 50 ? '#00ff4180' : targetHp > 20 ? '#eab30880' : '#ff336680'}`
+                }}>
+                  {targetHp > 0 ? `${targetHp}/100` : 'OFFLINE'}
+                </span>
+              </div>
+              
+              {/* HP Bar */}
+              <div style={{ width: '100%', height: '4px', background: 'rgba(255, 255, 255, 0.08)', borderRadius: '2px', overflow: 'hidden' }}>
+                <div style={{ 
+                  height: '100%', 
+                  width: `${targetHp}%`, 
+                  background: targetHp > 50 ? '#00ff41' : targetHp > 20 ? '#eab308' : '#ff3366',
+                  boxShadow: `0 0 4px ${targetHp > 50 ? '#00ff41' : targetHp > 20 ? '#eab308' : '#ff3366'}`,
+                  transition: 'width 0.35s cubic-bezier(0.1, 0.8, 0.3, 1)' 
+                }} />
+              </div>
+
+              <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '2px' }}>
+                <span>LOC:</span>
+                <span style={{ color: '#ffffff' }}>BENGALURU, IN</span>
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                <span>LEVEL:</span>
+                <span style={{ color: '#ffffff' }}>42</span>
+              </div>
             </div>
 
             {/* Terminal Logs Panel */}
@@ -1315,6 +1482,10 @@ export default function HackingHUD({ onClose, onOverrideSuccess }) {
               <div className="stat-row">
                 <span>RAM Cost</span>
                 <span>{activeHack.ram}</span>
+              </div>
+              <div className="stat-row">
+                <span>Base Damage</span>
+                <span style={{ color: '#00f0ff', fontWeight: 'bold' }}>-{activeHack.damage} HP</span>
               </div>
               <div className="stat-row">
                 <span>Upload Time</span>
