@@ -946,6 +946,21 @@ export default function HackingHUD({ onClose, onOverrideSuccess }) {
     { id: '3', type: 'system', text: '[SYSTEM] RAM CAALLOCATION NOMINAL. DECK READY.' }
   ]);
   const logEndRef = useRef(null);
+  const hitAudioRef = useRef(null);
+  const deathAudioRef = useRef(null);
+
+  // Preload sounds immediately on HUD open to eliminate playback latency
+  useEffect(() => {
+    const hit = new Audio(hitSoundUrl);
+    hit.volume = 0.45;
+    hit.load();
+    hitAudioRef.current = hit;
+
+    const death = new Audio(deathSoundUrl);
+    death.volume = 0.45;
+    death.load();
+    deathAudioRef.current = death;
+  }, []);
   
   // Alert popup states
   const [popupQuote, setPopupQuote] = useState(null);
@@ -1044,9 +1059,16 @@ export default function HackingHUD({ onClose, onOverrideSuccess }) {
 
   const playSoundEffect = (url) => {
     try {
-      const audio = new Audio(url);
-      audio.volume = 0.45;
-      audio.play().catch(() => {});
+      const ref = url === hitSoundUrl ? hitAudioRef : deathAudioRef;
+      if (ref.current) {
+        ref.current.currentTime = 0;
+        ref.current.play().catch(() => {});
+      } else {
+        // Fallback if ref not ready
+        const audio = new Audio(url);
+        audio.volume = 0.45;
+        audio.play().catch(() => {});
+      }
     } catch { /* silent */ }
   };
 
@@ -1142,7 +1164,6 @@ export default function HackingHUD({ onClose, onOverrideSuccess }) {
 
   // Visual quickhack triggers
   const triggerHackEffect = () => {
-    playUploadSuccessSound();
     const hackId = activeHack.id;
     const dmg = activeHack.damage || 20;
 
@@ -1213,15 +1234,12 @@ export default function HackingHUD({ onClose, onOverrideSuccess }) {
       setActiveEffect('success');
       setTimeout(() => setActiveEffect(null), 3000);
     } else if (hackId === 'reboot_optics') {
-      playGlitchSound();
       setActiveEffect('shock');
       setTimeout(() => setActiveEffect(null), 1800);
     } else if (hackId === 'short_circuit') {
-      playGlitchSound();
       setActiveEffect('shock');
       setTimeout(() => setActiveEffect(null), 1800);
     } else if (hackId === 'cyberware_malfunction') {
-      playGlitchSound();
       setActiveEffect('malfunction');
       // Apply body level text scramble class
       document.body.classList.add('cyberdeck-malfunction');
@@ -1230,7 +1248,6 @@ export default function HackingHUD({ onClose, onOverrideSuccess }) {
         setActiveEffect(null);
       }, 5000);
     } else if (hackId === 'sonic_shock') {
-      playGlitchSound();
       setActiveEffect('malfunction');
       // Apply body level text scramble class
       document.body.classList.add('cyberdeck-malfunction');
