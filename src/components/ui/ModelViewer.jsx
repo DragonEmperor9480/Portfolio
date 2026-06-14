@@ -107,7 +107,7 @@ export default function ModelViewer({
     let scene, camera, renderer, controls, modelGroup, reqId, resizeObserver;
     const container = containerRef.current;
     const canvas = canvasRef.current;
-    const clock = new THREE.Clock();
+    const startTime = performance.now();
 
     try {
       const w = container.clientWidth || 300;
@@ -214,7 +214,7 @@ export default function ModelViewer({
       // Animation Loop
       const animate = () => {
         reqId = requestAnimationFrame(animate);
-        const elapsed = clock.getElapsedTime();
+        const elapsed = (performance.now() - startTime) / 1000;
 
         if (modelGroup) {
           // Automatic rotation (only if we're not manually interacting with OrbitControls or if requested)
