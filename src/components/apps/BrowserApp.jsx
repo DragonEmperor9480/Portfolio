@@ -32,9 +32,9 @@ const BrowserShell = styled.div`
 const TabBar = styled.div`
   display: flex;
   align-items: flex-end;
-  background: rgba(0, 0, 0, 0.4);
+  background: ${({ theme }) => theme.name === 'Light Mode' ? 'rgba(0, 0, 0, 0.05)' : 'rgba(0, 0, 0, 0.4)'};
   padding: 6px 12px 0;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  border-bottom: 1px solid ${({ theme }) => theme.colors.border};
   gap: 4px;
   overflow-x: auto;
   flex-shrink: 0;
@@ -53,9 +53,9 @@ const TabItem = styled.div`
   align-items: center;
   gap: 8px;
   padding: 6px 14px;
-  background: ${({ $active }) => $active ? 'rgba(255, 255, 255, 0.08)' : 'rgba(255, 255, 255, 0.02)'};
-  border: 1px solid ${({ $active }) => $active ? 'rgba(255, 255, 255, 0.1)' : 'rgba(255, 255, 255, 0.03)'};
-  border-bottom: ${({ $active, theme }) => $active ? `2px solid ${theme.colors.primary || '#6366f1'}` : '1px solid rgba(255, 255, 255, 0.03)'};
+  background: ${({ $active, theme }) => $active ? (theme.name === 'Light Mode' ? 'rgba(0, 0, 0, 0.06)' : 'rgba(255, 255, 255, 0.08)') : (theme.name === 'Light Mode' ? 'rgba(0, 0, 0, 0.02)' : 'rgba(255, 255, 255, 0.02)')};
+  border: 1px solid ${({ $active, theme }) => $active ? theme.colors.border : 'transparent'};
+  border-bottom: ${({ $active, theme }) => $active ? `2px solid ${theme.colors.primary}` : 'none'};
   border-top-left-radius: 8px;
   border-top-right-radius: 8px;
   font-size: 0.68rem;
@@ -68,8 +68,8 @@ const TabItem = styled.div`
   overflow: hidden;
 
   &:hover {
-    background: ${({ $active }) => $active ? 'rgba(255, 255, 255, 0.08)' : 'rgba(255, 255, 255, 0.05)'};
-    border-color: rgba(255, 255, 255, 0.12);
+    background: ${({ $active, theme }) => $active ? (theme.name === 'Light Mode' ? 'rgba(0, 0, 0, 0.06)' : 'rgba(255, 255, 255, 0.08)') : (theme.name === 'Light Mode' ? 'rgba(0, 0, 0, 0.04)' : 'rgba(255, 255, 255, 0.05)')};
+    border-color: ${({ theme }) => theme.colors.border};
   }
 
   .tab-title {
@@ -77,12 +77,12 @@ const TabItem = styled.div`
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    color: ${({ $active, theme }) => $active ? (theme.colors.text || '#ffffff') : 'rgba(255,255,255,0.45)'};
+    color: ${({ $active, theme }) => $active ? theme.colors.text : theme.colors.textSecondary};
   }
 
   .tab-icon {
     font-size: 0.65rem;
-    color: ${({ $active, theme }) => $active ? (theme.colors.primary || '#6366f1') : 'rgba(255,255,255,0.3)'};
+    color: ${({ $active, theme }) => $active ? theme.colors.primary : theme.colors.textSecondary};
     flex-shrink: 0;
   }
 
@@ -94,21 +94,21 @@ const TabItem = styled.div`
     height: 12px;
     border-radius: 50%;
     font-size: 0.55rem;
-    color: rgba(255, 255, 255, 0.3);
+    color: ${({ theme }) => theme.colors.textSecondary};
     transition: all 0.15s ease;
     flex-shrink: 0;
 
     &:hover {
-      background: rgba(255, 255, 255, 0.15);
+      background: ${({ theme }) => theme.name === 'Light Mode' ? 'rgba(0, 0, 0, 0.08)' : 'rgba(255, 255, 255, 0.15)'};
       color: #ef4444;
     }
   }
 `;
 
 const AddTabBtn = styled.button`
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  color: rgba(255, 255, 255, 0.5);
+  background: ${({ theme }) => theme.name === 'Light Mode' ? 'rgba(0, 0, 0, 0.03)' : 'rgba(255, 255, 255, 0.03)'};
+  border: 1px solid ${({ theme }) => theme.colors.border};
+  color: ${({ theme }) => theme.colors.textSecondary};
   width: 24px;
   height: 24px;
   border-radius: 6px;
@@ -121,9 +121,9 @@ const AddTabBtn = styled.button`
   flex-shrink: 0;
 
   &:hover {
-    background: rgba(255, 255, 255, 0.08);
-    color: ${({ theme }) => theme.colors.primary || '#6366f1'};
-    border-color: rgba(255, 255, 255, 0.15);
+    background: ${({ theme }) => theme.name === 'Light Mode' ? 'rgba(0, 0, 0, 0.06)' : 'rgba(255, 255, 255, 0.08)'};
+    color: ${({ theme }) => theme.colors.primary};
+    border-color: ${({ theme }) => theme.colors.primary};
     transform: scale(1.05);
   }
 `;
@@ -133,9 +133,9 @@ const ControlBar = styled.div`
   display: flex;
   align-items: center;
   gap: 12px;
-  background: rgba(7, 7, 12, 0.4);
+  background: ${({ theme }) => theme.name === 'Light Mode' ? 'rgba(255, 255, 255, 0.45)' : 'rgba(7, 7, 12, 0.4)'};
   backdrop-filter: blur(14px);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  border-bottom: 1px solid ${({ theme }) => theme.colors.border};
   padding: 8px 16px;
   flex-shrink: 0;
   z-index: 10;
@@ -149,7 +149,7 @@ const NavButtons = styled.div`
   button {
     background: transparent;
     border: none;
-    color: rgba(255, 255, 255, 0.4);
+    color: ${({ theme }) => theme.colors.textSecondary};
     cursor: pointer;
     font-size: 0.75rem;
     width: 26px;
@@ -161,8 +161,8 @@ const NavButtons = styled.div`
     transition: all 0.2s ease;
 
     &:hover:not(:disabled) {
-      color: ${({ theme }) => theme.colors.text || '#ffffff'};
-      background: rgba(255, 255, 255, 0.06);
+      color: ${({ theme }) => theme.colors.text};
+      background: ${({ theme }) => theme.name === 'Light Mode' ? 'rgba(0, 0, 0, 0.04)' : 'rgba(255, 255, 255, 0.06)'};
     }
 
     &:disabled {
@@ -180,21 +180,21 @@ const AddressForm = styled.form`
 
 const AddressBar = styled.div`
   width: 100%;
-  background: rgba(0, 0, 0, 0.35);
-  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: ${({ theme }) => theme.name === 'Light Mode' ? 'rgba(0, 0, 0, 0.04)' : 'rgba(0, 0, 0, 0.35)'};
+  border: 1px solid ${({ theme }) => theme.colors.border};
   border-radius: 8px;
   padding: 5px 12px;
   display: flex;
   align-items: center;
   gap: 8px;
   font-size: 0.7rem;
-  color: rgba(255, 255, 255, 0.4);
+  color: ${({ theme }) => theme.colors.textSecondary};
   transition: all 0.22s ease;
 
   &:focus-within {
-    border-color: ${({ theme }) => theme.colors.primary || '#6366f1'}80;
-    background: rgba(0, 0, 0, 0.45);
-    box-shadow: 0 0 10px ${({ theme }) => theme.colors.primary || '#6366f1'}15;
+    border-color: ${({ theme }) => theme.colors.primary}80;
+    background: ${({ theme }) => theme.name === 'Light Mode' ? 'rgba(0, 0, 0, 0.06)' : 'rgba(0, 0, 0, 0.45)'};
+    box-shadow: 0 0 10px ${({ theme }) => theme.colors.primary}15;
   }
 
   .sec-icon {
@@ -206,7 +206,7 @@ const AddressBar = styled.div`
     flex-grow: 1;
     background: transparent;
     border: none;
-    color: ${({ theme }) => theme.colors.text || '#eaeaf2'};
+    color: ${({ theme }) => theme.colors.text};
     font-family: inherit;
     font-size: inherit;
     outline: none;
@@ -242,8 +242,8 @@ const BookmarksRow = styled.div`
   align-items: center;
   gap: 6px;
   padding: 6px 16px;
-  background: rgba(0, 0, 0, 0.22);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  background: ${({ theme }) => theme.name === 'Light Mode' ? 'rgba(0, 0, 0, 0.02)' : 'rgba(0, 0, 0, 0.22)'};
+  border-bottom: 1px solid ${({ theme }) => theme.colors.border};
   font-size: 0.65rem;
   flex-shrink: 0;
   overflow-x: auto;
@@ -252,7 +252,7 @@ const BookmarksRow = styled.div`
   &::-webkit-scrollbar { display: none; }
 
   .bookmarks-label {
-    color: rgba(255, 255, 255, 0.3);
+    color: ${({ theme }) => theme.colors.textSecondary};
     margin-right: 4px;
     font-weight: 600;
     text-transform: uppercase;
@@ -262,9 +262,9 @@ const BookmarksRow = styled.div`
 `;
 
 const BookmarkBtn = styled.button`
-  background: rgba(255, 255, 255, 0.02);
-  border: 1px solid rgba(255, 255, 255, 0.04);
-  color: rgba(255, 255, 255, 0.5);
+  background: ${({ theme }) => theme.name === 'Light Mode' ? 'rgba(0, 0, 0, 0.02)' : 'rgba(255, 255, 255, 0.02)'};
+  border: 1px solid ${({ theme }) => theme.colors.border};
+  color: ${({ theme }) => theme.colors.textSecondary};
   padding: 3px 8px;
   border-radius: 5px;
   cursor: pointer;
@@ -276,9 +276,9 @@ const BookmarkBtn = styled.button`
   transition: all 0.2s ease;
 
   &:hover {
-    background: rgba(255, 255, 255, 0.07);
-    color: ${({ theme }) => theme.colors.primary || '#6366f1'};
-    border-color: ${({ theme }) => theme.colors.primary || '#6366f1'}40;
+    background: ${({ theme }) => theme.name === 'Light Mode' ? 'rgba(0, 0, 0, 0.05)' : 'rgba(255, 255, 255, 0.07)'};
+    color: ${({ theme }) => theme.colors.primary};
+    border-color: ${({ theme }) => theme.colors.primary}40;
   }
 
   i {
@@ -292,7 +292,7 @@ const Viewport = styled.div`
   display: flex;
   position: relative;
   overflow: hidden;
-  background: #030307;
+  background: ${({ theme }) => theme.colors.background};
 `;
 
 const SandboxIframe = styled.iframe`
@@ -344,7 +344,9 @@ const Dashboard = styled.div`
   justify-content: center;
   position: relative;
   z-index: 5;
-  background: radial-gradient(circle at center, rgba(30,30,55,0.15) 0%, rgba(3,3,7,0) 70%);
+  background: ${({ theme }) => theme.name === 'Light Mode' 
+    ? 'radial-gradient(circle at center, rgba(0,0,0,0.02) 0%, rgba(0,0,0,0) 70%)' 
+    : 'radial-gradient(circle at center, rgba(30,30,55,0.15) 0%, rgba(3,3,7,0) 70%)'};
 
   &::-webkit-scrollbar {
     width: 6px;
@@ -377,7 +379,9 @@ const DashboardLogo = styled.div`
     letter-spacing: 4px;
     text-transform: uppercase;
     margin: 0;
-    background: linear-gradient(to right, #ffffff, rgba(255, 255, 255, 0.7));
+    background: ${({ theme }) => theme.name === 'Light Mode' 
+      ? `linear-gradient(to right, ${theme.colors.text}, ${theme.colors.textSecondary})`
+      : 'linear-gradient(to right, #ffffff, rgba(255, 255, 255, 0.7))'};
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
   }
@@ -400,22 +404,22 @@ const SearchForm = styled.form`
 const LargeSearchBox = styled.div`
   display: flex;
   align-items: center;
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: ${({ theme }) => theme.name === 'Light Mode' ? 'rgba(0, 0, 0, 0.02)' : 'rgba(255, 255, 255, 0.03)'};
+  border: 1px solid ${({ theme }) => theme.colors.border};
   border-radius: 12px;
   padding: 10px 16px;
   gap: 12px;
   transition: all 0.26s cubic-bezier(0.4, 0, 0.2, 1);
 
   &:focus-within {
-    border-color: ${({ theme }) => theme.colors.primary || '#6366f1'}80;
-    background: rgba(255, 255, 255, 0.05);
-    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5), 0 0 20px ${({ theme }) => theme.colors.primary || '#6366f1'}20;
+    border-color: ${({ theme }) => theme.colors.primary}80;
+    background: ${({ theme }) => theme.name === 'Light Mode' ? 'rgba(0, 0, 0, 0.04)' : 'rgba(255, 255, 255, 0.05)'};
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.15), 0 0 20px ${({ theme }) => theme.colors.primary}20;
     transform: translateY(-1px);
   }
 
   i {
-    color: rgba(255, 255, 255, 0.3);
+    color: ${({ theme }) => theme.colors.textSecondary};
     font-size: 0.82rem;
   }
 
@@ -424,13 +428,13 @@ const LargeSearchBox = styled.div`
     background: transparent;
     border: none;
     outline: none;
-    color: #ffffff;
+    color: ${({ theme }) => theme.colors.text};
     font-family: inherit;
     font-size: 0.78rem;
     letter-spacing: 0.5px;
 
     &::placeholder {
-      color: rgba(255, 255, 255, 0.25);
+      color: ${({ theme }) => theme.colors.textSecondary}80;
     }
   }
 `;
@@ -450,8 +454,8 @@ const BookmarksGrid = styled.div`
 `;
 
 const BookmarkCard = styled(motion.div)`
-  background: rgba(255, 255, 255, 0.02);
-  border: 1px solid rgba(255, 255, 255, 0.04);
+  background: ${({ theme }) => theme.name === 'Light Mode' ? 'rgba(0, 0, 0, 0.02)' : 'rgba(255, 255, 255, 0.02)'};
+  border: 1px solid ${({ theme }) => theme.colors.border};
   border-radius: 12px;
   padding: 18px 14px;
   display: flex;
@@ -473,7 +477,7 @@ const BookmarkCard = styled(motion.div)`
   }
 
   &:hover {
-    border-color: ${({ theme }) => theme.colors.primary || '#6366f1'}40;
+    border-color: ${({ theme }) => theme.colors.primary}40;
     &::before { opacity: 1; }
   }
 
@@ -487,22 +491,22 @@ const BookmarkCard = styled(motion.div)`
   .card-name {
     font-size: 0.72rem;
     font-weight: 700;
-    color: #ffffff;
+    color: ${({ theme }) => theme.colors.text};
     margin-bottom: 4px;
     z-index: 2;
   }
 
   .card-desc {
     font-size: 0.58rem;
-    color: rgba(255, 255, 255, 0.35);
+    color: ${({ theme }) => theme.colors.textSecondary};
     line-height: 1.3;
     z-index: 2;
   }
 `;
 
 const HelpCard = styled.div`
-  background: rgba(255, 255, 255, 0.01);
-  border: 1px solid rgba(255, 255, 255, 0.04);
+  background: rgba(0, 0, 0, 0.01);
+  border: 1px solid ${({ theme }) => theme.colors.border};
   border-radius: 10px;
   padding: 12px 18px;
   max-width: 440px;
@@ -510,7 +514,7 @@ const HelpCard = styled.div`
 
   p {
     font-size: 0.58rem;
-    color: rgba(255, 255, 255, 0.3);
+    color: ${({ theme }) => theme.colors.textSecondary};
     margin: 0;
     line-height: 1.4;
     letter-spacing: 0.2px;

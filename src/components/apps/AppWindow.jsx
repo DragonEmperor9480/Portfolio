@@ -13,11 +13,11 @@ const WindowContainer = styled(motion.div)`
   background: ${({ theme }) => theme.colors.glass};
   backdrop-filter: blur(24px) saturate(180%);
   -webkit-backdrop-filter: blur(24px) saturate(180%);
-  border: 1px solid ${({ theme }) => theme.colors.primary}40;
+  border: 1px solid ${({ theme }) => theme.name === 'Light Mode' ? 'rgba(0,0,0,0.08)' : `${theme.colors.primary}40`};
   border-radius: ${({ $isMaximized }) => ($isMaximized ? '0' : '16px')};
-  box-shadow:
-    0 24px 64px -16px rgba(0, 0, 0, 0.75),
-    0 0 0 1px ${({ theme }) => theme.colors.primary}15 inset;
+  box-shadow: ${({ theme }) => theme.name === 'Light Mode'
+    ? '0 24px 64px -16px rgba(0, 0, 0, 0.12), 0 0 0 1px rgba(0, 0, 0, 0.05) inset'
+    : `0 24px 64px -16px rgba(0, 0, 0, 0.75), 0 0 0 1px ${theme.colors.primary}15 inset`};
   display: flex;
   flex-direction: column;
   z-index: ${({ $zIndex }) => $zIndex};
@@ -56,8 +56,8 @@ const TitleBar = styled.div`
   align-items: center;
   justify-content: space-between;
   padding: 10px 16px;
-  background: rgba(0, 0, 0, 0.3);
-  border-bottom: 1px solid ${({ theme }) => theme.colors.primary}20;
+  background: ${({ theme }) => theme.name === 'Light Mode' ? 'rgba(0, 0, 0, 0.03)' : 'rgba(0, 0, 0, 0.3)'};
+  border-bottom: 1px solid ${({ theme }) => theme.colors.border};
   user-select: none;
   flex-shrink: 0;
   cursor: ${({ $isDraggable }) => ($isDraggable ? 'grab' : 'default')};
@@ -93,7 +93,7 @@ const ControlsGroup = styled.div`
 `;
 
 const ControlButton = styled.button`
-  background: rgba(255, 255, 255, 0.04);
+  background: ${({ theme }) => theme.name === 'Light Mode' ? 'rgba(0, 0, 0, 0.04)' : 'rgba(255, 255, 255, 0.04)'};
   border: 1px solid
     ${({ $type }) =>
       $type === 'close'
@@ -152,7 +152,7 @@ const WindowContent = styled.div`
   flex: 1;
   overflow: auto;
   position: relative;
-  background: rgba(0, 0, 0, 0.12);
+  background: ${({ theme }) => theme.name === 'Light Mode' ? 'rgba(0, 0, 0, 0.02)' : 'rgba(0, 0, 0, 0.12)'};
   border-radius: ${({ $isMaximized }) => $isMaximized ? '0' : '0 0 16px 16px'};
   min-height: 0; /* crucial: allows flex child to shrink and scroll */
 

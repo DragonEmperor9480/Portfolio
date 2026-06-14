@@ -39,7 +39,7 @@ const VSCodeWindow = styled(motion.div)`
   border: 1px solid ${({ theme }) => theme.colors.border};
   border-radius: 12px;
   overflow: hidden;
-  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+  box-shadow: ${({ theme }) => theme.name === 'Light Mode' ? '0 8px 32px 0 rgba(0, 0, 0, 0.08)' : '0 8px 32px 0 rgba(0, 0, 0, 0.37)'};
   width: 100%;
   max-width: 100%;
   height: 900px;
@@ -169,6 +169,24 @@ const ExplorerSubFolder = styled(ExplorerFolder)`
 const FileList = styled.div`
   flex: 1;
   overflow-y: auto;
+
+  &::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  
+  &::-webkit-scrollbar-thumb {
+    background: ${({ theme }) => theme.name === 'Light Mode' ? 'rgba(0, 0, 0, 0.15)' : 'rgba(255, 255, 255, 0.15)'};
+    border-radius: 3px;
+  }
+  
+  &::-webkit-scrollbar-thumb:hover {
+    background: ${({ theme }) => theme.name === 'Light Mode' ? 'rgba(0, 0, 0, 0.25)' : 'rgba(255, 255, 255, 0.25)'};
+  }
 `;
 
 const FileItem = styled.div`
@@ -409,6 +427,24 @@ const CodePane = styled.div`
   gap: 14px;
   font-family: 'JetBrains Mono', 'Fira Code', 'Space Mono', monospace;
   background: ${({ theme }) => theme.colors.background};
+
+  &::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  
+  &::-webkit-scrollbar-thumb {
+    background: ${({ theme }) => theme.name === 'Light Mode' ? 'rgba(0, 0, 0, 0.15)' : 'rgba(255, 255, 255, 0.15)'};
+    border-radius: 4px;
+  }
+  
+  &::-webkit-scrollbar-thumb:hover {
+    background: ${({ theme }) => theme.name === 'Light Mode' ? 'rgba(0, 0, 0, 0.25)' : 'rgba(255, 255, 255, 0.25)'};
+  }
 `;
 
 const LineNumbers = styled.div`
@@ -456,6 +492,24 @@ const PreviewPane = styled.div`
   flex-direction: column;
   overflow-y: auto;
   background: ${({ theme }) => theme.colors.glass};
+
+  &::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  
+  &::-webkit-scrollbar-thumb {
+    background: ${({ theme }) => theme.name === 'Light Mode' ? 'rgba(0, 0, 0, 0.15)' : 'rgba(255, 255, 255, 0.15)'};
+    border-radius: 4px;
+  }
+  
+  &::-webkit-scrollbar-thumb:hover {
+    background: ${({ theme }) => theme.name === 'Light Mode' ? 'rgba(0, 0, 0, 0.25)' : 'rgba(255, 255, 255, 0.25)'};
+  }
 `;
 
 const CertificatePreview = styled.div`

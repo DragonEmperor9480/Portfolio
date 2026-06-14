@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import styled from 'styled-components';
+import styled, { useTheme as useStyledTheme } from 'styled-components';
 import { motion, AnimatePresence } from 'framer-motion';
 import { usePlayer } from '../context/PlayerContext';
 import { useTheme } from '../context/ThemeContext';
@@ -54,19 +54,19 @@ const DropdownPanel = styled(motion.div)`
   position: absolute;
   top: calc(100% + 12px);
   left: 10px;
-  background: ${({ theme }) => `${theme?.colors?.background || '#0a192f'}f2`};
-  backdrop-filter: blur(32px) saturate(200%);
-  -webkit-backdrop-filter: blur(32px) saturate(200%);
-  border: 1px solid ${({ theme }) => `${theme?.colors?.border || 'rgba(100,255,218,0.15)'}`};
+  background: ${({ theme }) => theme.colors.glass || 'rgba(10, 25, 47, 0.7)'};
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  border: 1px solid ${({ theme }) => theme.colors.border};
   border-radius: 16px;
   padding: 16px;
   display: flex;
   flex-direction: column;
   gap: 14px;
   width: 280px;
-  box-shadow:
-    0 20px 48px -12px rgba(0, 0, 0, 0.8),
-    0 0 0 1px rgba(255, 255, 255, 0.04) inset;
+  box-shadow: ${({ theme }) => theme.name === 'Light Mode' 
+    ? '0 20px 48px -12px rgba(0, 0, 0, 0.12), 0 0 0 1px rgba(0, 0, 0, 0.05) inset' 
+    : '0 20px 48px -12px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(255, 255, 255, 0.04) inset'};
   z-index: 101;
   font-family: 'Space Grotesk', sans-serif;
   will-change: transform, opacity;
@@ -86,7 +86,7 @@ const PanelHeader = styled.div`
   align-items: center;
   justify-content: space-between;
   padding-bottom: 8px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  border-bottom: 1px solid ${({ theme }) => theme.colors.border};
 `;
 
 const PanelTitle = styled.span`
@@ -118,8 +118,8 @@ const StatusDot = styled.span`
 `;
 
 const SectionCard = styled.div`
-  background: rgba(255, 255, 255, 0.02);
-  border: 1px solid rgba(255, 255, 255, 0.04);
+  background: ${({ theme }) => theme.name === 'Light Mode' ? 'rgba(0, 0, 0, 0.02)' : 'rgba(255, 255, 255, 0.02)'};
+  border: 1px solid ${({ theme }) => theme.colors.border};
   border-radius: 12px;
   padding: 12px;
   display: flex;
@@ -152,16 +152,20 @@ const StatusBadge = styled.span`
   font-weight: 700;
   padding: 2px 6px;
   border-radius: 6px;
-  background: ${props => props.$type === 'online' ? 'rgba(74, 222, 128, 0.1)' : 'rgba(255, 255, 255, 0.05)'};
-  color: ${props => props.$type === 'online' ? '#4ade80' : '#888'};
+  background: ${props => props.$type === 'online' 
+    ? (props.theme.name === 'Light Mode' ? 'rgba(22, 163, 74, 0.1)' : 'rgba(74, 222, 128, 0.1)') 
+    : (props.theme.name === 'Light Mode' ? 'rgba(0, 0, 0, 0.05)' : 'rgba(255, 255, 255, 0.05)')};
+  color: ${props => props.$type === 'online' 
+    ? (props.theme.name === 'Light Mode' ? '#16a34a' : '#4ade80') 
+    : (props.theme.name === 'Light Mode' ? '#666666' : '#888888')};
   text-transform: uppercase;
   letter-spacing: 0.5px;
 `;
 
 const ScannerItem = styled.button`
   width: 100%;
-  background: rgba(0, 0, 0, 0.2);
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  background: ${({ theme }) => theme.name === 'Light Mode' ? 'rgba(0, 0, 0, 0.03)' : 'rgba(0, 0, 0, 0.2)'};
+  border: 1px solid ${({ theme }) => theme.colors.border};
   border-radius: 8px;
   padding: 8px 10px;
   display: flex;
@@ -171,10 +175,11 @@ const ScannerItem = styled.button`
   opacity: ${props => props.disabled ? 0.4 : 1};
   transition: all 0.2s ease;
   font-family: inherit;
+  color: ${({ theme }) => theme.colors.text};
 
   &:hover:not(:disabled) {
-    background: rgba(255, 255, 255, 0.05);
-    border-color: rgba(255, 255, 255, 0.1);
+    background: ${({ theme }) => theme.name === 'Light Mode' ? 'rgba(0, 0, 0, 0.06)' : 'rgba(255, 255, 255, 0.05)'};
+    border-color: ${({ theme }) => theme.name === 'Light Mode' ? 'rgba(0, 0, 0, 0.12)' : 'rgba(255, 255, 255, 0.1)'};
   }
 `;
 
@@ -212,7 +217,7 @@ const ModernSlider = styled.input`
   width: 100%;
   height: 3px;
   border-radius: 2px;
-  background: rgba(255, 255, 255, 0.1);
+  background: ${({ theme }) => theme.name === 'Light Mode' ? 'rgba(0, 0, 0, 0.1)' : 'rgba(255, 255, 255, 0.1)'};
   outline: none;
   margin: 4px 0;
   position: relative;
@@ -226,8 +231,8 @@ const ModernSlider = styled.input`
       to right, 
       ${({ theme }) => theme?.colors?.primary || '#64ffda'} 0%, 
       ${({ theme }) => theme?.colors?.primary || '#64ffda'} ${props => props.$pct}%, 
-      rgba(255, 255, 255, 0.1) ${props => props.$pct}%, 
-      rgba(255, 255, 255, 0.1) 100%
+      ${({ theme }) => theme.name === 'Light Mode' ? 'rgba(0, 0, 0, 0.1)' : 'rgba(255, 255, 255, 0.1)'} ${props => props.$pct}%, 
+      ${({ theme }) => theme.name === 'Light Mode' ? 'rgba(0, 0, 0, 0.1)' : 'rgba(255, 255, 255, 0.1)'} 100%
     );
     border-radius: 2px;
   }
@@ -236,11 +241,11 @@ const ModernSlider = styled.input`
     height: 12px;
     width: 12px;
     border-radius: 50%;
-    background: #ffffff;
+    background: ${({ theme }) => theme.name === 'Light Mode' ? theme.colors.primary : '#ffffff'};
     cursor: pointer;
     -webkit-appearance: none;
     margin-top: -4.5px;
-    box-shadow: 0 0 8px rgba(0, 0, 0, 0.5);
+    box-shadow: ${({ theme }) => theme.name === 'Light Mode' ? '0 1px 4px rgba(0, 0, 0, 0.25)' : '0 0 8px rgba(0, 0, 0, 0.5)'};
     transition: transform 0.1s ease;
   }
 
@@ -252,7 +257,7 @@ const ModernSlider = styled.input`
     width: 100%;
     height: 3px;
     cursor: pointer;
-    background: rgba(255, 255, 255, 0.1);
+    background: ${({ theme }) => theme.name === 'Light Mode' ? 'rgba(0, 0, 0, 0.1)' : 'rgba(255, 255, 255, 0.1)'};
     border-radius: 2px;
   }
 
@@ -266,10 +271,10 @@ const ModernSlider = styled.input`
     height: 12px;
     width: 12px;
     border-radius: 50%;
-    background: #ffffff;
+    background: ${({ theme }) => theme.name === 'Light Mode' ? theme.colors.primary : '#ffffff'};
     cursor: pointer;
     border: none;
-    box-shadow: 0 0 8px rgba(0, 0, 0, 0.5);
+    box-shadow: ${({ theme }) => theme.name === 'Light Mode' ? '0 1px 4px rgba(0, 0, 0, 0.25)' : '0 0 8px rgba(0, 0, 0, 0.5)'};
     transition: transform 0.1s ease;
   }
 
@@ -285,6 +290,9 @@ export default function SystemControl() {
   const { volume, setVolume } = usePlayer();
   const { setCurrentTheme } = useTheme();
   const { launchApp } = useApps();
+
+  const styledTheme = useStyledTheme();
+  const isLight = styledTheme?.name === 'Light Mode';
 
   const containerRef = useRef(null);
   const buttonRef = useRef(null);
@@ -411,11 +419,17 @@ export default function SystemControl() {
                 </span>
                 
                 <ScannerItem onClick={startHacking}>
-                  <span style={{ fontSize: '0.68rem', color: '#00ff41', textShadow: '0 0 3px #00ff4140', fontFamily: 'monospace', fontWeight: 'bold' }}>
+                  <span style={{ 
+                    fontSize: '0.68rem', 
+                    color: isLight ? '#15803d' : '#00ff41', 
+                    textShadow: isLight ? 'none' : '0 0 3px #00ff4140', 
+                    fontFamily: 'monospace', 
+                    fontWeight: 'bold' 
+                  }}>
                     <i className="fas fa-terminal" style={{ marginRight: '6px' }} />
                     Matrix_Terminal
                   </span>
-                  <i className="fas fa-lock" style={{ fontSize: '0.58rem', color: '#00ff41' }} />
+                  <i className="fas fa-lock" style={{ fontSize: '0.58rem', color: isLight ? '#15803d' : '#00ff41' }} />
                 </ScannerItem>
 
                 <ScannerItem disabled>

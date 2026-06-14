@@ -31,8 +31,8 @@ const Shell = styled.div`
   flex-direction: column;
   height: 100%;
   min-height: 0;
-  background: #07070d;
-  color: #eaeaf2;
+  background: ${({ theme }) => theme.name === 'Light Mode' ? 'rgba(255, 255, 255, 0.45)' : 'rgba(7, 7, 13, 0.45)'};
+  color: ${({ theme }) => theme.colors.text};
   font-family: 'DM Mono', 'Fira Code', monospace;
   overflow: hidden;
   position: relative;
@@ -47,7 +47,7 @@ const AmbientBg = styled.div`
   background-image: url(${({ $src }) => $src || 'none'});
   background-size: cover;
   background-position: center;
-  filter: blur(55px) saturate(2) brightness(0.22);
+  filter: blur(55px) saturate(2) brightness(${({ theme }) => theme.name === 'Light Mode' ? '0.75' : '0.22'});
   transition: background-image 1.4s ease;
   will-change: filter;
 `;
@@ -57,12 +57,20 @@ const DarkOverlay = styled.div`
   inset: 0;
   z-index: 0;
   pointer-events: none;
-  background: linear-gradient(
-    160deg,
-    rgba(7,7,13,0.72) 0%,
-    rgba(7,7,13,0.45) 50%,
-    rgba(7,7,13,0.78) 100%
-  );
+  background: ${({ theme }) => theme.name === 'Light Mode'
+    ? `linear-gradient(
+        160deg,
+        rgba(245, 245, 245, 0.72) 0%,
+        rgba(245, 245, 245, 0.45) 50%,
+        rgba(245, 245, 245, 0.78) 100%
+      )`
+    : `linear-gradient(
+        160deg,
+        rgba(7, 7, 13, 0.72) 0%,
+        rgba(7, 7, 13, 0.45) 50%,
+        rgba(7, 7, 13, 0.78) 100%
+      )`
+  };
 `;
 
 /* ═══════════════════════════════════════════════════════════════════════
@@ -74,11 +82,11 @@ const Header = styled.div`
   align-items: center;
   justify-content: space-between;
   padding: 10px 16px 8px;
-  border-bottom: 1px solid rgba(255,255,255,0.05);
+  border-bottom: 1px solid ${({ theme }) => theme.colors.border};
   flex-shrink: 0;
   position: relative;
   z-index: 3;
-  background: rgba(7,7,13,0.45);
+  background: ${({ theme }) => theme.name === 'Light Mode' ? 'rgba(245, 245, 245, 0.45)' : 'rgba(7, 7, 13, 0.45)'};
   backdrop-filter: blur(12px);
 `;
 
@@ -97,13 +105,13 @@ const StatusBadge = styled.div`
   font-size: 0.5rem;
   letter-spacing: 2px;
   text-transform: uppercase;
-  color: rgba(255,255,255,0.35);
+  color: ${({ theme }) => theme.colors.textSecondary};
 `;
 
 const Dot = styled.div`
   width: 5px; height: 5px;
   border-radius: 50%;
-  background: ${({ $p, $on }) => $on ? $p : 'rgba(255,255,255,0.18)'};
+  background: ${({ $p, $on }) => $on ? $p : 'rgba(255, 255, 255, 0.18)'};
   box-shadow: ${({ $p, $on }) => $on ? `0 0 7px ${$p}` : 'none'};
   transition: background 0.4s, box-shadow 0.4s;
 `;
@@ -240,7 +248,7 @@ const TrackName = styled.h3`
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  color: #fff;
+  color: ${({ theme }) => theme.colors.text};
   letter-spacing: -0.1px;
 `;
 
@@ -271,7 +279,7 @@ const TimeRow = styled.div`
   display: flex;
   justify-content: space-between;
   font-size: 0.55rem;
-  color: rgba(255,255,255,0.28);
+  color: ${({ theme }) => theme.colors.textSecondary};
   font-family: 'DM Mono', monospace;
   letter-spacing: 0.3px;
 `;
@@ -280,7 +288,7 @@ const TimeRow = styled.div`
 const ProgressTrack = styled.div`
   width: 100%;
   height: 3px;
-  background: rgba(255,255,255,0.09);
+  background: ${({ theme }) => theme.name === 'Light Mode' ? 'rgba(0, 0, 0, 0.1)' : 'rgba(255, 255, 255, 0.09)'};
   border-radius: 3px;
   position: relative;
   cursor: pointer;
@@ -308,8 +316,8 @@ const ProgressThumb = styled.div`
   transform: translateY(-50%) scale(0.7);
   width: 10px; height: 10px;
   border-radius: 50%;
-  background: #fff;
-  box-shadow: 0 0 5px rgba(0,0,0,0.5);
+  background: ${({ theme }) => theme.colors.text};
+  box-shadow: 0 0 5px rgba(0,0,0,0.3);
   opacity: 0;
   transition: transform 0.15s, opacity 0.15s;
   pointer-events: none;
@@ -326,9 +334,9 @@ const ControlsRow = styled.div`
 `;
 
 const CtrlBtn = styled.button`
-  background: rgba(255,255,255,0.05);
-  border: 1px solid rgba(255,255,255,0.09);
-  color: rgba(255,255,255,0.5);
+  background: ${({ theme }) => theme.name === 'Light Mode' ? 'rgba(0,0,0,0.03)' : 'rgba(255,255,255,0.05)'};
+  border: 1px solid ${({ theme }) => theme.colors.border};
+  color: ${({ theme }) => theme.colors.textSecondary};
   cursor: pointer;
   font-size: 0.78rem;
   width: 36px; height: 36px;
@@ -340,7 +348,11 @@ const CtrlBtn = styled.button`
   transition: all 0.18s ease;
   flex-shrink: 0;
 
-  &:hover { color: #fff; background: rgba(255,255,255,0.12); border-color: rgba(255,255,255,0.2); }
+  &:hover { 
+    color: ${({ theme }) => theme.colors.text}; 
+    background: ${({ theme }) => theme.name === 'Light Mode' ? 'rgba(0,0,0,0.06)' : 'rgba(255,255,255,0.12)'}; 
+    border-color: ${({ theme }) => theme.name === 'Light Mode' ? 'rgba(0,0,0,0.12)' : 'rgba(255,255,255,0.2)'}; 
+  }
   &:active { transform: scale(0.88); }
   &:disabled { opacity: 0.18; cursor: not-allowed; }
 `;
@@ -348,7 +360,7 @@ const CtrlBtn = styled.button`
 const PlayBtn = styled.button`
   background: ${({ $p }) => $p};
   border: none;
-  color: #000;
+  color: ${({ theme }) => theme.name === 'Light Mode' ? '#fff' : '#000'};
   cursor: pointer;
   font-size: 1rem;
   width: 52px; height: 52px;
@@ -357,11 +369,11 @@ const PlayBtn = styled.button`
   align-items: center;
   justify-content: center;
   outline: none;
-  box-shadow: 0 0 28px ${({ $p }) => $p}70, 0 6px 22px rgba(0,0,0,0.55);
+  box-shadow: 0 0 28px ${({ $p }) => $p}70, 0 6px 22px rgba(0,0,0,0.25);
   transition: box-shadow 0.3s, transform 0.15s;
   flex-shrink: 0;
 
-  &:hover { box-shadow: 0 0 42px ${({ $p }) => $p}99, 0 8px 26px rgba(0,0,0,0.6); transform: scale(1.06); }
+  &:hover { box-shadow: 0 0 42px ${({ $p }) => $p}99, 0 8px 26px rgba(0,0,0,0.3); transform: scale(1.06); }
   &:active { transform: scale(0.91); }
   &:disabled { opacity: 0.25; cursor: not-allowed; }
 `;
@@ -376,7 +388,7 @@ const VolumeRow = styled.div`
   max-width: 240px;
   flex-shrink: 0;
 
-  i { font-size: 0.64rem; color: rgba(255,255,255,0.28); width: 13px; text-align: center; }
+  i { font-size: 0.64rem; color: ${({ theme }) => theme.colors.textSecondary}; width: 13px; text-align: center; }
 `;
 
 /* CSS custom property controls gradient — no re-render needed */
@@ -390,22 +402,22 @@ const VolSlider = styled.input`
   background: linear-gradient(
     to right,
     ${({ $p }) => $p}99 var(--vol-pct, 40%),
-    rgba(255,255,255,0.1) var(--vol-pct, 40%)
+    ${({ theme }) => theme.name === 'Light Mode' ? 'rgba(0, 0, 0, 0.1)' : 'rgba(255, 255, 255, 0.1)'} var(--vol-pct, 40%)
   );
 
   &::-webkit-slider-thumb {
     -webkit-appearance: none;
     width: 11px; height: 11px;
     border-radius: 50%;
-    background: #fff;
+    background: ${({ theme }) => theme.name === 'Light Mode' ? theme.colors.primary : '#fff'};
     cursor: pointer;
-    box-shadow: 0 0 4px rgba(0,0,0,0.4);
+    box-shadow: 0 0 4px rgba(0,0,0,0.3);
   }
 `;
 
 const VolLabel = styled.span`
   font-size: 0.55rem;
-  color: rgba(255,255,255,0.25);
+  color: ${({ theme }) => theme.colors.textSecondary};
   width: 24px;
   text-align: right;
 `;
@@ -417,13 +429,13 @@ const VolLabel = styled.span`
 const QueuePanel = styled.div`
   width: 168px;
   flex-shrink: 0;
-  border-left: 1px solid rgba(255,255,255,0.05);
+  border-left: 1px solid ${({ theme }) => theme.colors.border};
   display: flex;
   flex-direction: column;
   overflow: hidden;
   position: relative;
   z-index: 2;
-  background: rgba(7,7,13,0.32);
+  background: ${({ theme }) => theme.name === 'Light Mode' ? 'rgba(245, 245, 245, 0.32)' : 'rgba(7, 7, 13, 0.32)'};
   backdrop-filter: blur(8px);
 `;
 
@@ -432,8 +444,8 @@ const QueueHeader = styled.div`
   font-size: 0.5rem;
   letter-spacing: 3px;
   text-transform: uppercase;
-  color: rgba(255,255,255,0.26);
-  border-bottom: 1px solid rgba(255,255,255,0.04);
+  color: ${({ theme }) => theme.colors.textSecondary};
+  border-bottom: 1px solid ${({ theme }) => theme.colors.border};
   flex-shrink: 0;
 `;
 
@@ -451,7 +463,7 @@ const QueueItem = styled.button`
   background: ${({ $active }) => $active ? 'rgba(255,255,255,0.07)' : 'transparent'};
   border: none;
   border-left: 2px solid ${({ $active, $p }) => $active ? $p : 'transparent'};
-  color: ${({ $active }) => $active ? '#fff' : 'rgba(255,255,255,0.38)'};
+  color: ${({ $active, theme }) => $active ? theme.colors.text : theme.colors.textSecondary};
   padding: 7px 11px;
   cursor: pointer;
   text-align: left;
@@ -462,8 +474,8 @@ const QueueItem = styled.button`
   transition: all 0.18s ease;
 
   &:hover {
-    background: rgba(255,255,255,0.05);
-    color: rgba(255,255,255,0.75);
+    background: ${({ theme }) => theme.name === 'Light Mode' ? 'rgba(0, 0, 0, 0.03)' : 'rgba(255, 255, 255, 0.05)'};
+    color: ${({ theme }) => theme.colors.text};
     border-left-color: ${({ $p }) => $p}77;
   }
 `;

@@ -6,7 +6,7 @@ import styled from 'styled-components';
 const Container = styled.div`
   display: flex;
   height: 100%;
-  background: rgba(22, 28, 45, 0.95);
+  background: ${({ theme }) => theme.name === 'Light Mode' ? 'rgba(255, 255, 255, 0.45)' : 'rgba(22, 28, 45, 0.95)'};
   font-family: 'Space Grotesk', sans-serif;
   color: ${({ theme }) => theme.colors.text};
   overflow: hidden;
@@ -14,8 +14,8 @@ const Container = styled.div`
 
 const Sidebar = styled.div`
   width: 180px;
-  background: rgba(0, 0, 0, 0.25);
-  border-right: 1px solid rgba(255, 255, 255, 0.05);
+  background: ${({ theme }) => theme.name === 'Light Mode' ? 'rgba(0, 0, 0, 0.03)' : 'rgba(0, 0, 0, 0.25)'};
+  border-right: 1px solid ${({ theme }) => theme.colors.border};
   display: flex;
   flex-direction: column;
   padding: 12px 6px;
@@ -32,14 +32,14 @@ const SidebarHeader = styled.div`
   font-weight: bold;
   color: ${({ theme }) => theme.colors.primary};
   padding: 0 10px 10px 10px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  border-bottom: 1px solid ${({ theme }) => theme.colors.border};
   text-transform: uppercase;
   letter-spacing: 0.08em;
   margin-bottom: 8px;
 `;
 
 const FileItem = styled.button`
-  background: ${({ $active }) => $active ? 'rgba(255, 255, 255, 0.05)' : 'transparent'};
+  background: ${({ $active, theme }) => $active ? (theme.name === 'Light Mode' ? 'rgba(0, 0, 0, 0.05)' : 'rgba(255, 255, 255, 0.05)') : 'transparent'};
   border: none;
   color: ${({ $active, theme }) => $active ? theme.colors.text : theme.colors.textSecondary};
   padding: 8px 10px;
@@ -58,7 +58,7 @@ const FileItem = styled.button`
   white-space: nowrap;
 
   &:hover {
-    background: rgba(255, 255, 255, 0.03);
+    background: ${({ theme }) => theme.name === 'Light Mode' ? 'rgba(0, 0, 0, 0.03)' : 'rgba(255, 255, 255, 0.03)'};
     color: ${({ theme }) => theme.colors.text};
   }
 
@@ -83,7 +83,7 @@ const FileMeta = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  border-bottom: 1px solid ${({ theme }) => theme.colors.border};
   padding-bottom: 10px;
   margin-bottom: 14px;
   flex-shrink: 0;
@@ -138,7 +138,7 @@ const FileViewer = styled.div`
     margin-top: 0;
     font-size: 1.15rem;
     color: ${({ theme }) => theme.colors.text};
-    border-bottom: 1px dashed rgba(255, 255, 255, 0.08);
+    border-bottom: 1px dashed ${({ theme }) => theme.colors.border};
     padding-bottom: 6px;
   }
 `;

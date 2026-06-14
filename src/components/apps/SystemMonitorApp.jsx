@@ -1,13 +1,13 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import styled from 'styled-components';
+import styled, { useTheme as useStyledTheme } from 'styled-components';
 
 const Container = styled.div`
   display: flex;
   flex-direction: column;
   height: 100%;
-  background: rgba(10, 25, 47, 0.95);
+  background: ${({ theme }) => theme.name === 'Light Mode' ? 'rgba(255, 255, 255, 0.45)' : 'rgba(10, 25, 47, 0.45)'};
   padding: 16px;
   box-sizing: border-box;
   font-family: 'Space Grotesk', sans-serif;
@@ -32,8 +32,8 @@ const DiagnosticsHeader = styled.div`
     width: 8px;
     height: 8px;
     border-radius: 50%;
-    background: #00ff41;
-    box-shadow: 0 0 8px #00ff41;
+    background: ${({ theme }) => theme.name === 'Light Mode' ? '#16a34a' : '#00ff41'};
+    box-shadow: 0 0 8px ${({ theme }) => theme.name === 'Light Mode' ? '#16a34a' : '#00ff41'};
     animation: blink 1.2s infinite alternate;
   }
 
@@ -68,8 +68,8 @@ const MetricsGrid = styled.div`
 `;
 
 const MetricCard = styled.div`
-  background: rgba(255, 255, 255, 0.02);
-  border: 1px solid ${({ $color }) => $color}25;
+  background: ${({ theme }) => theme.name === 'Light Mode' ? 'rgba(0, 0, 0, 0.02)' : 'rgba(255, 255, 255, 0.02)'};
+  border: 1px solid ${({ theme, $color }) => theme.name === 'Light Mode' ? `${$color}45` : `${$color}25`};
   border-radius: 10px;
   padding: 10px 12px;
   display: flex;
@@ -107,9 +107,8 @@ const MetricCard = styled.div`
 
 const CanvasWrapper = styled.div`
   flex-grow: 1;
-  background: rgba(0, 0, 0, 0.35);
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  border-radius: 12px;
+  background: ${({ theme }) => theme.name === 'Light Mode' ? 'rgba(0, 0, 0, 0.04)' : 'rgba(0, 0, 0, 0.35)'};
+  border: 1px solid ${({ theme }) => theme.colors.border};
   position: relative;
   overflow: hidden;
   min-height: 150px;
@@ -133,6 +132,30 @@ export default function SystemMonitorApp() {
   const [mem, setMem] = useState(2.41);
   const [ping, setPing] = useState(32);
   const [scrollSpeed, setScrollSpeed] = useState(0);
+
+  const styledTheme = useStyledTheme();
+  const isLight = styledTheme?.name === 'Light Mode';
+
+  const getThemeColor = (colorKey) => {
+    const lightColors = {
+      cpu: '#16a34a',
+      mem: '#0284c7',
+      ping: '#ea580c',
+      scroll: '#7c3aed'
+    };
+    const darkColors = {
+      cpu: '#00ff41',
+      mem: '#01cdfe',
+      ping: '#f97e72',
+      scroll: '#a995c9'
+    };
+    return isLight ? lightColors[colorKey] : darkColors[colorKey];
+  };
+
+  const cpuColor = getThemeColor('cpu');
+  const memColor = getThemeColor('mem');
+  const pingColor = getThemeColor('ping');
+  const scrollColor = getThemeColor('scroll');
 
   // Monitor scroll velocity
   useEffect(() => {
@@ -224,7 +247,7 @@ export default function SystemMonitorApp() {
       ctx.clearRect(0, 0, width, height);
 
       // Draw chart grid lines
-      ctx.strokeStyle = 'rgba(255, 255, 255, 0.03)';
+      ctx.strokeStyle = isLight ? 'rgba(0, 0, 0, 0.05)' : 'rgba(255, 255, 255, 0.03)';
       ctx.lineWidth = 1;
       const cols = 10;
       const rows = 6;
@@ -270,10 +293,10 @@ export default function SystemMonitorApp() {
       };
 
       // Draw charts
-      drawLineChart(cpuHistory, '#00ff41', 0, 100);     // CPU Green
-      drawLineChart(memHistory, '#01cdfe', 1.5, 4.0);  // Memory Cyan
-      drawLineChart(pingHistory, '#f97e72', 0, 200);   // Ping Latency Coral
-      drawLineChart(scrollHistory, '#a995c9', 0, 150); // Scroll Velocity Purple
+      drawLineChart(cpuHistory, cpuColor, 0, 100);     // CPU Green
+      drawLineChart(memHistory, memColor, 1.5, 4.0);  // Memory Cyan
+      drawLineChart(pingHistory, pingColor, 0, 200);   // Ping Latency Coral
+      drawLineChart(scrollHistory, scrollColor, 0, 150); // Scroll Velocity Purple
 
       animationFrameId = requestAnimationFrame(drawLoop);
     };
@@ -296,19 +319,19 @@ export default function SystemMonitorApp() {
       </HeaderRow>
 
       <MetricsGrid>
-        <MetricCard $color="#00ff41">
+        <MetricCard $color={cpuColor}>
           <h4>CPU LOAD</h4>
           <span className="value">{cpu}%</span>
         </MetricCard>
-        <MetricCard $color="#01cdfe">
+        <MetricCard $color={memColor}>
           <h4>MEMORY</h4>
           <span className="value">{mem} GB</span>
         </MetricCard>
-        <MetricCard $color="#f97e72">
+        <MetricCard $color={pingColor}>
           <h4>LATENCY</h4>
           <span className="value">{ping} ms</span>
         </MetricCard>
-        <MetricCard $color="#a995c9">
+        <MetricCard $color={scrollColor}>
           <h4>SCROLL</h4>
           <span className="value">{scrollSpeed} px/s</span>
         </MetricCard>
