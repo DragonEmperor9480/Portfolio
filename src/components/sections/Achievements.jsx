@@ -656,6 +656,7 @@ const BadgesWrapper = styled.div`
 
 const HackerRankSection = styled.div`
   padding: 40px 48px;
+  border-bottom: 1px solid ${({ theme }) => theme.colors.border};
 
   @media (max-width: 768px) {
     padding: 28px 24px;
@@ -663,6 +664,76 @@ const HackerRankSection = styled.div`
 
   @media (max-width: 480px) {
     padding: 22px 16px;
+  }
+`;
+
+/* ── Boot.dev Section ─────────────────────────────────────── */
+
+const BootDevSection = styled.div`
+  padding: 40px 48px;
+
+  @media (max-width: 768px) {
+    padding: 28px 24px;
+  }
+
+  @media (max-width: 480px) {
+    padding: 22px 16px;
+  }
+`;
+
+const BootDevCard = styled(motion.a)`
+  display: block;
+  position: relative;
+  border-radius: 14px;
+  overflow: hidden;
+  border: 1px solid ${({ theme }) => theme.colors.border};
+  transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  background: rgba(255, 255, 255, 0.015);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+
+  /* Corner accents */
+  &::before,
+  &::after {
+    content: '';
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    border: 1px solid ${({ theme }) => theme.colors.primary}30;
+    pointer-events: none;
+    z-index: 2;
+    transition: border-color 0.3s ease;
+  }
+
+  &::before {
+    top: 6px;
+    left: 6px;
+    border-right: none;
+    border-bottom: none;
+  }
+
+  &::after {
+    bottom: 6px;
+    right: 6px;
+    border-left: none;
+    border-top: none;
+  }
+
+  &:hover {
+    border-color: ${({ theme }) => theme.colors.primary}35;
+    transform: translateY(-4px);
+    box-shadow: 0 16px 40px ${({ theme }) => theme.colors.primary}0a;
+
+    &::before,
+    &::after {
+      border-color: ${({ theme }) => theme.colors.primary}60;
+    }
+  }
+
+  img {
+    width: 100%;
+    height: auto;
+    display: block;
+    border-radius: 13px;
   }
 `;
 
@@ -1124,6 +1195,34 @@ export default function Achievements() {
               <HRArrow>→</HRArrow>
             </HRCard>
           </HackerRankSection>
+ 
+          {/* ── Boot.dev ── */}
+          <BootDevSection>
+            <SectionLabel>Boot.dev Academy</SectionLabel>
+            <motion.div
+              variants={containerVariants}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, margin: '-40px' }}
+              style={{ display: 'flex', justifyContent: 'center' }}
+            >
+              <BootDevCard
+                variants={itemVariants}
+                href="https://www.boot.dev/u/73569ca0-e645-4e77-b059-d6a2f410f10e"
+                target="_blank"
+                rel="noopener noreferrer"
+                whileHover={{ y: -6 }}
+                transition={{ type: 'spring', stiffness: 280, damping: 22 }}
+                style={{ maxWidth: '480px', width: '100%' }}
+              >
+                <img
+                  src="https://api.boot.dev/v1/users/public/73569ca0-e645-4e77-b059-d6a2f410f10e/thumbnail"
+                  alt="Boot.dev Profile Summary"
+                  loading="lazy"
+                />
+              </BootDevCard>
+            </motion.div>
+          </BootDevSection>
         </CardInner>
       </MainCard>
     </AchievementsContainer>
