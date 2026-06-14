@@ -9,18 +9,20 @@ const TerminalContainer = styled.div`
   display: flex;
   flex-direction: column;
   height: 100%;
-  background: #0d0208;
+  background: ${({ theme }) => theme.colors.background};
   font-family: 'Fira Code', 'Space Mono', 'IBM Plex Mono', monospace;
-  color: #00ff41;
+  color: ${({ theme }) => theme.colors.text};
   padding: 16px;
   box-sizing: border-box;
   overflow: hidden;
   position: relative;
+  border: 1px solid ${({ theme }) => theme.colors.border};
+  border-radius: 0 0 16px 16px;
   
   /* Scanline effect */
   &::before {
     content: " ";
-    display: block;
+    display: ${({ theme }) => theme.name === 'Light Mode' ? 'none' : 'block'};
     position: absolute;
     top: 0; left: 0; bottom: 0; right: 0;
     background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
@@ -45,10 +47,10 @@ const OutputArea = styled.div`
     width: 6px;
   }
   &::-webkit-scrollbar-track {
-    background: rgba(0,0,0,0.3);
+    background: ${({ theme }) => theme.name === 'Light Mode' ? 'rgba(0, 0, 0, 0.03)' : 'rgba(0,0,0,0.3)'};
   }
   &::-webkit-scrollbar-thumb {
-    background: rgba(0, 255, 65, 0.3);
+    background: ${({ theme }) => theme.name === 'Light Mode' ? 'rgba(0, 0, 0, 0.15)' : `${theme.colors.primary}40`};
     border-radius: 3px;
   }
 `;
@@ -57,17 +59,21 @@ const OutputLine = styled.div`
   line-height: 1.4;
   white-space: pre-wrap;
   word-break: break-all;
-  color: ${({ $type }) => 
-    $type === 'error' ? '#ff3366' : 
-    $type === 'success' ? '#00ff41' : 
-    $type === 'info' ? '#01cdfe' : 
-    $type === 'warning' ? '#faef5d' : 
-    '#00ff41'};
-  text-shadow: 0 0 3px ${({ $type }) => 
-    $type === 'error' ? 'rgba(255, 51, 102, 0.4)' : 
-    $type === 'success' ? 'rgba(0, 255, 65, 0.4)' : 
-    $type === 'info' ? 'rgba(1, 205, 254, 0.4)' : 
-    'rgba(0, 255, 65, 0.2)'};
+  color: ${({ $type, theme }) => {
+    const isLight = theme.name === 'Light Mode';
+    if ($type === 'error') return isLight ? '#dc2626' : '#ff3366';
+    if ($type === 'success') return isLight ? '#16a34a' : (theme.colors.primary || '#00ff41');
+    if ($type === 'info') return isLight ? '#2563eb' : '#01cdfe';
+    if ($type === 'warning') return isLight ? '#d97706' : '#faef5d';
+    return theme.colors.text;
+  }};
+  text-shadow: ${({ $type, theme }) => {
+    if (theme.name === 'Light Mode') return 'none';
+    if ($type === 'error') return '0 0 3px rgba(255, 51, 102, 0.4)';
+    if ($type === 'success') return `0 0 3px ${theme.colors.primary || '#00ff41'}66`;
+    if ($type === 'info') return '0 0 3px rgba(1, 205, 254, 0.4)';
+    return 'none';
+  }};
 `;
 
 const CommandLine = styled.div`
@@ -75,14 +81,14 @@ const CommandLine = styled.div`
   align-items: center;
   gap: 8px;
   font-size: 0.85rem;
-  border-top: 1px dashed rgba(0, 255, 65, 0.2);
+  border-top: 1px dashed ${({ theme }) => theme.colors.border};
   padding-top: 8px;
   flex-shrink: 0;
   z-index: 5;
 `;
 
 const InputPrompt = styled.span`
-  color: #01cdfe;
+  color: ${({ theme }) => theme.colors.primary};
   font-weight: bold;
 `;
 
@@ -90,19 +96,19 @@ const CustomInput = styled.input`
   flex-grow: 1;
   background: transparent;
   border: none;
-  color: #00ff41;
+  color: ${({ theme }) => theme.colors.text};
   font-family: inherit;
   font-size: inherit;
   outline: none;
-  caret-color: #00ff41;
-  text-shadow: 0 0 3px rgba(0, 255, 65, 0.4);
+  caret-color: ${({ theme }) => theme.colors.primary};
+  text-shadow: ${({ theme }) => theme.name === 'Light Mode' ? 'none' : `0 0 3px ${theme.colors.primary}40`};
 `;
 
 /* ─── Lockpicking Mini-Game Styled Components ────────────────────── */
 const GameOverlay = styled(motion.div)`
   position: absolute;
   inset: 0;
-  background: rgba(13, 2, 8, 0.95);
+  background: ${({ theme }) => theme.name === 'Light Mode' ? 'rgba(245, 245, 245, 0.98)' : 'rgba(13, 2, 8, 0.95)'};
   z-index: 100;
   display: flex;
   flex-direction: column;
@@ -110,14 +116,15 @@ const GameOverlay = styled(motion.div)`
   justify-content: center;
   padding: 24px;
   box-sizing: border-box;
+  color: ${({ theme }) => theme.colors.text};
 `;
 
 const GameTrack = styled.div`
   width: 100%;
   max-width: 380px;
   height: 24px;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(0, 255, 65, 0.3);
+  background: ${({ theme }) => theme.name === 'Light Mode' ? 'rgba(0, 0, 0, 0.05)' : 'rgba(255, 255, 255, 0.05)'};
+  border: 1px solid ${({ theme }) => theme.name === 'Light Mode' ? 'rgba(0, 0, 0, 0.15)' : 'rgba(0, 255, 65, 0.3)'};
   border-radius: 12px;
   position: relative;
   margin: 24px 0;
@@ -130,10 +137,10 @@ const TargetZone = styled.div`
   bottom: 0;
   left: 42%;
   width: 16%;
-  background: rgba(0, 255, 65, 0.25);
-  border-left: 1px solid #00ff41;
-  border-right: 1px solid #00ff41;
-  box-shadow: 0 0 10px rgba(0, 255, 65, 0.3) inset;
+  background: ${({ theme }) => theme.name === 'Light Mode' ? 'rgba(22, 163, 74, 0.2)' : 'rgba(0, 255, 65, 0.25)'};
+  border-left: 1px solid ${({ theme }) => theme.name === 'Light Mode' ? '#16a34a' : '#00ff41'};
+  border-right: 1px solid ${({ theme }) => theme.name === 'Light Mode' ? '#16a34a' : '#00ff41'};
+  box-shadow: 0 0 10px ${({ theme }) => theme.name === 'Light Mode' ? 'rgba(22, 163, 74, 0.15)' : 'rgba(0, 255, 65, 0.3)'} inset;
 `;
 
 const SweepLine = styled.div`
@@ -143,24 +150,24 @@ const SweepLine = styled.div`
   left: ${({ $pos }) => $pos}%;
   width: 3px;
   background: #ff3366;
-  box-shadow: 0 0 10px #ff3366, 0 0 4px #ff3366;
+  box-shadow: ${({ theme }) => theme.name === 'Light Mode' ? 'none' : '0 0 10px #ff3366, 0 0 4px #ff3366'};
 `;
 
 const BypassButton = styled(motion.button)`
   background: transparent;
-  border: 1px solid #ff3366;
-  color: #ff3366;
+  border: 1px solid ${({ theme }) => theme.name === 'Light Mode' ? '#dc2626' : '#ff3366'};
+  color: ${({ theme }) => theme.name === 'Light Mode' ? '#dc2626' : '#ff3366'};
   padding: 10px 24px;
   font-family: inherit;
   font-size: 0.85rem;
   border-radius: 8px;
   cursor: pointer;
-  text-shadow: 0 0 4px rgba(255, 51, 102, 0.4);
-  box-shadow: 0 0 8px rgba(255, 51, 102, 0.1);
+  text-shadow: ${({ theme }) => theme.name === 'Light Mode' ? 'none' : '0 0 4px rgba(255, 51, 102, 0.4)'};
+  box-shadow: ${({ theme }) => theme.name === 'Light Mode' ? 'none' : '0 0 8px rgba(255, 51, 102, 0.1)'};
 
   &:hover {
-    background: rgba(255, 51, 102, 0.08);
-    box-shadow: 0 0 12px rgba(255, 51, 102, 0.3);
+    background: ${({ theme }) => theme.name === 'Light Mode' ? 'rgba(220, 38, 38, 0.05)' : 'rgba(255, 51, 102, 0.08)'};
+    box-shadow: ${({ theme }) => theme.name === 'Light Mode' ? 'none' : '0 0 12px rgba(255, 51, 102, 0.3)'};
   }
 `;
 
@@ -171,8 +178,8 @@ const HeartContainer = styled.div`
 `;
 
 const HeartIcon = styled.i`
-  color: ${({ $active }) => $active ? '#ff3366' : 'rgba(255, 51, 102, 0.2)'};
-  text-shadow: ${({ $active }) => $active ? '0 0 6px #ff3366' : 'none'};
+  color: ${({ $active, theme }) => $active ? '#ff3366' : (theme.name === 'Light Mode' ? 'rgba(0, 0, 0, 0.1)' : 'rgba(255, 51, 102, 0.2)')};
+  text-shadow: ${({ $active, theme }) => ($active && theme.name !== 'Light Mode') ? '0 0 6px #ff3366' : 'none'};
   font-size: 0.9rem;
 `;
 

@@ -588,6 +588,251 @@ const EQ_BARS = Array.from({ length: 28 }, (_, i) => ({
 }));
 
 /* ═══════════════════════════════════════════════════════════════════════
+   WAVY PROGRESS BAR
+═══════════════════════════════════════════════════════════════════════ */
+
+const WavyContainer = styled.div`
+  width: 100%;
+  max-width: 300px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 0 4px;
+  cursor: pointer;
+  user-select: none;
+`;
+
+const WavyWaveSvg = styled.svg`
+  width: 100%;
+  height: 24px;
+  overflow: visible;
+`;
+
+const WavyTimeRow = styled.div`
+  display: flex;
+  justify-content: space-between;
+  font-family: 'DM Mono', 'Fira Code', monospace;
+  font-size: 0.55rem;
+  color: ${({ theme }) => theme.colors.textSecondary};
+  opacity: 0.75;
+  padding: 0 2px;
+`;
+
+function WavyProgressBar({ isPlaying, playerRef, isReady, currentIdx, themePrimary }) {
+  const containerRef = useRef(null);
+  const pathRef      = useRef(null);
+  const thumbRef     = useRef(null);
+  const lineRef      = useRef(null);
+  const elapsedRef   = useRef(null);
+  const totalRef     = useRef(null);
+
+  const widthRef     = useRef(264);
+  const phaseRef     = useRef(0);
+  const ampRef       = useRef(0);
+  const timeRef      = useRef(0);
+  const durationRef  = useRef(0);
+  const isDraggingRef = useRef(false);
+
+  useEffect(() => {
+    if (!containerRef.current) return;
+    const observer = new ResizeObserver((entries) => {
+      for (let entry of entries) {
+        widthRef.current = entry.contentRect.width || 264;
+      }
+    });
+    observer.observe(containerRef.current);
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    timeRef.current = 0;
+    durationRef.current = 0;
+    if (elapsedRef.current) elapsedRef.current.textContent = '0:00';
+    if (totalRef.current) totalRef.current.textContent = '0:00';
+  }, [currentIdx]);
+
+  useEffect(() => {
+    let frameId;
+    let lastTime = performance.now();
+
+    const tick = (now) => {
+      const delta = (now - lastTime) / 1000;
+      lastTime = now;
+
+      if (isPlaying) {
+        phaseRef.current = (phaseRef.current + delta * 6) % (Math.PI * 2);
+        ampRef.current = ampRef.current + (3.8 - ampRef.current) * 0.08;
+      } else {
+        ampRef.current = ampRef.current + (0 - ampRef.current) * 0.12;
+      }
+
+      let curTime = 0;
+      if (isDraggingRef.current) {
+        curTime = timeRef.current;
+      } else if (playerRef.current && isReady && playerRef.current.getCurrentTime) {
+        try {
+          curTime = playerRef.current.getCurrentTime() || 0;
+          timeRef.current = curTime;
+        } catch {
+          curTime = timeRef.current;
+        }
+      }
+
+      let dur = durationRef.current;
+      if (dur === 0 && playerRef.current && isReady && playerRef.current.getDuration) {
+        try {
+          dur = playerRef.current.getDuration() || 0;
+          durationRef.current = dur;
+        } catch {
+          dur = 0;
+        }
+      }
+
+      const progress = dur > 0 ? curTime / dur : 0;
+      const w = widthRef.current;
+      const currentX = progress * w;
+      const centerY = 12;
+
+      if (pathRef.current) {
+        let d = `M 0,${centerY}`;
+        const wavelength = 32;
+        const freq = (2 * Math.PI) / wavelength;
+        const step = 1.5;
+
+        for (let x = step; x <= currentX; x += step) {
+          const y = centerY + Math.sin(x * freq - phaseRef.current) * ampRef.current;
+          d += ` L ${x},${y}`;
+        }
+        d += ` L ${currentX},${centerY}`;
+        pathRef.current.setAttribute('d', d);
+      }
+
+      if (thumbRef.current) {
+        thumbRef.current.setAttribute('cx', currentX);
+      }
+
+      if (lineRef.current) {
+        lineRef.current.setAttribute('x1', currentX);
+        lineRef.current.setAttribute('x2', w);
+      }
+
+      if (elapsedRef.current) {
+        elapsedRef.current.textContent = fmt(curTime);
+      }
+      if (totalRef.current && dur > 0) {
+        totalRef.current.textContent = fmt(dur);
+      }
+
+      frameId = requestAnimationFrame(tick);
+    };
+
+    frameId = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(frameId);
+  }, [isPlaying, isReady, playerRef]);
+
+  const handleInteraction = (clientX) => {
+    if (!containerRef.current || !playerRef.current || !isReady) return;
+    const w = widthRef.current || 264;
+    const rect = containerRef.current.getBoundingClientRect();
+    const clickX = Math.max(0, Math.min(w, clientX - rect.left));
+    const newProgress = clickX / w;
+    const dur = durationRef.current;
+    
+    if (dur > 0) {
+      const newTime = newProgress * dur;
+      timeRef.current = newTime;
+      if (elapsedRef.current) elapsedRef.current.textContent = fmt(newTime);
+      try {
+        playerRef.current.seekTo(newTime, true);
+      } catch { /* skip */ }
+    }
+  };
+
+  const handleMouseDown = (e) => {
+    isDraggingRef.current = true;
+    handleInteraction(e.clientX);
+
+    const handleMouseMove = (moveEvent) => {
+      if (!isDraggingRef.current) return;
+      handleInteraction(moveEvent.clientX);
+    };
+
+    const handleMouseUp = () => {
+      isDraggingRef.current = false;
+      document.removeEventListener('mousemove', handleMouseMove);
+      document.removeEventListener('mouseup', handleMouseUp);
+    };
+
+    document.addEventListener('mousemove', handleMouseMove);
+    document.addEventListener('mouseup', handleMouseUp);
+  };
+
+  const handleTouchStart = (e) => {
+    isDraggingRef.current = true;
+    handleInteraction(e.touches[0].clientX);
+
+    const handleTouchMove = (moveEvent) => {
+      if (!isDraggingRef.current) return;
+      handleInteraction(moveEvent.touches[0].clientX);
+    };
+
+    const handleTouchEnd = () => {
+      isDraggingRef.current = false;
+      document.removeEventListener('touchmove', handleTouchMove);
+      document.removeEventListener('touchend', handleTouchEnd);
+    };
+
+    document.addEventListener('touchmove', handleTouchMove, { passive: true });
+    document.addEventListener('touchend', handleTouchEnd);
+  };
+
+  return (
+    <WavyContainer ref={containerRef}>
+      <WavyWaveSvg
+        height="24"
+        onMouseDown={handleMouseDown}
+        onTouchStart={handleTouchStart}
+      >
+        <line
+          ref={lineRef}
+          y1="12"
+          y2="12"
+          stroke={useTheme().name === 'Light Mode' ? 'rgba(0, 0, 0, 0.12)' : 'rgba(255, 255, 255, 0.12)'}
+          strokeWidth="3"
+          strokeLinecap="round"
+        />
+        <path
+          ref={pathRef}
+          fill="none"
+          stroke={themePrimary}
+          strokeWidth="3"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          style={{
+            filter: `drop-shadow(0 0 2px ${themePrimary}60)`
+          }}
+        />
+        <circle
+          ref={thumbRef}
+          cy="12"
+          r="4.5"
+          fill={useTheme().name === 'Light Mode' ? themePrimary : '#ffffff'}
+          style={{
+            filter: `drop-shadow(0 0 5px ${themePrimary})`,
+            cursor: 'pointer'
+          }}
+        />
+      </WavyWaveSvg>
+      <WavyTimeRow>
+        <span ref={elapsedRef}>0:00</span>
+        <span ref={totalRef}>0:00</span>
+      </WavyTimeRow>
+    </WavyContainer>
+  );
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
    COMPONENT
 ═══════════════════════════════════════════════════════════════════════ */
 
@@ -607,18 +852,9 @@ export default function MusicApp() {
   const [imgErrors, setImgErrors] = useState({});
   const [trackKey, setTrackKey]   = useState(0);
 
-  /* DOM refs — mutated directly in RAF loop, never triggers re-renders */
-  const fillRef     = useRef(null);
-  const elapsedRef  = useRef(null);
-  const totalRef    = useRef(null);
-  const thumbRef    = useRef(null);
+  /* DOM refs — mutated directly in WavyProgressBar or volume logic */
   const volSlider   = useRef(null);
   const volLabel    = useRef(null);
-  const rafId       = useRef(null);
-  const trackRef    = useRef(null);
-  const isDragging  = useRef(false);
-  const dragTime    = useRef(0);
-  const durationRef = useRef(0);
 
   /* Derived values — computed once per render */
   const currentId   = stations[currentIdx]?.id || '';
@@ -630,51 +866,24 @@ export default function MusicApp() {
     : null;
 
   /* ── RAF loop: update progress bar directly in DOM ── */
-  useEffect(() => {
-    const tick = () => {
-      rafId.current = requestAnimationFrame(tick);
-      const p = playerRef.current;
-      if (!p || typeof p.getPlayerState !== 'function') return;
-      let cur = 0;
-      if (!isDragging.current && typeof p.getCurrentTime === 'function') {
-        cur = p.getCurrentTime() || 0;
-        dragTime.current = cur;
-      } else {
-        cur = dragTime.current;
-      }
-      if (typeof p.getDuration === 'function') durationRef.current = p.getDuration() || 0;
-      const pct = durationRef.current > 0 ? (cur / durationRef.current) * 100 : 0;
-      if (fillRef.current)    fillRef.current.style.width = `${pct}%`;
-      if (elapsedRef.current) elapsedRef.current.textContent = fmt(cur);
-      if (totalRef.current && durationRef.current > 0) totalRef.current.textContent = fmt(durationRef.current);
-    };
-    rafId.current = requestAnimationFrame(tick);
-    return () => { if (rafId.current) cancelAnimationFrame(rafId.current); };
-  }, [playerRef]);
-
   /* ── Sync volume slider gradient via CSS custom prop ── */
   useEffect(() => {
     if (volSlider.current) volSlider.current.style.setProperty('--vol-pct', `${volume}%`);
     if (volLabel.current)  volLabel.current.textContent = `${volume}%`;
   }, [volume]);
-
+ 
   /* ── Reset on track change ── */
   useEffect(() => {
-    durationRef.current = 0;
-    dragTime.current    = 0;
-    if (fillRef.current)    fillRef.current.style.width = '0%';
-    if (elapsedRef.current) elapsedRef.current.textContent = '0:00';
-    if (totalRef.current)   totalRef.current.textContent  = '0:00';
     setTrackKey(k => k + 1);
   }, [currentIdx]);
-
+ 
   /* ── Playback controls ── */
   const handlePlayPause = useCallback(() => {
     const p = playerRef.current;
     if (!p || !isReady) return;
     p.getPlayerState() === 1 ? p.pauseVideo() : p.playVideo();
   }, [playerRef, isReady]);
-
+ 
   const selectTrack = useCallback((idx) => {
     const p = playerRef.current;
     if (!p || !isReady) return;
@@ -682,7 +891,7 @@ export default function MusicApp() {
     setCurrentVideoData({ title: '', author: '' });
     p.loadVideoById(stations[idx].id);
   }, [playerRef, isReady, stations, setCurrentIdx, setCurrentVideoData]);
-
+ 
   const handleNext = useCallback(
     () => selectTrack((currentIdx + 1) % stations.length),
     [selectTrack, currentIdx, stations.length]
@@ -691,40 +900,7 @@ export default function MusicApp() {
     () => selectTrack((currentIdx - 1 + stations.length) % stations.length),
     [selectTrack, currentIdx, stations.length]
   );
-
-  /* ── Smooth pointer-based seeking ── */
-  const getSeekTime = useCallback((clientX) => {
-    if (!trackRef.current) return 0;
-    const rect = trackRef.current.getBoundingClientRect();
-    return Math.max(0, Math.min(1, (clientX - rect.left) / rect.width)) * (durationRef.current || 0);
-  }, []);
-
-  const handleProgressPointerDown = useCallback((e) => {
-    e.preventDefault();
-    isDragging.current = true;
-    if (thumbRef.current) { thumbRef.current.style.transform = 'translateY(-50%) scale(1.5)'; thumbRef.current.style.opacity = '1'; }
-    trackRef.current?.setPointerCapture?.(e.pointerId);
-
-    const update = (ev) => {
-      const t = getSeekTime(ev.clientX);
-      dragTime.current = t;
-      if (fillRef.current) fillRef.current.style.width = `${durationRef.current > 0 ? (t / durationRef.current) * 100 : 0}%`;
-      if (elapsedRef.current) elapsedRef.current.textContent = fmt(t);
-    };
-    const commit = (ev) => {
-      isDragging.current = false;
-      if (thumbRef.current) { thumbRef.current.style.transform = 'translateY(-50%) scale(0.7)'; thumbRef.current.style.opacity = '0'; }
-      const t = getSeekTime(ev.clientX);
-      dragTime.current = t;
-      if (playerRef.current && isReady) playerRef.current.seekTo(t, true);
-      trackRef.current?.releasePointerCapture?.(e.pointerId);
-    };
-    update(e);
-    trackRef.current?.addEventListener('pointermove', update);
-    trackRef.current?.addEventListener('pointerup', commit, { once: true });
-    trackRef.current?.addEventListener('pointercancel', commit, { once: true });
-  }, [getSeekTime, playerRef, isReady]);
-
+ 
   /* ── Volume: CSS custom prop, no re-render ── */
   const handleVolChange = useCallback((e) => {
     const v = +e.target.value;
@@ -814,18 +990,14 @@ export default function MusicApp() {
             </TrackInfo>
           </AnimatePresence>
 
-          {/* Progress bar — RAF driven, no React state */}
-          <ProgressSection>
-            <TimeRow>
-              <span ref={elapsedRef}>0:00</span>
-              <span ref={totalRef}>0:00</span>
-            </TimeRow>
-            <ProgressTrack ref={trackRef} onPointerDown={handleProgressPointerDown}>
-              <ProgressFill ref={fillRef} $p={primary}>
-                <ProgressThumb ref={thumbRef} className="prog-thumb" />
-              </ProgressFill>
-            </ProgressTrack>
-          </ProgressSection>
+          {/* Progress bar — WavyProgressBar */}
+          <WavyProgressBar
+            isPlaying={isPlaying}
+            playerRef={playerRef}
+            isReady={isReady}
+            currentIdx={currentIdx}
+            themePrimary={primary}
+          />
 
           {/* Playback controls */}
           <ControlsRow>
