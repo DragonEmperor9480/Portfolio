@@ -62,6 +62,7 @@ const TitleBar = styled.div`
   flex-shrink: 0;
   cursor: ${({ $isDraggable }) => ($isDraggable ? 'grab' : 'default')};
   border-radius: ${({ $isMaximized }) => $isMaximized ? '0' : '16px 16px 0 0'};
+  touch-action: none; /* Prevent touch gestures like scrolling from canceling the drag */
 
   &:active {
     cursor: ${({ $isDraggable }) => ($isDraggable ? 'grabbing' : 'default')};
@@ -213,10 +214,10 @@ export default function AppWindow({ app, zIndex, children }) {
    * The fix is to drive position entirely through CSS top/left ourselves,
    * using raw mousemove/mouseup events — giving pixel-perfect placement.
    */
-  const handleTitleMouseDown = useCallback(
+  const handleTitlePointerDown = useCallback(
     (e) => {
       if (app.isMaximized) return;
-      // Only react to left mouse button, ignore clicks on control buttons
+      // Only react to primary pointer (left mouse click, touch contact)
       if (e.button !== 0) return;
       if (e.target.closest('button')) return;
 
@@ -231,7 +232,7 @@ export default function AppWindow({ app, zIndex, children }) {
         startWinY: app.y,
       };
 
-      const onMouseMove = (ev) => {
+      const onPointerMove = (ev) => {
         if (!dragState.current.dragging || !windowRef.current) return;
 
         const dx = ev.clientX - dragState.current.startMouseX;
@@ -252,7 +253,7 @@ export default function AppWindow({ app, zIndex, children }) {
         windowRef.current.style.top  = `${newY}px`;
       };
 
-      const onMouseUp = (ev) => {
+      const onPointerUp = (ev) => {
         if (!dragState.current.dragging) return;
         dragState.current.dragging = false;
 
@@ -268,12 +269,12 @@ export default function AppWindow({ app, zIndex, children }) {
 
         updateWindowPosition(app.id, clampedX, clampedY);
 
-        document.removeEventListener('mousemove', onMouseMove);
-        document.removeEventListener('mouseup', onMouseUp);
+        document.removeEventListener('pointermove', onPointerMove);
+        document.removeEventListener('pointerup', onPointerUp);
       };
 
-      document.addEventListener('mousemove', onMouseMove);
-      document.addEventListener('mouseup', onMouseUp);
+      document.addEventListener('pointermove', onPointerMove);
+      document.addEventListener('pointerup', onPointerUp);
     },
     [app.id, app.isMaximized, app.x, app.y, app.width, focusApp, updateWindowPosition]
   );
@@ -329,7 +330,7 @@ export default function AppWindow({ app, zIndex, children }) {
       <TitleBar
         $isDraggable={!app.isMaximized}
         $isMaximized={app.isMaximized}
-        onMouseDown={handleTitleMouseDown}
+        onPointerDown={handleTitlePointerDown}
         onDoubleClick={() => toggleMaximize(app.id)}
       >
         <WindowTitle>
