@@ -226,6 +226,97 @@ const MobileContainer = styled.div`
   border-top: 1px solid ${({ theme }) => `${theme.colors.primary}20`};
 `;
 
+const DesktopControlsLeft = styled.div`
+  display: flex;
+  align-items: center;
+
+  @media (max-width: 1024px) {
+    display: none;
+  }
+`;
+
+const DesktopOnlyFlex = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  @media (max-width: 1024px) {
+    display: none;
+  }
+`;
+
+const MobileDivider = styled.div`
+  height: 1px;
+  background: ${({ theme }) => `${theme.colors.primary}20`};
+  width: 100%;
+  margin: 8px 0;
+`;
+
+const MobileControlsGrid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  width: 100%;
+  margin: 8px 0;
+  box-sizing: border-box;
+
+  /* Force wrapper divs to stretch to full width of columns */
+  & > div,
+  & > div > div,
+  & > div > div > div {
+    width: 100% !important;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+  }
+
+  button {
+    margin: 0 !important;
+    width: 100% !important;
+    height: 44px !important;
+    justify-content: center !important;
+    font-size: 0.85rem !important;
+    border-radius: 12px !important;
+    padding: 0 12px !important;
+    box-sizing: border-box !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+  }
+
+  /* Force text labels and icons to show inside mobile controls */
+  .label {
+    display: inline !important;
+  }
+
+  .icon {
+    display: inline-block !important;
+  }
+
+  .time-text {
+    font-size: 0.85rem !important;
+  }
+`;
+
+const MobileMusicRow = styled.div`
+  width: 100%;
+  margin-bottom: 8px;
+  display: flex;
+  justify-content: center;
+
+  & > div, & > div > button {
+    width: 100% !important;
+    margin: 0 !important;
+  }
+  
+  button {
+    height: 44px !important;
+    justify-content: center !important;
+    border-radius: 12px !important;
+    width: 100% !important;
+  }
+`;
+
 const navItems = [
   { id: 'home', name: 'Home' },
   { id: 'about', name: 'About' },
@@ -310,8 +401,7 @@ export default function Navbar() {
   }, [isMenuOpen]);
 
   const closedHeight = width <= 768 ? '56px' : '60px';
-  const openHeight = width <= 480 ? '340px' : '320px';
-  const navHeight = isMenuOpen ? openHeight : closedHeight;
+  const navHeight = isMenuOpen ? 'auto' : closedHeight;
 
   return (
     <>
@@ -325,6 +415,7 @@ export default function Navbar() {
             height: navHeight,
           }}
           transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+          style={{ overflow: isMenuOpen ? 'visible' : 'hidden' }}
         >
           <NavRow>
             <div style={{ display: 'flex', alignItems: 'center', zIndex: 2 }}>
@@ -333,8 +424,10 @@ export default function Navbar() {
                 AN
               </LogoLink>
 
-              <AppLauncher />
-              <SystemControl />
+              <DesktopControlsLeft>
+                <AppLauncher />
+                <SystemControl />
+              </DesktopControlsLeft>
             </div>
 
             <CenterLinks>
@@ -376,7 +469,7 @@ export default function Navbar() {
             </CenterLinks>
 
             <RightControls>
-              <div className="desktop-only" style={{ display: 'flex', gap: '8px' }}>
+              <DesktopOnlyFlex>
                 <ActionButton 
                   as="a"
                   $primary
@@ -386,14 +479,18 @@ export default function Navbar() {
                 >
                   <i className="fas fa-file-pdf" style={{ fontSize: '0.85rem' }} /> Resume
                 </ActionButton>
-              </div>
+              </DesktopOnlyFlex>
 
               <div className="desktop-only">
                 <NavMusicPlayer />
               </div>
               
-              <SystemClock />
-              <ThemeSwitcher />
+              <div className="desktop-only">
+                <SystemClock />
+              </div>
+              <div className="desktop-only">
+                <ThemeSwitcher />
+              </div>
               
               <MenuButton
                 ref={buttonRef}
@@ -410,9 +507,17 @@ export default function Navbar() {
           <AnimatePresence>
             {isMenuOpen && (
               <MobileDropdown
-                initial={{ opacity: 0, height: 0 }}
-                animate={{ opacity: 1, height: 'auto' }}
-                exit={{ opacity: 0, height: 0 }}
+                initial={{ opacity: 0, height: 0, overflow: 'hidden' }}
+                animate={{ 
+                  opacity: 1, 
+                  height: 'auto',
+                  transitionEnd: { overflow: 'visible' }
+                }}
+                exit={{ 
+                  opacity: 0, 
+                  height: 0, 
+                  overflow: 'hidden' 
+                }}
                 transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
               >
                 <MobileContainer>
@@ -430,6 +535,19 @@ export default function Navbar() {
                     </NavLink>
                   ))}
                   
+                  <MobileDivider />
+
+                  <MobileControlsGrid>
+                    <AppLauncher />
+                    <SystemControl />
+                    <ThemeSwitcher />
+                    <SystemClock />
+                  </MobileControlsGrid>
+
+                  <MobileMusicRow>
+                    <NavMusicPlayer />
+                  </MobileMusicRow>
+
                   <ActionButton 
                     as="a"
                     $primary

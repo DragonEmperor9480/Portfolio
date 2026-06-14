@@ -91,6 +91,15 @@ const DropdownPanel = styled(motion.div)`
   font-family: 'Space Grotesk', sans-serif;
   overflow: hidden;
   will-change: transform, opacity;
+
+  @media (max-width: 768px) {
+    position: fixed;
+    top: 80px;
+    left: 14px;
+    right: 14px;
+    transform: none !important;
+    width: auto;
+  }
 `;
 
 const PanelHeader = styled.div`

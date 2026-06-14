@@ -33,6 +33,20 @@ const StatusTrayButton = styled(motion.button)`
     box-shadow: 0 0 14px ${({ theme }) => `${theme?.colors?.primary || '#64ffda'}18`};
   }
 
+  .control-label {
+    display: none;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+  }
+
+  @media (max-width: 1024px) {
+    .control-label {
+      display: inline;
+    }
+  }
+
   @media (max-width: 480px) { display: none; }
 `;
 
@@ -385,6 +399,7 @@ export default function SystemControl() {
           <TrayIcon $active={isOnline} $color="#4ade80">
             <i className={`fas fa-${isOnline ? 'wifi' : 'wifi-slash'}`} />
           </TrayIcon>
+          <span className="control-label">SYSTEM</span>
         </StatusTrayButton>
       </motion.div>
 
