@@ -331,6 +331,7 @@ export default function Navbar() {
                 AN
               </LogoLink>
 
+              <AppLauncher />
               <SystemControl />
             </div>
 
@@ -389,7 +390,6 @@ export default function Navbar() {
                 <NavMusicPlayer />
               </div>
               
-              <AppLauncher />
               <SystemClock />
               <ThemeSwitcher />
               

@@ -8,43 +8,43 @@ export const APPS = {
     id: 'terminal',
     title: 'Cyber Terminal',
     icon: 'fas fa-terminal',
-    defaultWidth: 650,
-    defaultHeight: 400,
+    defaultWidth: 800,
+    defaultHeight: 500,
   },
   monitor: {
     id: 'monitor',
     title: 'System Diagnostics',
     icon: 'fas fa-chart-line',
-    defaultWidth: 600,
-    defaultHeight: 450,
+    defaultWidth: 780,
+    defaultHeight: 520,
   },
   notes: {
     id: 'notes',
     title: 'Secure Logs Notepad',
     icon: 'fas fa-sticky-note',
-    defaultWidth: 500,
-    defaultHeight: 400,
+    defaultWidth: 680,
+    defaultHeight: 500,
   },
   music: {
     id: 'music',
     title: 'YouTube Media Console',
     icon: 'fas fa-music',
-    defaultWidth: 520,
-    defaultHeight: 430,
+    defaultWidth: 680,
+    defaultHeight: 520,
   },
   browser: {
     id: 'browser',
     title: 'Web Sandbox',
     icon: 'fas fa-globe',
-    defaultWidth: 800,
-    defaultHeight: 500,
+    defaultWidth: 980,
+    defaultHeight: 620,
   },
   hackerhub: {
     id: 'hackerhub',
     title: 'HackerHub',
     icon: 'fas fa-user-secret',
-    defaultWidth: 600,
-    defaultHeight: 400,
+    defaultWidth: 780,
+    defaultHeight: 500,
   }
 };
 
@@ -74,11 +74,18 @@ export function AppsProvider({ children }) {
         return prev;
       }
 
-      // Calculate cascading initial offsets for newly opened windows
-      const offset = 30;
+      // Calculate sizes bounded by viewport boundaries
+      const w = Math.min(appConfig.defaultWidth, window.innerWidth - 40);
+      const h = Math.min(appConfig.defaultHeight, window.innerHeight - 80);
+
+      const centerX = (window.innerWidth - w) / 2;
+      const centerY = (window.innerHeight - h) / 2;
+
+      // Cascading offset to avoid complete overlap of centered windows
+      const offset = 24;
       const count = prev.length;
-      const initialX = 80 + (count * offset) % 180;
-      const initialY = 80 + (count * offset) % 180;
+      const initialX = Math.max(20, centerX + (count * offset) % 120);
+      const initialY = Math.max(20, centerY + (count * offset) % 120);
 
       const newApp = {
         ...appConfig,
@@ -86,8 +93,8 @@ export function AppsProvider({ children }) {
         isMinimized: false,
         x: initialX,
         y: initialY,
-        width: appConfig.defaultWidth,
-        height: appConfig.defaultHeight,
+        width: w,
+        height: h,
       };
 
       return [...prev, newApp];
