@@ -1,11 +1,15 @@
+'use client';
+
 import { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import styled, { keyframes } from 'styled-components';
 import { motion, AnimatePresence } from 'framer-motion';
-import adamModelUrl from '../assets/3dmodels/adam_smasher_gmod_playermodel.glb?url';
+// Assets served from /public — no import needed in Next.js
+const adamModelUrl = '/adam_smasher.glb';
+const hitSoundUrl = '/hit-sound.mp3';
+const deathSoundUrl = '/death-sound.mp3';
 import ModelViewer from './ui/ModelViewer';
-import hitSoundUrl from '../assets/music/minecraft-mob-villager-hit-2-gaming-sound-effect-minecraft-hd-sound-effects.mp3';
-import deathSoundUrl from '../assets/music/villager-death.mp3';
+
 
 /* ─── Keyframe Animations ─────────────────────────────────────────── */
 

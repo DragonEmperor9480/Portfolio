@@ -1,7 +1,10 @@
+'use client';
+
 import { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { motion } from 'framer-motion';
-import profileImage from '../assets/profile.jpg';
+const profileImage = '/profile.jpg';
+
 
 const HeroContainer = styled.section`
   display: flex;

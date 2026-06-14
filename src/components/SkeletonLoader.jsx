@@ -1,3 +1,5 @@
+'use client';
+
 import styled, { keyframes } from 'styled-components';
 import { motion, useMotionValue, useTransform, useSpring } from 'framer-motion';
 import { useState, useEffect, useRef } from 'react';

@@ -1,3 +1,5 @@
+'use client';
+
 /* eslint-disable react/prop-types */
 import { useEffect, useRef, useCallback } from 'react';
 import styled from 'styled-components';

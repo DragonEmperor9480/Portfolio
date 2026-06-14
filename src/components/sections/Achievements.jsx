@@ -1,3 +1,5 @@
+'use client';
+
 import { motion, useInView, useSpring, useTransform } from 'framer-motion';
 import styled, { keyframes, css } from 'styled-components';
 import Badges from '../Badges';

@@ -1,3 +1,5 @@
+'use client';
+
 /* eslint-disable react/prop-types */
 import { createContext, useContext, useState, useRef, useCallback } from 'react';
 import stationsData from '../data/music.json';

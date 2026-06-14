@@ -22,3 +22,24 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Next.js build output
+.next/
+out/
+
+# Next.js cache (Turbopack)
+.turbo/
+
+# Environment variables — never commit these
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Vercel deployment cache
+.vercel
+
+# TypeScript build info
+*.tsbuildinfo
+next-env.d.ts

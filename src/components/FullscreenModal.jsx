@@ -1,7 +1,10 @@
+'use client';
+
 /* eslint-disable react/prop-types */
 import styled from 'styled-components';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useNavigate } from 'react-router-dom';
+import { useRouter } from 'next/navigation';
+
 
 const ModalOverlay = styled(motion.div)`
   position: fixed;
@@ -105,27 +108,28 @@ const ModalSecondaryBtn = styled(motion.button)`
 `;
 
 export default function FullscreenModal({ isOpen, onClose }) {
-    const navigate = useNavigate();
+    const router = useRouter();
 
     const handleGoFullscreen = () => {
         if (document.documentElement.requestFullscreen) {
             document.documentElement.requestFullscreen().then(() => {
                 onClose();
-                navigate('/AmrutLab');
+                router.push('/amrutlab');
             }).catch(() => {
                 onClose();
-                navigate('/AmrutLab');
+                router.push('/amrutlab');
             });
         } else {
             onClose();
-            navigate('/AmrutLab');
+            router.push('/amrutlab');
         }
     };
 
     const handleSkipFullscreen = () => {
         onClose();
-        navigate('/AmrutLab');
+        router.push('/amrutlab');
     };
+
 
     return (
         <AnimatePresence>
