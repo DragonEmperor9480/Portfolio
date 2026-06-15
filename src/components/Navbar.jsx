@@ -348,13 +348,14 @@ export default function Navbar() {
   const lenis = useLenis();
   const { closeLauncher } = useApps();
   const handleNavClick = (e, id) => {
-    e.preventDefault();
+    if (e && e.preventDefault) e.preventDefault();
     closeLauncher(); // close app selection overlay
     if (id === 'lab') {
       setShowLabModal(true);
       return;
     }
-    if (lenis) {
+    const isTouch = navigator.maxTouchPoints > 0;
+    if (lenis && !isTouch) {
       lenis.scrollTo(`#${id}`, { duration: 1.2 });
     } else {
       const target = document.getElementById(id);
@@ -544,10 +545,11 @@ export default function Navbar() {
                       href={`#${item.id}`}
                       $active={activeSection === item.id}
                       onClick={(e) => {
-                        handleNavClick(e, item.id);
+                        e.preventDefault();
+                        setIsMenuOpen(false);
                         setTimeout(() => {
-                          setIsMenuOpen(false);
-                        }, 100);
+                          handleNavClick(e, item.id);
+                        }, 150);
                       }}
                     >
                       {item.name}
