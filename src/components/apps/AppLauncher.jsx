@@ -126,7 +126,19 @@ const WindowTitle = styled.span`
 `;
 
 const BodyContainer = styled(motion.div)`
-  overflow: hidden;
+  overflow-y: auto;
+  max-height: 70vh;
+
+  &::-webkit-scrollbar {
+    width: 4px;
+  }
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: ${({ theme }) => theme.colors.primary}30;
+    border-radius: 2px;
+  }
 `;
 
 const AppGrid = styled.div`
@@ -143,11 +155,11 @@ const AppGrid = styled.div`
   }
 
   @media (max-width: 520px) {
-    grid-template-columns: repeat(1, 100%);
+    grid-template-columns: 1fr;
     width: 100%;
-    max-width: 280px;
-    margin: 0 auto;
-    padding: 24px 16px;
+    max-width: 100%;
+    gap: 10px;
+    padding: 20px 16px 24px;
   }
 `;
 
@@ -177,6 +189,14 @@ const AppButton = styled(motion.button)`
     transition: opacity 0.3s ease;
     pointer-events: none;
   }
+
+  @media (max-width: 520px) {
+    flex-direction: row;
+    align-items: center;
+    gap: 14px;
+    padding: 12px 16px;
+    border-radius: 14px;
+  }
 `;
 
 const IconBox = styled.div`
@@ -196,6 +216,18 @@ const IconBox = styled.div`
   svg {
     width: 26px;
     height: 26px;
+  }
+
+  @media (max-width: 520px) {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    flex-shrink: 0;
+
+    svg {
+      width: 20px;
+      height: 20px;
+    }
   }
 `;
 
