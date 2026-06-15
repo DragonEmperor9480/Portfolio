@@ -362,9 +362,10 @@ export default function SystemControl() {
   // Sync brightness styling effect
   useEffect(() => {
     const actualBrt = Math.max(40, brightness);
-    document.documentElement.style.setProperty('--system-brightness', `${actualBrt}%`);
+    const dimness = (100 - actualBrt) / 100;
+    document.documentElement.style.setProperty('--system-dimness', `${dimness}`);
     return () => {
-      document.documentElement.style.removeProperty('--system-brightness');
+      document.documentElement.style.removeProperty('--system-dimness');
     };
   }, [brightness]);
 

@@ -124,13 +124,9 @@ const GlobalStyles = createGlobalStyle`
     height: 100vh;
     pointer-events: none;
     z-index: 999999;
-    -webkit-backdrop-filter: brightness(var(--system-brightness, 100%)) 
-                             sepia(var(--system-sepia, 0%)) 
-                             hue-rotate(var(--system-hue-rotate, 0deg));
-    backdrop-filter: brightness(var(--system-brightness, 100%)) 
-                     sepia(var(--system-sepia, 0%)) 
-                     hue-rotate(var(--system-hue-rotate, 0deg));
-    transition: backdrop-filter 0.15s ease, -webkit-backdrop-filter 0.15s ease;
+    background: black;
+    opacity: var(--system-dimness, 0);
+    transition: opacity 0.15s ease;
   }
 `;
 

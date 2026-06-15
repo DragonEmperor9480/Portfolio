@@ -152,25 +152,37 @@ function ThemedApp() {
 
 export default function Home() {
   const [isTouchDevice, setIsTouchDevice] = useState(false);
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
     setIsTouchDevice(navigator.maxTouchPoints > 0);
+    setMounted(true);
   }, []);
 
-  // On touch/mobile: use native scroll (smoothWheel off, lerp 1 = instant).
-  // JS lerp loops compete with the browser compositor on mobile causing jank.
-  // On desktop: keep smooth lerp-based scroll.
-  const lenisOptions = isTouchDevice
-    ? { smoothWheel: false, syncTouch: true, touchMultiplier: 2, lerp: 1 }
-    : { lerp: 0.08, smoothWheel: true };
+  // Avoid layout shifting/hydration issues by rendering initial structure identically
+  if (!mounted) {
+    return (
+      <ThemeProvider>
+        <AppsProvider>
+          <PlayerProvider>
+            <ThemedApp />
+          </PlayerProvider>
+        </AppsProvider>
+      </ThemeProvider>
+    );
+  }
 
   return (
     <ThemeProvider>
       <AppsProvider>
         <PlayerProvider>
-          <ReactLenis root options={lenisOptions}>
+          {isTouchDevice ? (
             <ThemedApp />
-          </ReactLenis>
+          ) : (
+            <ReactLenis root options={{ lerp: 0.08, smoothWheel: true }}>
+              <ThemedApp />
+            </ReactLenis>
+          )}
         </PlayerProvider>
       </AppsProvider>
     </ThemeProvider>
