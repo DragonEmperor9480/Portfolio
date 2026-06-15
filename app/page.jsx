@@ -155,7 +155,7 @@ export default function Home() {
     <ThemeProvider>
       <AppsProvider>
         <PlayerProvider>
-          <ReactLenis root options={{ lerp: 0.08, smoothWheel: true, syncTouch: true }}>
+          <ReactLenis root options={{ lerp: 0.08, smoothWheel: true, syncTouch: true, touchMultiplier: 2, syncTouchLerp: 0.1 }}>
             <ThemedApp />
           </ReactLenis>
         </PlayerProvider>
