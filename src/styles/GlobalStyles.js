@@ -17,10 +17,6 @@ const GlobalStyles = createGlobalStyle`
     position: relative;
     min-height: 100vh;
     overflow-x: hidden;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
     width: 100%;
     margin: 0;
     padding: 0;
@@ -71,7 +67,6 @@ const GlobalStyles = createGlobalStyle`
   }
 
   html {
-    overflow-x: hidden;
     max-width: 100vw;
   }
 
