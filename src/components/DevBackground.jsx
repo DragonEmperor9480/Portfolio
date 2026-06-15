@@ -15,7 +15,6 @@ const Background = styled.div`
   overflow: hidden;
 `;
 
-// Removed text-shadow — it forces a repaint on every animation frame
 const Code = styled(motion.pre)`
   color: ${({ theme }) => `${theme.colors.primary}40`};
   font-family: 'JetBrains Mono', monospace;
@@ -29,7 +28,6 @@ const Code = styled(motion.pre)`
   will-change: transform;
 `;
 
-// Removed filter: drop-shadow — expensive per-frame GPU operation
 const FloatingIcon = styled(motion.i)`
   color: ${({ theme }) => `${theme.colors.primary}50`};
   font-size: 2rem;
@@ -75,32 +73,39 @@ const iconList = [
 
 export default function DevBackground() {
   const [floatingElements, setFloatingElements] = useState([]);
+  const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
+    const mobile = window.innerWidth < 768 || navigator.maxTouchPoints > 0;
+    setIsMobile(mobile);
+
     const elements = [];
     const w = window.innerWidth;
     const h = window.innerHeight;
 
-    // 12 icons (was 25)
-    for (let i = 0; i < 12; i++) {
+    // Drastically reduce element counts on mobile (total 7 static items vs 25 animated on desktop)
+    const iconCount = mobile ? 4 : 12;
+    const textCount = mobile ? 2 : 8;
+    const quoteCount = mobile ? 1 : 5;
+
+    // Icons
+    for (let i = 0; i < iconCount; i++) {
       elements.push({
         id: `icon-${i}`,
         type: 'icon',
         content: iconList[Math.floor(Math.random() * iconList.length)],
         x: Math.random() * w,
         y: Math.random() * h,
-        // Longer durations = fewer frames needed per cycle
         duration: 25 + Math.random() * 20,
         delay: Math.random() * -20,
         scale: 0.8 + Math.random() * 0.5,
-        // Reduced movement range — less distance = smoother on low-end devices
         driftX: 60 + Math.random() * 60,
         driftY: 60 + Math.random() * 60,
       });
     }
 
-    // 8 code snippets (was 15)
-    for (let i = 0; i < 8; i++) {
+    // Code snippets
+    for (let i = 0; i < textCount; i++) {
       elements.push({
         id: `text-${i}`,
         type: 'text',
@@ -115,8 +120,8 @@ export default function DevBackground() {
       });
     }
 
-    // 5 dev quotes (was 10)
-    for (let i = 0; i < 5; i++) {
+    // Dev quotes
+    for (let i = 0; i < quoteCount; i++) {
       elements.push({
         id: `quote-${i}`,
         type: 'quote',
@@ -137,22 +142,27 @@ export default function DevBackground() {
   return (
     <Background>
       {floatingElements.map((element) => {
+        const styleProps = {
+          fontSize: element.type === 'icon' ? `${element.scale * 2}rem` : `${element.scale * 1.1}rem`,
+          maxWidth: element.type === 'icon' ? undefined : '280px',
+          left: `${element.x}px`,
+          top: `${element.y}px`,
+          willChange: 'transform',
+        };
+
         if (element.type === 'icon') {
           return (
             <FloatingIcon
               key={element.id}
               className={element.content}
-              style={{
-                fontSize: `${element.scale * 2}rem`,
-                willChange: 'transform',
-              }}
-              animate={{
-                // Only animating x, y, opacity — no rotate (saves layout recalc)
-                x: [element.x, element.x + element.driftX, element.x - element.driftX, element.x],
-                y: [element.y, element.y - element.driftY, element.y + element.driftY, element.y],
+              style={styleProps}
+              // Completely disable motion animation on mobile devices to prevent GPU and layout updates
+              animate={isMobile ? undefined : {
+                x: [0, element.driftX, -element.driftX, 0],
+                y: [0, -element.driftY, element.driftY, 0],
                 opacity: [0.4, 0.7, 0.4],
               }}
-              transition={{
+              transition={isMobile ? undefined : {
                 duration: element.duration,
                 delay: element.delay,
                 repeat: Infinity,
@@ -165,17 +175,14 @@ export default function DevBackground() {
         return (
           <Code
             key={element.id}
-            style={{
-              fontSize: `${element.scale * 1.1}rem`,
-              maxWidth: '280px',
-              willChange: 'transform',
-            }}
-            animate={{
-              x: [element.x, element.x + element.driftX, element.x - element.driftX, element.x],
-              y: [element.y, element.y - element.driftY, element.y + element.driftY, element.y],
+            style={styleProps}
+            // Completely disable motion animation on mobile devices to prevent GPU and layout updates
+            animate={isMobile ? undefined : {
+              x: [0, element.driftX, -element.driftX, 0],
+              y: [0, -element.driftY, element.driftY, 0],
               opacity: element.type === 'quote' ? [0.7, 0.85, 0.7] : [0.5, 0.7, 0.5],
             }}
-            transition={{
+            transition={isMobile ? undefined : {
               duration: element.duration,
               delay: element.delay,
               repeat: Infinity,

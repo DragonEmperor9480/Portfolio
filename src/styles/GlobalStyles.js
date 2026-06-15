@@ -28,12 +28,19 @@ const GlobalStyles = createGlobalStyle`
     -ms-text-size-adjust: 100%;
   }
 
-  /* Add smooth transitions for theme changes */
-  * {
-    transition: background-color 0.1s ease,
-                color 0.1s ease,
-                border-color 0.1s ease,
-                box-shadow 0.1s ease;
+  /* Add smooth transitions for theme changes (avoid universal selector '*' for performance) */
+  body, nav, section, button, a, p, h1, h2, h3, h4, h5, h6, input, textarea, select, span {
+    transition: background-color 0.15s ease,
+                color 0.15s ease,
+                border-color 0.15s ease,
+                box-shadow 0.15s ease;
+  }
+
+  /* Disable transitions on mobile/touch devices for smooth 60fps scrolling */
+  @media (hover: none) and (pointer: coarse) {
+    body, nav, section, button, a, p, h1, h2, h3, h4, h5, h6, input, textarea, select, span {
+      transition: none !important;
+    }
   }
 
   /* Ensure content appears above background */
