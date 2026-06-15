@@ -415,7 +415,7 @@ export default function Navbar() {
             height: navHeight,
           }}
           transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-          style={{ overflow: isMenuOpen ? 'visible' : 'hidden' }}
+          style={{ overflow: (isMenuOpen || width > 1024) ? 'visible' : 'hidden' }}
         >
           <NavRow>
             <div style={{ display: 'flex', alignItems: 'center', zIndex: 2 }}>

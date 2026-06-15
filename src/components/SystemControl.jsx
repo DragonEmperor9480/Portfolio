@@ -33,6 +33,7 @@ const StatusTrayButton = styled(motion.button)`
     box-shadow: 0 0 14px ${({ theme }) => `${theme?.colors?.primary || '#64ffda'}18`};
   }
 
+
   .control-label {
     display: none;
     font-family: 'Space Grotesk', sans-serif;
@@ -46,8 +47,6 @@ const StatusTrayButton = styled(motion.button)`
       display: inline;
     }
   }
-
-  @media (max-width: 480px) { display: none; }
 `;
 
 const TrayIcon = styled.span`
