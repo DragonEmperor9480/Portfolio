@@ -6,7 +6,7 @@ import { themes } from '../themes/themes';
 const ThemeContext = createContext();
 
 export function ThemeProvider({ children }) {
-  const [currentTheme, setCurrentTheme] = useState('black');
+  const [currentTheme, setCurrentTheme] = useState('synthwave');
 
   return (
     <ThemeContext.Provider value={{ currentTheme, setCurrentTheme }}>

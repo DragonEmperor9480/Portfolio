@@ -606,9 +606,13 @@ const shimmer = keyframes`
 `;
 
 const ImageSkeleton = styled.div`
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
   width: 100%;
   max-width: 900px;
-  height: 480px;
   border-radius: 12px;
   background: linear-gradient(
     90deg,
@@ -619,8 +623,8 @@ const ImageSkeleton = styled.div`
   background-size: 1000px 100%;
   animation: ${shimmer} 2s infinite linear;
   border: 1px solid ${({ theme }) => theme.colors.border};
-  position: relative;
   overflow: hidden;
+  z-index: 2;
 
   &::after {
     content: '';
@@ -639,11 +643,6 @@ const ImageSkeleton = styled.div`
   @keyframes spin {
     to { transform: translate(-50%, -50%) rotate(360deg); }
   }
-
-  @media (max-width: 768px) {
-    max-width: 100%;
-    height: 320px;
-  }
 `;
 
 const CertificateImageWrapper = styled.div`
@@ -653,8 +652,9 @@ const CertificateImageWrapper = styled.div`
   border: 1px solid ${({ theme }) => theme.colors.border};
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
   overflow: hidden;
-  display: ${({ $loaded }) => ($loaded ? 'block' : 'none')};
   position: relative;
+  opacity: ${({ $loaded }) => ($loaded ? 1 : 0)};
+  transition: opacity 0.3s ease-in;
 `;
 
 const WelcomeScreen = styled.div`
@@ -1014,7 +1014,7 @@ export default credential;`;
                       </PreviewHeader>
                       
                       <PreviewContent>
-                        <CertificateImageContainer>
+                        <CertificateImageContainer key={activeTab}>
                           {!imageLoaded[activeTab] && <ImageSkeleton />}
                           <CertificateImageWrapper $loaded={imageLoaded[activeTab]}>
                             <Image 
