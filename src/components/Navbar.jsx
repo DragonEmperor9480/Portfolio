@@ -347,7 +347,6 @@ export default function Navbar() {
   const buttonRef = useRef(null);
   const lenis = useLenis();
   const { closeLauncher } = useApps();
-
   const handleNavClick = (e, id) => {
     e.preventDefault();
     closeLauncher(); // close app selection overlay
@@ -358,9 +357,16 @@ export default function Navbar() {
     if (lenis) {
       lenis.scrollTo(`#${id}`, { duration: 1.2 });
     } else {
-      document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
+      const target = document.getElementById(id);
+      if (target) {
+        const yOffset = -80; // height of the navbar
+        const y = target.getBoundingClientRect().top + window.scrollY + yOffset;
+        window.scrollTo({ top: y, behavior: 'smooth' });
+      }
     }
   };
+
+
 
   useEffect(() => {
     const handleScroll = () => {
@@ -422,10 +428,12 @@ export default function Navbar() {
           animate={{ 
             opacity: 1, 
             y: 0,
-            height: navHeight,
           }}
           transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-          style={{ overflow: (isMenuOpen || width > 1024) ? 'visible' : 'hidden' }}
+          style={{ 
+            overflow: (isMenuOpen || width > 1024) ? 'visible' : 'hidden',
+            height: 'auto'
+          }}
         >
           <NavRow>
             <div style={{ display: 'flex', alignItems: 'center', zIndex: 2 }}>
@@ -536,8 +544,10 @@ export default function Navbar() {
                       href={`#${item.id}`}
                       $active={activeSection === item.id}
                       onClick={(e) => {
-                        setIsMenuOpen(false);
                         handleNavClick(e, item.id);
+                        setTimeout(() => {
+                          setIsMenuOpen(false);
+                        }, 100);
                       }}
                     >
                       {item.name}
