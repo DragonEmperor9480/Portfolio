@@ -4,6 +4,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import styled, { keyframes, css } from 'styled-components';
 import { motion, AnimatePresence } from 'framer-motion';
+import Image from 'next/image';
 import { usePlayer } from '../../context/PlayerContext';
 import { useTheme } from '../../context/ThemeContext';
 import { themes } from '../../themes/themes';
@@ -161,10 +162,11 @@ const ArtWrap = styled.div`
   transition: box-shadow 0.9s ease;
 `;
 
-const ArtImg = styled.img`
+const ArtImgWrapper = styled.div`
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  position: relative;
+  overflow: hidden;
   display: block;
   transform: ${({ $playing }) => $playing ? 'scale(1.05)' : 'scale(1.0)'};
   transition: transform 6s ease;
@@ -490,20 +492,12 @@ const QueueThumb = styled.div`
   position: relative;
   flex-shrink: 0;
 
-  img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-    opacity: ${({ $active }) => $active ? 0.92 : 0.5};
-    transition: opacity 0.25s;
-  }
-
   &::after {
     content: '';
     position: absolute;
     inset: 0;
     background: linear-gradient(to top, rgba(0,0,0,0.55) 0%, transparent 55%);
+    z-index: 1;
   }
 `;
 
@@ -945,12 +939,16 @@ export default function MusicApp() {
           {/* Album Art with EQ inside */}
           <ArtWrap $p={primary}>
             {thumbUrl ? (
-              <ArtImg
-                src={thumbUrl}
-                alt={trackTitle}
-                $playing={isPlaying}
-                onError={() => setImgErrors(e => ({ ...e, [currentId]: true }))}
-              />
+              <ArtImgWrapper $playing={isPlaying}>
+                <Image
+                  src={thumbUrl}
+                  alt={trackTitle}
+                  fill
+                  sizes="200px"
+                  style={{ objectFit: 'cover' }}
+                  onError={() => setImgErrors(e => ({ ...e, [currentId]: true }))}
+                />
+              </ArtImgWrapper>
             ) : (
               <ArtFallback $p={primary}>
                 <i className="fas fa-music" />
@@ -1047,9 +1045,17 @@ export default function MusicApp() {
                 >
                   <QueueThumb $active={active}>
                     {!hasErr ? (
-                      <img
+                      <Image
                         src={`https://img.youtube.com/vi/${s.id}/mqdefault.jpg`}
                         alt={s.name}
+                        fill
+                        sizes="168px"
+                        style={{
+                          objectFit: 'cover',
+                          display: 'block',
+                          opacity: active ? 0.92 : 0.5,
+                          transition: 'opacity 0.25s',
+                        }}
                         onError={() => setImgErrors(e => ({ ...e, [s.id]: true }))}
                       />
                     ) : (

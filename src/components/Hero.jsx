@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { motion } from 'framer-motion';
+import Image from 'next/image';
 const profileImage = '/profile.jpg';
 
 
@@ -172,7 +173,7 @@ const RightSection = styled.div`
   }
 `;
 
-const ProfileImage = styled(motion.img)`
+const ProfileImageWrapper = styled(motion.div)`
   width: 300px;
   height: 300px;
   border-radius: 50%;
@@ -180,6 +181,8 @@ const ProfileImage = styled(motion.img)`
   padding: 5px;
   box-shadow: 0 0 30px ${({ theme }) => `${theme.colors.primary}20`};
   transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
 
   @media (max-width: 768px) {
     width: 200px;
@@ -479,13 +482,20 @@ export default function Hero() {
 
         <ContentWrapper>
           <LeftSection>
-            <ProfileImage
-              src={profileImage}
-              alt="Amrutesh Naregal"
+            <ProfileImageWrapper
               whileHover={{ scale: 1.05 }}
               transition={{ type: "spring", stiffness: 300 }}
-              draggable="false"
-            />
+            >
+              <Image
+                src={profileImage}
+                alt="Amrutesh Naregal"
+                fill
+                priority
+                sizes="(max-width: 480px) 150px, (max-width: 768px) 200px, 300px"
+                style={{ objectFit: 'cover', borderRadius: '50%' }}
+                draggable="false"
+              />
+            </ProfileImageWrapper>
           </LeftSection>
 
           <RightSection>

@@ -4,6 +4,7 @@
 import { useState, useEffect, useRef } from 'react';
 import styled from 'styled-components';
 import { motion, AnimatePresence } from 'framer-motion';
+import Image from 'next/image';
 import { useTheme } from '../context/ThemeContext';
 import { themes } from '../themes/themes';
 import { usePlayer } from '../context/PlayerContext';
@@ -126,11 +127,10 @@ const CoverArtContainer = styled.div`
   border: 1px solid rgba(255, 255, 255, 0.04);
 `;
 
-const CoverArtImage = styled(motion.img)`
+const CoverArtWrapper = styled(motion.div)`
   width: 100%;
   height: 100%;
-  object-fit: cover;
-  filter: brightness(0.85);
+  position: relative;
 `;
 
 const CoverOverlay = styled.div`
@@ -854,13 +854,19 @@ export default function NavMusicPlayer() {
             {/* Cover Art */}
             <CoverArtContainer>
               {!imgError && stations[currentIdx]?.id ? (
-                <CoverArtImage
-                  src={`https://img.youtube.com/vi/${stations[currentIdx].id}/hqdefault.jpg`}
-                  alt={stations[currentIdx].name}
-                  onError={() => setImgError(true)}
+                <CoverArtWrapper
                   animate={isPlaying ? { scale: [1, 1.02, 1] } : { scale: 1 }}
                   transition={isPlaying ? { repeat: Infinity, duration: 6, ease: 'easeInOut' } : { duration: 0.2 }}
-                />
+                >
+                  <Image
+                    src={`https://img.youtube.com/vi/${stations[currentIdx].id}/hqdefault.jpg`}
+                    alt={stations[currentIdx].name}
+                    fill
+                    sizes="264px"
+                    style={{ objectFit: 'cover', filter: 'brightness(0.85)' }}
+                    onError={() => setImgError(true)}
+                  />
+                </CoverArtWrapper>
               ) : (
                 <div style={{
                   width: '100%', height: '100%',

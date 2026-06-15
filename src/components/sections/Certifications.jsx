@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import styled, { keyframes } from 'styled-components';
 import { motion } from 'framer-motion';
+import Image from 'next/image';
 import certificates from '../../data/certificates.json';
 
 const CertificationsContainer = styled.section`
@@ -645,15 +646,15 @@ const ImageSkeleton = styled.div`
   }
 `;
 
-const CertificateImage = styled.img`
+const CertificateImageWrapper = styled.div`
   width: 100%;
   max-width: 900px;
-  height: auto;
   border-radius: 8px;
   border: 1px solid ${({ theme }) => theme.colors.border};
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+  overflow: hidden;
   display: ${({ $loaded }) => ($loaded ? 'block' : 'none')};
-  transition: opacity 0.3s ease-in;
+  position: relative;
 `;
 
 const WelcomeScreen = styled.div`
@@ -1015,13 +1016,21 @@ export default credential;`;
                       <PreviewContent>
                         <CertificateImageContainer>
                           {!imageLoaded[activeTab] && <ImageSkeleton />}
-                          <CertificateImage 
-                            src={activeCert.thumbnail} 
-                            alt={activeCert.name}
-                            $loaded={imageLoaded[activeTab]}
-                            onLoad={() => handleImageLoad(activeTab)}
-                            onError={() => handleImageLoad(activeTab)}
-                          />
+                          <CertificateImageWrapper $loaded={imageLoaded[activeTab]}>
+                            <Image 
+                              src={activeCert.thumbnail} 
+                              alt={activeCert.name}
+                              width={900}
+                              height={620}
+                              style={{
+                                width: '100%',
+                                height: 'auto',
+                                display: 'block',
+                              }}
+                              onLoad={() => handleImageLoad(activeTab)}
+                              onError={() => handleImageLoad(activeTab)}
+                            />
+                          </CertificateImageWrapper>
                         </CertificateImageContainer>
                       </PreviewContent>
                     </CertificatePreview>
