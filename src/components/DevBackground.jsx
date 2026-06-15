@@ -15,6 +15,7 @@ const Background = styled.div`
   overflow: hidden;
 `;
 
+// Removed text-shadow — it forces a repaint on every animation frame
 const Code = styled(motion.pre)`
   color: ${({ theme }) => `${theme.colors.primary}40`};
   font-family: 'JetBrains Mono', monospace;
@@ -25,16 +26,17 @@ const Code = styled(motion.pre)`
   white-space: pre-wrap;
   opacity: 0.7;
   z-index: 1;
-  text-shadow: 0 0 10px ${({ theme }) => `${theme.colors.primary}30`}};
+  will-change: transform;
 `;
 
+// Removed filter: drop-shadow — expensive per-frame GPU operation
 const FloatingIcon = styled(motion.i)`
   color: ${({ theme }) => `${theme.colors.primary}50`};
   font-size: 2rem;
   position: absolute;
   pointer-events: none;
   z-index: 1;
-  filter: drop-shadow(0 0 8px ${({ theme }) => `${theme.colors.primary}40`});
+  will-change: transform;
 `;
 
 const DEV_QUOTES = [
@@ -43,11 +45,6 @@ const DEV_QUOTES = [
   "There are 2 hard problems in CS: cache invalidation, naming things, & off-by-1 errors",
   "// This code works, don't touch it",
   "404: Sleep not found",
-  "Eat. Sleep. Code. Debug. Repeat.",
-  "Keep calm and git push --force",
-  "I don't always test my code, but when I do, I do it in production",
-  "SELECT coffee FROM brain WHERE awake = false",
-  "!false === true // funny because it's true",
 ];
 
 const devQuotes = [
@@ -59,13 +56,6 @@ const devQuotes = [
   "console.log('Hello World');",
   "function solve() { coffee.drink(); }",
   "const life = new Promise();",
-  "catch (errors) { fix(errors); }",
-  "// Code never lies, comments sometimes do",
-  "import { success } from 'hardwork'",
-  "export default function Dream() { }",
-  "git push --force-with-lease",
-  "npm install happiness",
-  "docker run life.js",
 ];
 
 const iconList = [
@@ -81,9 +71,6 @@ const iconList = [
   "fab fa-docker",
   "fab fa-aws",
   "fab fa-angular",
-  "fab fa-vuejs",
-  "fab fa-sass",
-  "fab fa-bootstrap",
 ];
 
 export default function DevBackground() {
@@ -91,52 +78,59 @@ export default function DevBackground() {
 
   useEffect(() => {
     const elements = [];
-    
-    // Add 25 icons (reduced from 30 for better visibility)
-    for (let i = 0; i < 25; i++) {
+    const w = window.innerWidth;
+    const h = window.innerHeight;
+
+    // 12 icons (was 25)
+    for (let i = 0; i < 12; i++) {
       elements.push({
         id: `icon-${i}`,
         type: 'icon',
         content: iconList[Math.floor(Math.random() * iconList.length)],
-        x: Math.random() * window.innerWidth,
-        y: Math.random() * window.innerHeight,
-        duration: 15 + Math.random() * 20, // Reduced duration for faster movement
-        delay: Math.random() * -15,
+        x: Math.random() * w,
+        y: Math.random() * h,
+        // Longer durations = fewer frames needed per cycle
+        duration: 25 + Math.random() * 20,
+        delay: Math.random() * -20,
         scale: 0.8 + Math.random() * 0.5,
-        rotation: Math.random() * 360,
+        // Reduced movement range — less distance = smoother on low-end devices
+        driftX: 60 + Math.random() * 60,
+        driftY: 60 + Math.random() * 60,
       });
     }
-    
-    // Add 15 code snippets
-    for (let i = 0; i < 15; i++) {
+
+    // 8 code snippets (was 15)
+    for (let i = 0; i < 8; i++) {
       elements.push({
         id: `text-${i}`,
         type: 'text',
         content: devQuotes[Math.floor(Math.random() * devQuotes.length)],
-        x: Math.random() * (window.innerWidth - 300), // Prevent text from going off-screen
-        y: Math.random() * window.innerHeight,
-        duration: 20 + Math.random() * 25,
-        delay: Math.random() * -15,
+        x: Math.random() * Math.max(w - 280, 10),
+        y: Math.random() * h,
+        duration: 30 + Math.random() * 20,
+        delay: Math.random() * -20,
         scale: 0.7 + Math.random() * 0.3,
-        rotation: -20 + Math.random() * 40,
+        driftX: 50 + Math.random() * 40,
+        driftY: 50 + Math.random() * 40,
       });
     }
-    
-    // Add 10 DEV_QUOTES
-    for (let i = 0; i < 10; i++) {
+
+    // 5 dev quotes (was 10)
+    for (let i = 0; i < 5; i++) {
       elements.push({
         id: `quote-${i}`,
         type: 'quote',
         content: DEV_QUOTES[Math.floor(Math.random() * DEV_QUOTES.length)],
-        x: Math.random() * (window.innerWidth - 300),
-        y: Math.random() * window.innerHeight,
-        duration: 25 + Math.random() * 30,
-        delay: Math.random() * -15,
+        x: Math.random() * Math.max(w - 280, 10),
+        y: Math.random() * h,
+        duration: 35 + Math.random() * 25,
+        delay: Math.random() * -20,
         scale: 0.8 + Math.random() * 0.2,
-        rotation: -15 + Math.random() * 30,
+        driftX: 40 + Math.random() * 40,
+        driftY: 40 + Math.random() * 40,
       });
     }
-    
+
     setFloatingElements(elements);
   }, []);
 
@@ -148,71 +142,49 @@ export default function DevBackground() {
             <FloatingIcon
               key={element.id}
               className={element.content}
-              style={{ fontSize: `${element.scale * 2}rem` }}
+              style={{
+                fontSize: `${element.scale * 2}rem`,
+                willChange: 'transform',
+              }}
               animate={{
-                x: [
-                  element.x,
-                  element.x + 150 * Math.random(), // Increased movement range
-                  element.x - 150 * Math.random(),
-                  element.x,
-                ],
-                y: [
-                  element.y,
-                  element.y - 150 * Math.random(),
-                  element.y + 150 * Math.random(),
-                  element.y,
-                ],
-                rotate: [0, element.rotation, -element.rotation, 0],
-                opacity: [0.5, 0.8, 0.5],
+                // Only animating x, y, opacity — no rotate (saves layout recalc)
+                x: [element.x, element.x + element.driftX, element.x - element.driftX, element.x],
+                y: [element.y, element.y - element.driftY, element.y + element.driftY, element.y],
+                opacity: [0.4, 0.7, 0.4],
               }}
               transition={{
                 duration: element.duration,
                 delay: element.delay,
                 repeat: Infinity,
-                ease: "linear",
+                ease: 'linear',
               }}
             />
           );
-        } else {
-          // Handle both text and quotes with different styles
-          return (
-            <Code
-              key={element.id}
-              style={{ 
-                fontSize: `${element.scale * 1.2}rem`,
-                maxWidth: '300px',
-                color: element.type === 'quote' 
-                  ? ({ theme }) => `${theme.colors.primary}60` // More visible for quotes
-                  : ({ theme }) => `${theme.colors.primary}40`,
-                opacity: element.type === 'quote' ? 0.9 : 0.7, // More visible for quotes
-              }}
-              animate={{
-                x: [
-                  element.x,
-                  element.x + 100 * Math.random(),
-                  element.x - 100 * Math.random(),
-                  element.x,
-                ],
-                y: [
-                  element.y,
-                  element.y - 100 * Math.random(),
-                  element.y + 100 * Math.random(),
-                  element.y,
-                ],
-                rotate: [element.rotation, element.rotation + 10, element.rotation - 10, element.rotation],
-                opacity: element.type === 'quote' ? [0.8, 0.9, 0.8] : [0.6, 0.8, 0.6],
-              }}
-              transition={{
-                duration: element.duration,
-                delay: element.delay,
-                repeat: Infinity,
-                ease: "linear",
-              }}
-            >
-              {element.content}
-            </Code>
-          );
         }
+
+        return (
+          <Code
+            key={element.id}
+            style={{
+              fontSize: `${element.scale * 1.1}rem`,
+              maxWidth: '280px',
+              willChange: 'transform',
+            }}
+            animate={{
+              x: [element.x, element.x + element.driftX, element.x - element.driftX, element.x],
+              y: [element.y, element.y - element.driftY, element.y + element.driftY, element.y],
+              opacity: element.type === 'quote' ? [0.7, 0.85, 0.7] : [0.5, 0.7, 0.5],
+            }}
+            transition={{
+              duration: element.duration,
+              delay: element.delay,
+              repeat: Infinity,
+              ease: 'linear',
+            }}
+          >
+            {element.content}
+          </Code>
+        );
       })}
     </Background>
   );

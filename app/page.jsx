@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, lazy, Suspense } from 'react';
+import { useState, useEffect, lazy, Suspense } from 'react';
 import styled from 'styled-components';
 import { ReactLenis } from 'lenis/react';
 import { AnimatePresence } from 'framer-motion';
@@ -151,11 +151,24 @@ function ThemedApp() {
 }
 
 export default function Home() {
+  const [isTouchDevice, setIsTouchDevice] = useState(false);
+
+  useEffect(() => {
+    setIsTouchDevice(navigator.maxTouchPoints > 0);
+  }, []);
+
+  // On touch/mobile: use native scroll (smoothWheel off, lerp 1 = instant).
+  // JS lerp loops compete with the browser compositor on mobile causing jank.
+  // On desktop: keep smooth lerp-based scroll.
+  const lenisOptions = isTouchDevice
+    ? { smoothWheel: false, syncTouch: true, touchMultiplier: 2, lerp: 1 }
+    : { lerp: 0.08, smoothWheel: true };
+
   return (
     <ThemeProvider>
       <AppsProvider>
         <PlayerProvider>
-          <ReactLenis root options={{ lerp: 0.08, smoothWheel: true, syncTouch: true, touchMultiplier: 2, syncTouchLerp: 0.1 }}>
+          <ReactLenis root options={lenisOptions}>
             <ThemedApp />
           </ReactLenis>
         </PlayerProvider>
