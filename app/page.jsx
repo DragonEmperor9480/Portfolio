@@ -4,6 +4,7 @@ import { useState, useEffect, lazy, Suspense } from 'react';
 import styled from 'styled-components';
 import { ReactLenis } from 'lenis/react';
 import { AnimatePresence } from 'framer-motion';
+import dynamic from 'next/dynamic';
 import { ThemeProvider as StyledThemeProvider } from 'styled-components';
 import { ThemeProvider } from '../src/context/ThemeContext';
 import { PlayerProvider } from '../src/context/PlayerContext';
@@ -11,14 +12,16 @@ import { AppsProvider, useApps } from '../src/context/AppsContext';
 import AppWindow from '../src/components/apps/AppWindow';
 import { themes } from '../src/themes/themes';
 import Navbar from '../src/components/Navbar';
-import Hero from '../src/components/Hero';
-import About from '../src/components/sections/About';
-import DevBackground from '../src/components/DevBackground';
 import { useTheme } from '../src/context/ThemeContext';
 import GlobalStyles from '../src/styles/GlobalStyles';
-import Certifications from '../src/components/sections/Certifications';
-import Achievements from '../src/components/sections/Achievements';
 import SkeletonLoader from '../src/components/SkeletonLoader';
+
+// Code-split and lazy-load heavy homepage sections
+const Hero = dynamic(() => import('../src/components/Hero'), { ssr: true });
+const About = dynamic(() => import('../src/components/sections/About'), { ssr: false });
+const Achievements = dynamic(() => import('../src/components/sections/Achievements'), { ssr: false });
+const Certifications = dynamic(() => import('../src/components/sections/Certifications'), { ssr: false });
+const DevBackground = dynamic(() => import('../src/components/DevBackground'), { ssr: false });
 
 // Lazy load heavy application components
 const TerminalApp = lazy(() => import('../src/components/apps/TerminalApp'));
