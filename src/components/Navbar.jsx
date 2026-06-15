@@ -138,6 +138,16 @@ const ActivePill = styled(motion.div)`
   z-index: -1;
 `;
 
+const ActiveUnderline = styled(motion.div)`
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 2px;
+  height: 2px;
+  background: ${({ theme }) => theme.colors.primary};
+  z-index: 1;
+`;
+
 const RightControls = styled.div`
   display: flex;
   align-items: center;
@@ -455,11 +465,10 @@ export default function Navbar() {
                         />
                       )}
                     </AnimatePresence>
-                    {isActive && !isHovered && (
-                      <ActivePill
+                    {isActive && (
+                      <ActiveUnderline
                         layoutId="nav-active-pill"
                         transition={{ type: 'spring', stiffness: 400, damping: 30 }}
-                        style={{ background: 'transparent', borderBottom: '2px solid currentColor', borderRadius: 0, bottom: '2px', top: 'auto', height: '0px' }}
                       />
                     )}
                     {item.name}
