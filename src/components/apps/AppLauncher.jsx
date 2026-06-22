@@ -334,8 +334,8 @@ const LAUNCHER_APPS = [
   },
   {
     id: 'hackerhub',
-    name: 'HackerHub',
-    sub: 'CTF & security',
+    name: 'Netrunner HUD',
+    sub: 'Quickhack combat simulator',
     color: '#fca5a5',
     icon: (
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">

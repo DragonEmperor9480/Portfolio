@@ -43,7 +43,7 @@ export const APPS = {
   },
   hackerhub: {
     id: 'hackerhub',
-    title: 'HackerHub',
+    title: 'Netrunner HUD',
     icon: 'fas fa-user-secret',
     defaultWidth: 780,
     defaultHeight: 500,

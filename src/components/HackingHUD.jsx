@@ -153,11 +153,39 @@ const RAMSlot = styled.div`
 `;
 
 const HeaderRight = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 16px;
   font-size: 0.72rem;
   font-weight: 700;
   color: #ff3366;
   opacity: 0.85;
   letter-spacing: 0.5px;
+`;
+
+const CloseHUDButton = styled(motion.button)`
+  background: transparent;
+  border: 1px solid rgba(255, 51, 102, 0.4);
+  color: #ff3366;
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-family: inherit;
+  font-size: 0.65rem;
+  font-weight: bold;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s ease;
+  box-shadow: 0 0 8px rgba(255, 51, 102, 0.1);
+  outline: none;
+
+  &:hover {
+    background: rgba(255, 51, 102, 0.12);
+    border-color: #ff3366;
+    color: #ffffff;
+    box-shadow: 0 0 12px rgba(255, 51, 102, 0.4);
+  }
 `;
 
 /* ─── Grid Core Layout ────────────────────────────────────────────── */
@@ -768,6 +796,83 @@ const CrashScreen = styled.div`
   }
 `;
 
+const ResolutionWarningScreen = styled.div`
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(8, 4, 16, 0.98);
+  color: #ff3366;
+  z-index: 999999999;
+  font-family: 'Fira Code', 'Courier New', monospace;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+  box-sizing: border-box;
+  text-align: center;
+  gap: 20px;
+  backdrop-filter: blur(20px);
+
+  /* Scanline overlay */
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      rgba(255, 51, 102, 0) 50%, 
+      rgba(255, 51, 102, 0.12) 50%
+    );
+    background-size: 100% 4px;
+    pointer-events: none;
+    z-index: 2;
+  }
+
+  .warning-icon {
+    font-size: 3.5rem;
+    color: #ff3366;
+    animation: alertPulse 1.2s infinite alternate;
+    margin-bottom: 5px;
+    filter: drop-shadow(0 0 10px rgba(255, 51, 102, 0.6));
+  }
+
+  .title {
+    font-size: 1.4rem;
+    font-weight: 800;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    text-shadow: 0 0 10px rgba(255, 51, 102, 0.5);
+  }
+
+  .message {
+    font-size: 0.82rem;
+    line-height: 1.6;
+    color: #ffffff;
+    max-width: 580px;
+    opacity: 0.9;
+  }
+
+  .dimensions-box {
+    font-size: 0.88rem;
+    color: #00f0ff;
+    text-shadow: 0 0 8px rgba(0, 240, 255, 0.5);
+    font-weight: bold;
+    border: 1px dashed rgba(0, 240, 255, 0.3);
+    padding: 8px 16px;
+    border-radius: 4px;
+    background: rgba(0, 240, 255, 0.05);
+    margin: 10px 0;
+  }
+
+  .button-group {
+    display: flex;
+    gap: 16px;
+    margin-top: 15px;
+    z-index: 10;
+  }
+`;
+
 /* ─── Component Code ──────────────────────────────────────────────── */
 
 const QUICKHACKS_DATA = [
@@ -938,6 +1043,22 @@ export default function HackingHUD({ onClose, onOverrideSuccess }) {
   const [sysCollapseUnlocked, setSysCollapseUnlocked] = useState(false);
   const [targetHp, setTargetHp] = useState(100);
   const [damageFlash, setDamageFlash] = useState(false);
+
+  // Viewport dimensions warning state
+  const [dimensions, setDimensions] = useState({ width: 1200, height: 700 });
+  const [isLowResolution, setIsLowResolution] = useState(false);
+  const [forceConnect, setForceConnect] = useState(false);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const handleResize = () => {
+      setDimensions({ width: window.innerWidth, height: window.innerHeight });
+      setIsLowResolution(window.innerWidth < 1200 || window.innerHeight < 700);
+    };
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   // Terminal logs state
   const [logs, setLogs] = useState([
@@ -1358,9 +1479,20 @@ export default function HackingHUD({ onClose, onOverrideSuccess }) {
           </HeaderCenter>
 
           <HeaderRight>
-            <i className="fas fa-bolt" style={{ color: '#00f0ff', marginRight: '5px' }} />
-            <span>POWER CONNECTED</span>
-            <span style={{ opacity: 0.5, marginLeft: '12px' }}>CAMERA 04</span>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+              <i className="fas fa-bolt" style={{ color: '#00f0ff' }} />
+              <span>POWER CONNECTED</span>
+            </div>
+            <span style={{ opacity: 0.5 }}>CAMERA 04</span>
+            <CloseHUDButton 
+              onClick={onClose}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              aria-label="Close Netrunner HUD"
+            >
+              <i className="fas fa-times" />
+              <span>DISCONNECT [ESC]</span>
+            </CloseHUDButton>
           </HeaderRight>
         </HeaderPanel>
 
@@ -1608,6 +1740,43 @@ export default function HackingHUD({ onClose, onOverrideSuccess }) {
       )}
     </>
   );
+
+  if (isLowResolution && !forceConnect) {
+    const warningContent = (
+      <ResolutionWarningScreen>
+        <div className="warning-icon">
+          <i className="fas fa-exclamation-triangle" />
+        </div>
+        <div className="title">Warning: Link Degraded</div>
+        <div className="message">
+          Netrunner HUD's cyberdeck overlay requires a minimum resolution of 1200 x 700 to display all tactical data streams correctly.
+          Current viewport scaling may cause display malfunctions or text collisions.
+        </div>
+        <div className="dimensions-box">
+          CURRENT TERMINAL: {dimensions.width} x {dimensions.height} // REQ: 1200 x 700
+        </div>
+        <div className="button-group">
+          <AlertButton 
+            onClick={onClose}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            Abort Connection
+          </AlertButton>
+          <AlertButton 
+            onClick={() => setForceConnect(true)}
+            style={{ borderColor: '#00f0ff', color: '#00f0ff', boxShadow: '0 0 10px rgba(0, 240, 255, 0.15)' }}
+            whileHover={{ background: 'rgba(0, 240, 255, 0.12)', boxShadow: '0 0 20px rgba(0, 240, 255, 0.45)', scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            Force Connect
+          </AlertButton>
+        </div>
+      </ResolutionWarningScreen>
+    );
+
+    return typeof document !== 'undefined' ? createPortal(warningContent, document.body) : warningContent;
+  }
 
   return typeof document !== 'undefined' ? createPortal(hudContent, document.body) : hudContent;
 }
