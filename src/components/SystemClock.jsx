@@ -535,7 +535,7 @@ export default function SystemClock() {
             <NeofetchWrapper>
               <AsciiArt>{asciiCube}</AsciiArt>
               <InfoList>
-                <div className="user-host">shura@<span className="host">portfolio_os</span></div>
+                <div className="user-host">shuraOS@<span className="host">portfolio</span></div>
                 <div className="stat-row">
                   <span className="stat-lbl">DATE</span>
                   <span className="stat-val">{formatDateText(time)}</span>

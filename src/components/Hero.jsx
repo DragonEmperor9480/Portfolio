@@ -451,7 +451,7 @@ export default function Hero() {
         transition={{ duration: 0.8 }}
       >
         <TitleBar>
-          <span>amrutesh@portfolio:~$</span>
+          <span>shuraOS@portfolio:~$</span>
           <WindowControls>
             <WindowButton
               color="#ff5f56"

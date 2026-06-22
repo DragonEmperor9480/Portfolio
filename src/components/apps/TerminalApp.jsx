@@ -342,7 +342,7 @@ export default function TerminalApp() {
     const args = cleaned.split(' ');
     const primaryCmd = args[0].toLowerCase();
 
-    setHistory((prev) => [...prev, { text: `guest@portfolio:~$ ${cleaned}`, type: 'default' }]);
+    setHistory((prev) => [...prev, { text: `shuraOS@portfolio:~$ ${cleaned}`, type: 'default' }]);
 
     switch (primaryCmd) {
       case 'help':
@@ -362,7 +362,7 @@ export default function TerminalApp() {
         setHistory((prev) => [
           ...prev,
           { text: ASCII_LOGO, type: 'success' },
-          { text: `USER: guest@guest-pc\nOS: Amrutesh Portfolio OS v2.1.0\nHOST: React Viewport Layer\nUPTIME: 46m\nSHELL: Custom CyberShell v1\nRESOLUTION: ${window.innerWidth}x${window.innerHeight}\nTHEME: ${currentTheme}\nCPU: Virtual Decryptor Core 4x\nMEMORY: 2.41GB / 8.00GB`, type: 'info' }
+          { text: `USER: shuraOS@portfolio\nOS: ShuraOS Portfolio v2.1.0\nHOST: React Viewport Layer\nUPTIME: 46m\nSHELL: Custom CyberShell v1\nRESOLUTION: ${window.innerWidth}x${window.innerHeight}\nTHEME: ${currentTheme}\nCPU: Virtual Decryptor Core 4x\nMEMORY: 2.41GB / 8.00GB`, type: 'info' }
         ]);
         break;
 
@@ -452,7 +452,7 @@ export default function TerminalApp() {
 
       <form onSubmit={handleFormSubmit}>
         <CommandLine>
-          <InputPrompt>guest@portfolio:~$</InputPrompt>
+          <InputPrompt>shuraOS@portfolio:~$</InputPrompt>
           <CustomInput
             type="text"
             value={inputValue}

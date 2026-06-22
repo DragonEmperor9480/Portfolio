@@ -553,7 +553,7 @@ export default function SkeletonLoader({ onComplete }) {
             <Dot color="#ffbd2e" />
             <Dot color="#27c93f" />
           </WindowControls>
-          <WindowTitle>shura@portfolio: ~ (tty1)</WindowTitle>
+          <WindowTitle>shuraOS@portfolio: ~ (tty1)</WindowTitle>
           <div style={{ width: '48px' }} /> {/* Spacer */}
         </TerminalHeader>
 
@@ -568,7 +568,7 @@ export default function SkeletonLoader({ onComplete }) {
           {/* Login prompt stage */}
           {(loginState === 'login' || loginState === 'command' || loginState === 'finishing') && (
             <div style={{ marginTop: '12px' }}>
-              <LogLine>shura-portfolio login: shura (automatic login)</LogLine>
+              <LogLine>shuraOS login: shura (automatic login)</LogLine>
               <LogLine>Last login: Sat Jun 6 19:18:57 on tty1</LogLine>
               <LogLine style={{ color: '#64ffda', fontWeight: 600 }}>Welcome to Arch Linux (x86_64 kernel)</LogLine>
             </div>
@@ -577,7 +577,7 @@ export default function SkeletonLoader({ onComplete }) {
           {/* Typing Command execution simulation */}
           {(loginState === 'command' || loginState === 'finishing') && (
             <InteractiveCommand>
-              <PromptPrefix>shura@portfolio:~$</PromptPrefix>
+              <PromptPrefix>shuraOS@portfolio:~$</PromptPrefix>
               <span>{commandText}</span>
               {loginState === 'command' && <Cursor />}
             </InteractiveCommand>
