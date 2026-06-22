@@ -268,6 +268,7 @@ const SkillLevelBarContainer = styled.div`
 
 const SkillLevelBar = styled.div`
   height: 100%;
+  width: 100%;
   background: ${props => props.$color};
   box-shadow: 0 0 6px ${props => props.$color};
 `;
@@ -310,18 +311,7 @@ const IndicatorDot = styled.button`
 
 /* ── Helper Data & Logic ────────────────────────────────── */
 
-const getSkillLevel = (name) => {
-  const levels = {
-    "React": 5, "JavaScript": 5, "HTML/CSS": 5,
-    "Go": 5, "SQL": 5, "REST APIs": 5,
-    "Linux": 5, "Git": 5, "Bash": 5,
-    "AWS Lambda": 4, "S3": 5, "DynamoDB": 4, "CloudFront": 4,
-    "AOSP": 4, "Custom ROMs": 5, "Android SDK": 4, "ADB": 5,
-    "Node.js": 4, "Python": 4, "Java": 4, "Docker": 4, "SystemD": 4,
-    "Aurora": 4, "Cognito": 4, "CloudWatch": 4, "Flutter": 4, "Arch": 5
-  };
-  return levels[name] || 4;
-};
+
 
 const slideVariants = {
   enter: (direction) => ({
@@ -446,7 +436,6 @@ export default function About() {
 
               <SkillsGrid>
                 {currentSkills.map((skill) => {
-                  const level = getSkillLevel(skill.name);
                   return (
                     <SkillCard
                       key={skill.name}
@@ -458,7 +447,7 @@ export default function About() {
                         <SkillInfo $color={catColor}>{skill.info || 'Active'}</SkillInfo>
                       </SkillCardHeader>
                       <SkillLevelBarContainer>
-                        <SkillLevelBar $color={catColor} style={{ width: `${level * 20}%` }} />
+                        <SkillLevelBar $color={catColor} />
                       </SkillLevelBarContainer>
                       <GlowBar className="glow-bar" $color={catColor} />
                     </SkillCard>

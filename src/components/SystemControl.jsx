@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
+import { createPortal } from 'react-dom';
 import styled, { useTheme as useStyledTheme } from 'styled-components';
 import { motion, AnimatePresence } from 'framer-motion';
 import { usePlayer } from '../context/PlayerContext';
@@ -15,8 +16,10 @@ const ControlContainer = styled.div`
 `;
 
 const StatusTrayButton = styled(motion.button)`
-  background: ${({ theme }) => `${theme?.colors?.primary || '#64ffda'}08`};
-  border: 1px solid ${({ theme }) => `${theme?.colors?.border || 'rgba(100,255,218,0.1)'}80`};
+  background: ${({ theme }) => theme.name === 'Light Mode' ? 'rgba(0, 0, 0, 0.02)' : 'rgba(255, 255, 255, 0.03)'};
+  border: 1px solid ${({ theme }) => theme.name === 'Light Mode' ? 'rgba(0, 0, 0, 0.06)' : 'rgba(255, 255, 255, 0.08)'};
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
   border-radius: 12px;
   padding: 6px 12px;
   margin-left: 10px;
@@ -28,9 +31,9 @@ const StatusTrayButton = styled(motion.button)`
   outline: none;
 
   &:hover {
-    background: ${({ theme }) => `${theme?.colors?.primary || '#64ffda'}15`};
-    border-color: ${({ theme }) => `${theme?.colors?.primary || '#64ffda'}60`};
-    box-shadow: 0 0 14px ${({ theme }) => `${theme?.colors?.primary || '#64ffda'}18`};
+    background: ${({ theme }) => theme.name === 'Light Mode' ? 'rgba(0, 0, 0, 0.04)' : 'rgba(255, 255, 255, 0.06)'};
+    border-color: ${({ theme }) => theme.name === 'Light Mode' ? 'rgba(0, 0, 0, 0.1)' : 'rgba(255, 255, 255, 0.15)'};
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
   }
 
 
@@ -64,13 +67,22 @@ const TrayIcon = styled.span`
 
 /* ─── Dropdown Panel ──────────────────────────────────────────────── */
 const DropdownPanel = styled(motion.div)`
-  position: absolute;
-  top: calc(100% + 12px);
-  left: 10px;
-  background: ${({ theme }) => theme.colors.glass || 'rgba(10, 25, 47, 0.7)'};
-  backdrop-filter: blur(24px) saturate(180%);
-  -webkit-backdrop-filter: blur(24px) saturate(180%);
-  border: 1px solid ${({ theme }) => theme.colors.border};
+  position: fixed;
+  top: ${props => props.$top}px;
+  left: ${props => props.$left}px;
+  background: ${({ theme }) => {
+    const glass = theme.colors.glass || 'rgba(17, 17, 20, 0.75)';
+    if (typeof glass === 'string' && glass.startsWith('rgba')) {
+      return glass.replace(/,\s*0\.\d+\s*\)$/, ', 0.28)');
+    }
+    return 'rgba(17, 17, 20, 0.28)';
+  }};
+  backdrop-filter: blur(32px) saturate(220%);
+  -webkit-backdrop-filter: blur(32px) saturate(220%);
+  border: 1px solid ${({ theme }) => {
+    const isLight = theme.name === 'Light Mode';
+    return isLight ? 'rgba(0, 0, 0, 0.08)' : 'rgba(255, 255, 255, 0.15)';
+  }};
   border-radius: 16px;
   padding: 16px;
   display: flex;
@@ -78,19 +90,18 @@ const DropdownPanel = styled(motion.div)`
   gap: 14px;
   width: 280px;
   box-shadow: ${({ theme }) => theme.name === 'Light Mode' 
-    ? '0 20px 48px -12px rgba(0, 0, 0, 0.12), 0 0 0 1px rgba(0, 0, 0, 0.05) inset' 
-    : '0 20px 48px -12px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(255, 255, 255, 0.04) inset'};
+    ? '0 20px 48px -12px rgba(31, 38, 135, 0.12), inset 0 1px 0 0 rgba(255, 255, 255, 0.6)' 
+    : '0 25px 50px -12px rgba(0, 0, 0, 0.65), inset 0 1px 0 0 rgba(255, 255, 255, 0.15)'};
   z-index: 101;
   font-family: 'Space Grotesk', sans-serif;
-  will-change: transform, opacity;
 
   @media (max-width: 768px) {
     position: fixed;
-    top: 80px;
-    left: 14px;
-    right: 14px;
+    top: 80px !important;
+    left: 14px !important;
+    right: 14px !important;
+    width: auto !important;
     transform: none !important;
-    width: auto;
   }
 `;
 
@@ -131,13 +142,20 @@ const StatusDot = styled.span`
 `;
 
 const SectionCard = styled.div`
-  background: ${({ theme }) => theme.name === 'Light Mode' ? 'rgba(0, 0, 0, 0.02)' : 'rgba(255, 255, 255, 0.02)'};
-  border: 1px solid ${({ theme }) => theme.colors.border};
+  background: ${({ theme }) => theme.name === 'Light Mode' 
+    ? 'rgba(255, 255, 255, 0.3)' 
+    : 'rgba(255, 255, 255, 0.03)'};
+  border: 1px solid ${({ theme }) => theme.name === 'Light Mode' 
+    ? 'rgba(0, 0, 0, 0.03)' 
+    : 'rgba(255, 255, 255, 0.04)'};
   border-radius: 12px;
   padding: 12px;
   display: flex;
   flex-direction: column;
   gap: 10px;
+  box-shadow: ${({ theme }) => theme.name === 'Light Mode'
+    ? 'inset 0 1px 1px 0 rgba(255, 255, 255, 0.4)'
+    : 'inset 0 1px 1px 0 rgba(255, 255, 255, 0.03)'};
 `;
 
 const DeviceRow = styled.div`
@@ -177,8 +195,12 @@ const StatusBadge = styled.span`
 
 const ScannerItem = styled.button`
   width: 100%;
-  background: ${({ theme }) => theme.name === 'Light Mode' ? 'rgba(0, 0, 0, 0.03)' : 'rgba(0, 0, 0, 0.2)'};
-  border: 1px solid ${({ theme }) => theme.colors.border};
+  background: ${({ theme }) => theme.name === 'Light Mode' 
+    ? 'rgba(255, 255, 255, 0.4)' 
+    : 'rgba(0, 0, 0, 0.15)'};
+  border: 1px solid ${({ theme }) => theme.name === 'Light Mode' 
+    ? 'rgba(0, 0, 0, 0.05)' 
+    : 'rgba(255, 255, 255, 0.04)'};
   border-radius: 8px;
   padding: 8px 10px;
   display: flex;
@@ -186,13 +208,20 @@ const ScannerItem = styled.button`
   justify-content: space-between;
   cursor: ${props => props.disabled ? 'not-allowed' : 'pointer'};
   opacity: ${props => props.disabled ? 0.4 : 1};
-  transition: all 0.2s ease;
+  transition: all 0.22s cubic-bezier(0.4, 0, 0.2, 1);
   font-family: inherit;
   color: ${({ theme }) => theme.colors.text};
 
   &:hover:not(:disabled) {
-    background: ${({ theme }) => theme.name === 'Light Mode' ? 'rgba(0, 0, 0, 0.06)' : 'rgba(255, 255, 255, 0.05)'};
-    border-color: ${({ theme }) => theme.name === 'Light Mode' ? 'rgba(0, 0, 0, 0.12)' : 'rgba(255, 255, 255, 0.1)'};
+    background: ${({ theme }) => theme.name === 'Light Mode' 
+      ? 'rgba(0, 0, 0, 0.03)' 
+      : 'rgba(255, 255, 255, 0.06)'};
+    border-color: ${({ theme }) => theme.name === 'Light Mode' 
+      ? 'rgba(0, 0, 0, 0.08)' 
+      : 'rgba(255, 255, 255, 0.08)'};
+    box-shadow: ${({ theme }) => theme.name === 'Light Mode'
+      ? '0 4px 12px rgba(0, 0, 0, 0.04)'
+      : '0 4px 16px rgba(0, 0, 0, 0.25)'};
   }
 `;
 
@@ -311,6 +340,30 @@ export default function SystemControl() {
   const buttonRef = useRef(null);
   const lastSoundTimeRef = useRef(0);
 
+  const [coords, setCoords] = useState({ top: 0, left: 0 });
+
+  const updateCoords = () => {
+    if (buttonRef.current) {
+      const rect = buttonRef.current.getBoundingClientRect();
+      setCoords({
+        top: rect.bottom + 12,
+        left: rect.left
+      });
+    }
+  };
+
+  useEffect(() => {
+    if (isOpen) {
+      updateCoords();
+      window.addEventListener('resize', updateCoords);
+      window.addEventListener('scroll', updateCoords, { passive: true });
+    }
+    return () => {
+      window.removeEventListener('resize', updateCoords);
+      window.removeEventListener('scroll', updateCoords);
+    };
+  }, [isOpen]);
+
   /* ── Audio helpers ── */
   const playTone = (freq, duration = 0.12, type = 'sine', gainMult = 0.12) => {
     try {
@@ -403,109 +456,114 @@ export default function SystemControl() {
         </StatusTrayButton>
       </motion.div>
 
-      <AnimatePresence>
-        {isOpen && (
-          <DropdownPanel
-            ref={containerRef}
-            initial={{ opacity: 0, y: -12, scale: 0.96 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: -12, scale: 0.96 }}
-            transition={{ duration: 0.2, ease: 'easeOut' }}
-          >
-            {/* Header */}
-            <PanelHeader>
-              <PanelTitle>System Info</PanelTitle>
-              <StatusDot $online={isOnline}>{isOnline ? 'Online' : 'Offline'}</StatusDot>
-            </PanelHeader>
+      {typeof document !== 'undefined' && createPortal(
+        <AnimatePresence>
+          {isOpen && (
+            <DropdownPanel
+              ref={containerRef}
+              $top={coords.top}
+              $left={coords.left}
+              initial={{ opacity: 0, y: -12, scale: 0.96 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: -12, scale: 0.96 }}
+              transition={{ duration: 0.2, ease: 'easeOut' }}
+            >
+              {/* Header */}
+              <PanelHeader>
+                <PanelTitle>System Info</PanelTitle>
+                <StatusDot $online={isOnline}>{isOnline ? 'Online' : 'Offline'}</StatusDot>
+              </PanelHeader>
 
-            {/* Connection Info */}
-            <SectionCard>
-              <DeviceRow>
-                <DeviceName $iconColor="#4ade80">
-                  <i className="fas fa-wifi" />
-                  <span>Amrut_WiFi_5G</span>
-                </DeviceName>
-                <StatusBadge $type="online">Connected</StatusBadge>
-              </DeviceRow>
+              {/* Connection Info */}
+              <SectionCard>
+                <DeviceRow>
+                  <DeviceName $iconColor="#4ade80">
+                    <i className="fas fa-wifi" />
+                    <span>Amrut_WiFi_5G</span>
+                  </DeviceName>
+                  <StatusBadge $type="online">Connected</StatusBadge>
+                </DeviceRow>
 
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', marginTop: '6px' }}>
-                <span style={{ fontSize: '0.55rem', opacity: 0.4, textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '4px' }}>
-                  Available Networks
-                </span>
-                
-                <ScannerItem onClick={startHacking}>
-                  <span style={{ 
-                    fontSize: '0.68rem', 
-                    color: isLight ? '#15803d' : '#00ff41', 
-                    textShadow: isLight ? 'none' : '0 0 3px #00ff4140', 
-                    fontFamily: 'monospace', 
-                    fontWeight: 'bold' 
-                  }}>
-                    <i className="fas fa-terminal" style={{ marginRight: '6px' }} />
-                    Matrix_Terminal
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', marginTop: '6px' }}>
+                  <span style={{ fontSize: '0.55rem', opacity: 0.4, textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '4px' }}>
+                    Available Networks
                   </span>
-                  <i className="fas fa-lock" style={{ fontSize: '0.58rem', color: isLight ? '#15803d' : '#00ff41' }} />
-                </ScannerItem>
-
-                <ScannerItem disabled>
-                  <span style={{ fontSize: '0.68rem', fontFamily: 'monospace' }}>
-                    <i className="fas fa-shield-halved" style={{ marginRight: '6px' }} />
-                    NSA_Surveillance_04
-                  </span>
-                  <i className="fas fa-lock" style={{ fontSize: '0.58rem' }} />
-                </ScannerItem>
-
-                <ScannerItem disabled>
-                  <span style={{ fontSize: '0.68rem', fontFamily: 'monospace' }}>
-                    <i className="fas fa-lock" style={{ marginRight: '6px' }} />
-                    Neighbor_WiFi_Ext
-                  </span>
-                  <i className="fas fa-lock" style={{ fontSize: '0.58rem' }} />
-                </ScannerItem>
-              </div>
-            </SectionCard>
-
-            {/* Minimal Sliders */}
-            <SectionCard>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                {/* Volume Slider */}
-                <SliderWrapper>
-                  <SliderMeta>
-                    <span className="label">
-                      <i className="fas fa-volume-high" /> Volume
+                  
+                  <ScannerItem onClick={startHacking}>
+                    <span style={{ 
+                      fontSize: '0.68rem', 
+                      color: isLight ? '#15803d' : '#00ff41', 
+                      textShadow: isLight ? 'none' : '0 0 3px #00ff4140', 
+                      fontFamily: 'monospace', 
+                      fontWeight: 'bold' 
+                    }}>
+                      <i className="fas fa-terminal" style={{ marginRight: '6px' }} />
+                      Matrix_Terminal
                     </span>
-                    <span className="value">{volume}%</span>
-                  </SliderMeta>
-                  <ModernSlider
-                    type="range"
-                    min="0" max="100"
-                    value={volume}
-                    $pct={volume}
-                    onChange={(e) => handleVolumeChange(+e.target.value)}
-                  />
-                </SliderWrapper>
+                    <i className="fas fa-lock" style={{ fontSize: '0.58rem', color: isLight ? '#15803d' : '#00ff41' }} />
+                  </ScannerItem>
 
-                {/* Brightness Slider */}
-                <SliderWrapper>
-                  <SliderMeta>
-                    <span className="label">
-                      <i className="fas fa-sun" /> Brightness
+                  <ScannerItem disabled>
+                    <span style={{ fontSize: '0.68rem', fontFamily: 'monospace' }}>
+                      <i className="fas fa-shield-halved" style={{ marginRight: '6px' }} />
+                      NSA_Surveillance_04
                     </span>
-                    <span className="value">{brightness}%</span>
-                  </SliderMeta>
-                  <ModernSlider
-                    type="range"
-                    min="40" max="100"
-                    value={brightness}
-                    $pct={brtPct}
-                    onChange={(e) => setBrightness(+e.target.value)}
-                  />
-                </SliderWrapper>
-              </div>
-            </SectionCard>
-          </DropdownPanel>
-        )}
-      </AnimatePresence>
+                    <i className="fas fa-lock" style={{ fontSize: '0.58rem' }} />
+                  </ScannerItem>
+
+                  <ScannerItem disabled>
+                    <span style={{ fontSize: '0.68rem', fontFamily: 'monospace' }}>
+                      <i className="fas fa-lock" style={{ marginRight: '6px' }} />
+                      Neighbor_WiFi_Ext
+                    </span>
+                    <i className="fas fa-lock" style={{ fontSize: '0.58rem' }} />
+                  </ScannerItem>
+                </div>
+              </SectionCard>
+
+              {/* Minimal Sliders */}
+              <SectionCard>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                  {/* Volume Slider */}
+                  <SliderWrapper>
+                    <SliderMeta>
+                      <span className="label">
+                        <i className="fas fa-volume-high" /> Volume
+                      </span>
+                      <span className="value">{volume}%</span>
+                    </SliderMeta>
+                    <ModernSlider
+                      type="range"
+                      min="0" max="100"
+                      value={volume}
+                      $pct={volume}
+                      onChange={(e) => handleVolumeChange(+e.target.value)}
+                    />
+                  </SliderWrapper>
+
+                  {/* Brightness Slider */}
+                  <SliderWrapper>
+                    <SliderMeta>
+                      <span className="label">
+                        <i className="fas fa-sun" /> Brightness
+                      </span>
+                      <span className="value">{brightness}%</span>
+                    </SliderMeta>
+                    <ModernSlider
+                      type="range"
+                      min="40" max="100"
+                      value={brightness}
+                      $pct={brtPct}
+                      onChange={(e) => setBrightness(+e.target.value)}
+                    />
+                  </SliderWrapper>
+                </div>
+              </SectionCard>
+            </DropdownPanel>
+          )}
+        </AnimatePresence>,
+        document.body
+      )}
     </ControlContainer>
   );
 }

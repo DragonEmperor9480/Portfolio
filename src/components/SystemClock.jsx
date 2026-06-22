@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
+import { createPortal } from 'react-dom';
 import styled from 'styled-components';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -64,12 +65,18 @@ const ClockButton = styled(motion.button)`
 `;
 
 const StatusMenu = styled(motion.div)`
-  position: absolute;
-  top: calc(100% + 10px);
-  right: 0;
-  background: ${({ theme }) => `${theme.colors.background}f2`};
-  backdrop-filter: blur(28px) saturate(200%);
-  -webkit-backdrop-filter: blur(28px) saturate(200%);
+  position: fixed;
+  top: ${props => props.$top}px;
+  right: ${props => props.$right}px;
+  background: ${({ theme }) => {
+    const glass = theme.colors.glass || 'rgba(17, 17, 20, 0.75)';
+    if (typeof glass === 'string' && glass.startsWith('rgba')) {
+      return glass.replace(/,\s*0\.\d+\s*\)$/, ', 0.28)');
+    }
+    return 'rgba(17, 17, 20, 0.28)';
+  }};
+  backdrop-filter: blur(32px) saturate(220%);
+  -webkit-backdrop-filter: blur(32px) saturate(220%);
   border: 1.5px solid ${({ theme }) => theme?.colors?.primary || '#64ffda'};
   border-radius: 16px;
   padding: 16px;
@@ -98,18 +105,15 @@ const StatusMenu = styled(motion.div)`
     opacity: 0.15;
   }
 
-  will-change: transform, opacity;
-  transform: translateZ(0);
-
   @media (max-width: 768px) {
     position: fixed;
-    top: 90px;
-    left: 20px;
-    right: 20px;
+    top: 90px !important;
+    left: 20px !important;
+    right: 20px !important;
+    width: auto !important;
+    max-width: none !important;
+    min-width: unset !important;
     transform: none !important;
-    width: auto;
-    max-width: none;
-    min-width: unset;
   }
 `;
 
@@ -316,6 +320,30 @@ export default function SystemClock() {
   const menuRef = useRef(null);
   const buttonRef = useRef(null);
 
+  const [coords, setCoords] = useState({ top: 0, right: 0 });
+
+  const updateCoords = () => {
+    if (buttonRef.current) {
+      const rect = buttonRef.current.getBoundingClientRect();
+      setCoords({
+        top: rect.bottom + 12,
+        right: window.innerWidth - rect.right
+      });
+    }
+  };
+
+  useEffect(() => {
+    if (isOpen) {
+      updateCoords();
+      window.addEventListener('resize', updateCoords);
+      window.addEventListener('scroll', updateCoords, { passive: true });
+    }
+    return () => {
+      window.removeEventListener('resize', updateCoords);
+      window.removeEventListener('scroll', updateCoords);
+    };
+  }, [isOpen]);
+
   // scrolling system logs
   const [logs, setLogs] = useState([
     "[  OK  ] Boot sequence complete. Kernel v1.0.0",
@@ -482,15 +510,18 @@ export default function SystemClock() {
         </ClockButton>
       </motion.div>
 
-      <AnimatePresence>
-        {isOpen && (
-          <StatusMenu
-            ref={menuRef}
-            initial={{ opacity: 0, y: -10, scale: 0.95 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: -10, scale: 0.95 }}
-            transition={{ duration: 0.2, ease: 'easeOut' }}
-          >
+      {typeof document !== 'undefined' && createPortal(
+        <AnimatePresence>
+          {isOpen && (
+            <StatusMenu
+              ref={menuRef}
+              $top={coords.top}
+              $right={coords.right}
+              initial={{ opacity: 0, y: -10, scale: 0.95 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: -10, scale: 0.95 }}
+              transition={{ duration: 0.2, ease: 'easeOut' }}
+            >
             <MenuHeader>
               <span>SYS_MONITOR.SH</span>
               <PulseDot 
@@ -559,7 +590,9 @@ export default function SystemClock() {
             </FormatToggleButton>
           </StatusMenu>
         )}
-      </AnimatePresence>
+      </AnimatePresence>,
+      document.body
+    )}
     </ClockContainer>
   );
 }

@@ -2,6 +2,7 @@
 
 /* eslint-disable react/prop-types */
 import { useState, useEffect, useRef } from 'react';
+import { createPortal } from 'react-dom';
 import styled from 'styled-components';
 import { motion, AnimatePresence } from 'framer-motion';
 import Image from 'next/image';
@@ -72,12 +73,18 @@ const TriggerBtn = styled(motion.button)`
 `;
 
 const DropdownPanel = styled(motion.div)`
-  position: absolute;
-  top: calc(100% + 16px);
-  right: 0;
-  background: ${({ theme }) => `${theme?.colors?.background || '#0a192f'}f0`};
-  backdrop-filter: blur(32px) saturate(200%);
-  -webkit-backdrop-filter: blur(32px) saturate(200%);
+  position: fixed;
+  top: ${props => props.$top}px;
+  right: ${props => props.$right}px;
+  background: ${({ theme }) => {
+    const glass = theme.colors.glass || 'rgba(17, 17, 20, 0.75)';
+    if (typeof glass === 'string' && glass.startsWith('rgba')) {
+      return glass.replace(/,\s*0\.\d+\s*\)$/, ', 0.28)');
+    }
+    return 'rgba(17, 17, 20, 0.28)';
+  }};
+  backdrop-filter: blur(32px) saturate(220%);
+  -webkit-backdrop-filter: blur(32px) saturate(220%);
   border: 1px solid ${({ theme }) => theme?.colors?.border || 'rgba(100,255,218,0.15)'};
   border-radius: 20px;
   padding: 18px;
@@ -91,15 +98,14 @@ const DropdownPanel = styled(motion.div)`
   z-index: 200;
   font-family: 'Space Grotesk', sans-serif;
   overflow: hidden;
-  will-change: transform, opacity;
 
   @media (max-width: 768px) {
     position: fixed;
-    top: 80px;
-    left: 14px;
-    right: 14px;
+    top: 80px !important;
+    left: 14px !important;
+    right: 14px !important;
+    width: auto !important;
     transform: none !important;
-    width: auto;
   }
 `;
 
@@ -653,6 +659,30 @@ export default function NavMusicPlayer() {
 
   const { currentTheme } = useTheme();
 
+  const [coords, setCoords] = useState({ top: 0, right: 0 });
+
+  const updateCoords = () => {
+    if (btnRef.current) {
+      const rect = btnRef.current.getBoundingClientRect();
+      setCoords({
+        top: rect.bottom + 12,
+        right: window.innerWidth - rect.right
+      });
+    }
+  };
+
+  useEffect(() => {
+    if (isOpen) {
+      updateCoords();
+      window.addEventListener('resize', updateCoords);
+      window.addEventListener('scroll', updateCoords, { passive: true });
+    }
+    return () => {
+      window.removeEventListener('resize', updateCoords);
+      window.removeEventListener('scroll', updateCoords);
+    };
+  }, [isOpen]);
+
   /* Reset per station switch */
   useEffect(() => {
     setImgError(false);
@@ -829,15 +859,18 @@ export default function NavMusicPlayer() {
         <span className="led" />
       </TriggerBtn>
 
-      <AnimatePresence>
-        {isOpen && (
-          <DropdownPanel
-            ref={panelRef}
-            initial={{ opacity: 0, y: -10, scale: 0.96 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: -10, scale: 0.96 }}
-            transition={{ duration: 0.22, ease: 'easeOut' }}
-          >
+      {typeof document !== 'undefined' && createPortal(
+        <AnimatePresence>
+          {isOpen && (
+            <DropdownPanel
+              ref={panelRef}
+              $top={coords.top}
+              $right={coords.right}
+              initial={{ opacity: 0, y: -10, scale: 0.96 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: -10, scale: 0.96 }}
+              transition={{ duration: 0.22, ease: 'easeOut' }}
+            >
             {/* Header */}
             <PanelHeader>
               <span>SYS_PLAYER</span>
@@ -960,7 +993,9 @@ export default function NavMusicPlayer() {
             </div>
           </DropdownPanel>
         )}
-      </AnimatePresence>
+      </AnimatePresence>,
+      document.body
+    )}
     </Wrapper>
   );
 }

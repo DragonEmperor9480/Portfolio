@@ -43,7 +43,10 @@
       { "name": "Bash", "info": "Shell Script" },
       { "name": "Docker", "info": "Containers" },
       { "name": "SystemD", "info": "Init Sys" },
-      { "name": "Git", "info": "VCS" }
+      { "name": "Git", "info": "VCS" },
+      { "name": "Kubernetes", "info": "Orchestration" },
+      { "name": "GitHub", "info": "CI/CD" },
+      { "name": "GitLab", "info": "CI/CD" }
     ]
   },
   "Android & AOSP ROMs": {
