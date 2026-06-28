@@ -80,6 +80,32 @@
       "link": "https://www.linkedin.com/learning/certificates/5f28c34865cacc6e5aaf327b2130b82e179100a7812b55ddfc5dea76f4622a8f",
       "icon": "fab fa-docker",
       "thumbnail": "/assets/certificates/scaler_fundamentals_docker_kubernetes.png"
+    },
+    {
+      "name": "Jenkins Pipelines",
+      "fileName": "jenkins_pipelines",
+      "provider": "KodeKloud",
+      "link": "https://learn.kodekloud.com/certificate/016d381e-9530-4435-bc2b-75fb76338e50",
+      "icon": "fab fa-jenkins",
+      "thumbnail": "/assets/certificates/jenkins-pipelines.png"
+    },
+    {
+      "name": "Mastering Android Development with Kotlin From Beginner to Pro",
+      "fileName": "android_kotlin",
+      "provider": "GeeksForGeeks",
+      "duration": "8-week course",
+      "link": "https://media.geeksforgeeks.org/courses/certificates/891abbd1828981e9ce4b97acdc6e3b6b.pdf",
+      "icon": "fab fa-android",
+      "thumbnail": "/assets/certificates/android_development_using_kotlin.png"
+    },
+    {
+      "name": "GitLab CI: Pipelines, CI/CD and DevOps for Beginners",
+      "fileName": "gitlab_cicd",
+      "provider": "Udemy",
+      "duration": "2 total hours",
+      "link": "https://www.udemy.com/certificate/UC-341bd128-d559-4052-ac2b-e603de1a91ad/",
+      "icon": "fab fa-gitlab",
+      "thumbnail": "/assets/certificates/gitlan_ci_cd.png"
     }
   ]
 }

@@ -3,13 +3,16 @@
     "description": "Scalable, secure, and resilient cloud architectures.",
     "color": "#38bdf8",
     "skills": [
+      { "name": "AWS EC2", "info": "Compute" },
       { "name": "AWS Lambda", "info": "Serverless" },
       { "name": "S3", "info": "Storage" },
       { "name": "DynamoDB", "info": "NoSQL" },
       { "name": "Aurora", "info": "SQL Database" },
       { "name": "CloudFront", "info": "CDN / Edge" },
       { "name": "Cognito", "info": "Auth / IAM" },
-      { "name": "CloudWatch", "info": "Telemetry" }
+      { "name": "IAM Management", "info": "Security" },
+      { "name": "CloudWatch", "info": "Telemetry" },
+      { "name": "Live Tail", "info": "Logging / Debug" }
     ]
   },
   "Backend Engineering": {
@@ -30,7 +33,7 @@
     "skills": [
       { "name": "React", "info": "UI Library" },
       { "name": "Flutter", "info": "Mobile SDK" },
-      { "name": "JavaScript", "info": "Language" },
+      { "name": "Wails", "info": "Go/Web UI" },
       { "name": "HTML/CSS", "info": "Layout" }
     ]
   },
@@ -45,8 +48,8 @@
       { "name": "SystemD", "info": "Init Sys" },
       { "name": "Git", "info": "VCS" },
       { "name": "Kubernetes", "info": "Orchestration" },
-      { "name": "GitHub", "info": "CI/CD" },
-      { "name": "GitLab", "info": "CI/CD" }
+      { "name": "GitHub Actions", "info": "CI/CD" },
+      { "name": "GitLab CI/CD", "info": "CI/CD" }
     ]
   },
   "Android & AOSP ROMs": {
