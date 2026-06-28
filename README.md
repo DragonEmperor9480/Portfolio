@@ -1,184 +1,90 @@
-# Amrutesh Naregal Portfolio
+# 🌌 shuraOS v4.0.0
 
-A sophisticated portfolio website showcasing skills, projects, and achievements with a modern, interactive design.
+```text
+       _                      ____   ____  
+  ___| |__  _   _ _ __ __ _ / __ \ / ___| 
+ / __| '_ \| | | | '__/ _` | |  | |`___ \ 
+ \__ \ | | | |_| | | | (_| | |__| | ___) |
+ |___/_| |_|\__,_|_|  \__,_|\____/|____/  
+                                          
+ [ KERNEL VERSION 4.0.0 ] // [ LICENSE: GNU GPL v3 ]
+```
 
-## Features
-- 🎨 Multiple theme options (Dark, Light, Neon, Cyberpunk, etc.)
-- 🖼️ 3D background using React Three Fiber
-- ✨ Smooth animations with Framer Motion
-- 📄 Section components for About, Achievements, and Certifications
-- 🌓 Theme management using Context API
-- ⏳ Loading skeleton animations
+**shuraOS** is an interactive web-desktop portfolio inspired by the KDE desktop environment, with visual and atmospheric influences drawn from Sci-Fi/Cyberpunk games and anime. It showcases projects, certificates, and skills in a fully simulated OS environment complete with running apps, desktop widgets, and system controls.
 
-## Technologies Used
-- React
-- Vite
-- Tailwind CSS
-- Framer Motion
-- React Three Fiber
-- Styled Components
-- React Router
+---
 
-## Installation
-1. Clone the repository
-2. Install dependencies:
+## 🛠️ System Overview & Specifications
+
+| Subsystem | Specification |
+| :--- | :--- |
+| **Codename** | shuraOS |
+| **Inspiration** | KDE Desktop Environment + Sci-Fi Games & Anime |
+| **Engine** | Next.js 16 (App Router + Turbopack) |
+| **Styles / Animations** | Styled Components + Framer Motion |
+| **3D Subsystem** | Three.js + React Three Fiber |
+| **License** | GNU GPL v3.0 |
+
+---
+
+## 🛰️ Core Features & Applications
+
+### 🖥️ KDE-Inspired Web Desktop
+*   **System Controls & Clock**: Portaled React overlays mapped to `document.body` for perfect, unobstructed `backdrop-filter` glassmorphism rendering.
+*   **Taskbar & Navigation**: Interactive bottom/top panel housing system settings, theme toggles, a media player widget, and clock controls.
+
+### 🎮 Netrunner HUD (Quickhack Combat Simulator)
+*   **Game Mode**: An immersive mini-hacking combat simulator inspired by sci-fi gaming HUDs.
+*   **Resolution Check**: Requires a minimum desktop resolution of `1200 x 700` (with warning screens and force-connect overrides on smaller viewports).
+*   **Controls**: Includes disconnect options mapped to `ESC` and dedicated header close buttons.
+
+### 💻 VSCode Certificate Explorer
+*   **IDE Simulation**: A high-fidelity VSCode-style explorer to navigate professional certifications and credentials.
+*   **Dynamic Data**: Loaded directly from a centralized database configuration [certificates.json](file:///home/shura/Projects/Portfolio/src/data/certificates.json).
+*   **Modes**: Seamless toggle between rendering the verified credential thumbnail or viewing a mockup React source definition.
+
+### 🎵 Desktop Media Player
+*   **Audio Engine**: Desktop widget handling background music, track listings, skip controls, and volume adjustments.
+
+---
+
+## ⚙️ Boot Sequence (Local Setup)
+
+### 1. Resolve Dependencies
+Clone the repository and install the required modules:
 ```bash
 npm install
 ```
 
-## Usage
-Start the development server:
+### 2. Boot Local Server
 ```bash
 npm run dev
 ```
 
-Build for production:
+### 3. Production Compilation
 ```bash
 npm run build
 ```
 
-## Components Overview
-- **Navbar**: Navigation bar for the portfolio
-- **Hero**: Introduction section
-- **About**: Information about the individual
-- **Achievements**: Displays achievements
-- **Certifications**: Lists certifications
-- **DevBackground**: 3D background component
-- **SkeletonLoader**: Loading [Previous content remains the same until the "Important Code Sections" part]
-animation component
+---
 
-## Theme Management
-The portfolio features a theme management system with multiple options:
-- Dark Theme
-- Light Mode
-- Neon Dreams
-- Cyberpunk
-- Matrix
-- Synthwave
+## 📂 Project Architecture
 
-## Project Structure and Key Files
-
-### Configuration Files
-- **package.json**: Manages project dependencies and scripts
-- **vite.config.js**: Vite build configuration
-- **tailwind.config.js**: Tailwind CSS configuration
-- **postcss.config.js**: PostCSS configuration
-- **eslint.config.js**: ESLint configuration
-
-### Main Application
-- **src/App.jsx**: Main application component handling routing and theme management
-- **src/main.jsx**: Entry point for the React application
-
-### Context
-- **src/context/ThemeContext.jsx**: Manages theme state and provides theme context to components
-
-### Components
-- **src/components/Navbar.jsx**: Navigation bar component
-- **src/components/Hero.jsx**: Hero section component
-- **src/components/DevBackground.jsx**: 3D background component using React Three Fiber
-- **src/components/SkeletonLoader.jsx**: Loading animation component
-
-### Sections
-- **src/components/sections/About.jsx**: About section component
-- **src/components/sections/Achievements.jsx**: Achievements section component
-- **src/components/sections/Certifications.jsx**: Certifications section component
-
-### Styles
-- **src/styles/GlobalStyles.js**: Global styles using Styled Components
-- **src/themes/themes.js**: Theme definitions and color schemes
-
-### Assets
-- **src/assets/**: Contains images and certificates
-- **src/data/certificates.json**: JSON data for certifications
-
-## Important Code Sections
-
-### Theme Management
-```jsx
-// src/context/ThemeContext.jsx
-const ThemeContext = createContext();
-
-export function ThemeProvider({ children }) {
-  const [currentTheme, setCurrentTheme] = useState('dark');
-  return (
-    <ThemeContext.Provider value={{ currentTheme, setCurrentTheme }}>
-      {children}
-    </ThemeContext.Provider>
-  );
-}
+```text
+├── app/                       # Next.js App Router core (pages & layouts)
+├── public/                    # Static assets (3D models, audio, certificate files)
+└── src/
+    ├── components/            # React layout & app controls
+    │   ├── apps/              # Specific applications (Music, Terminal, Netrunner HUD)
+    │   └── sections/          # Core section views (About, Certifications, Achievements)
+    ├── context/               # State management (AppsContext, ThemeContext)
+    ├── data/                  # JSON files for certificates & skills
+    ├── styles/                # Global style sheets & themes
+    └── themes/                # Color palettes for multiple OS visual modes
 ```
-This code creates a theme context that stores the current theme and provides a function to change themes. Components can access and modify the theme using the useTheme hook.
 
-### 3D Background
-```jsx
-// src/components/DevBackground.jsx
-<Canvas>
-  <Suspense fallback={null}>
-    <Stars />
-    <OrbitControls enableZoom={false} />
-  </Suspense>
-</Canvas>
-```
-This code sets up a 3D scene using React Three Fiber, featuring a star field background with interactive camera controls.
+---
 
-### Theme Switching
-```jsx
-// src/components/ThemeSwitcher.jsx
-const { currentTheme, setCurrentTheme } = useTheme();
+## 🛡️ License
 
-const handleThemeChange = (theme) => {
-  setCurrentTheme(theme);
-};
-```
-This code handles theme switching by updating the theme context state, which triggers re-renders of themed components.
-
-### Page Transitions
-```jsx
-// src/App.jsx
-<AnimatePresence>
-  {isLoading ? (
-    <SkeletonLoader />
-  ) : (
-    <>
-      <DevBackground />
-      <Navbar />
-      <main>
-        <Hero />
-        <About />
-        <Achievements />
-        <Certifications />
-      </main>
-    </>
-  )}
-</AnimatePresence>
-```
-This code manages page transitions using Framer Motion's AnimatePresence component, providing smooth animations between different states.
-
-### Global Styles
-```js
-// src/styles/GlobalStyles.js
-const GlobalStyles = createGlobalStyle`
-  body {
-    background: ${({ theme }) => theme.colors.background};
-    color: ${({ theme }) => theme.colors.text};
-  }
-`;
-```
-This code defines global styles that adapt to the current theme, ensuring consistent styling across the application.
-
-### Certification Data Handling
-```js
-// src/components/sections/Certifications.jsx
-{certificates.map((cert) => (
-  <CertificationCard
-    key={cert.id}
-    title={cert.title}
-    image={cert.image}
-    description={cert.description}
-  />
-))}
-```
-This code maps through the certification data and renders individual certification cards with their respective details.
-
-## License
-MIT
+Released under the **GNU General Public License v3.0**. See the [LICENSE](file:///home/shura/Projects/Portfolio/LICENSE) file for complete copyleft terms and conditions.

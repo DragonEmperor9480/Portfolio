@@ -1,4 +1,7 @@
+'use client';
+
 import styled from 'styled-components';
+import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useState, useEffect, useRef } from 'react';
 import { themes } from '../themes/themes';
@@ -9,67 +12,77 @@ const ThemeToggle = styled.div`
   display: flex;
   align-items: center;
   gap: 10px;
+
+  @media (max-width: 768px) {
+    width: 100%;
+    display: block !important;
+  }
 `;
 
 const ThemeButton = styled(motion.button)`
   background: ${({ theme }) => `${theme.colors.primary}10`};
-  border: 1px solid ${({ theme }) => `${theme.colors.primary}30`};
+  border: 1px solid ${({ theme }) => `${theme.colors.primary}40`};
   color: ${({ theme }) => theme.colors.primary};
-  padding: 8px 16px;
+  padding: 6px 14px;
   border-radius: 12px;
   cursor: pointer;
   display: flex;
   align-items: center;
-  gap: 10px;
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 0.9rem;
-  transition: all 0.3s ease;
+  gap: 8px;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 600;
+  transition: all 0.2s ease;
   
   .icon {
-    font-size: 1.1rem;
+    font-size: 1rem;
   }
 
   .label {
-    font-size: 0.85rem;
     letter-spacing: 0.5px;
   }
 
   &:hover {
     background: ${({ theme }) => `${theme.colors.primary}15`};
-    border-color: ${({ theme }) => theme.colors.primary};
-    transform: translateY(-2px);
-    box-shadow: 0 5px 15px ${({ theme }) => `${theme.colors.primary}20`};
+    border-color: ${({ theme }) => theme.colors.primary}80;
+    box-shadow: 0 4px 12px ${({ theme }) => `${theme.colors.primary}20`};
   }
 
-  @media (max-width: 768px) {
-    padding: 14px 16px;
-    font-size: 1rem;
-    
-    .icon {
-      font-size: 1.2rem;
-    }
-
+  @media (max-width: 1200px) {
+    padding: 6px 10px;
     .label {
       display: none;
     }
   }
 
-  @media (max-width: 480px) {
-    padding: 12px;
+  @media (max-width: 768px) {
+    padding: 12px 14px;
+    font-size: 0.95rem;
+    width: 100%;
+    justify-content: center;
     
     .icon {
       font-size: 1.1rem;
     }
   }
+
+  @media (max-width: 480px) {
+    padding: 10px;
+    
+    .icon {
+      font-size: 1rem;
+    }
+  }
 `;
 
 const ThemeMenu = styled(motion.div)`
-  position: absolute;
-  top: calc(100% + 10px);
-  right: 0;
-  background: ${({ theme }) => theme.colors.glass};
-  backdrop-filter: blur(20px);
-  border: 1px solid ${({ theme }) => `${theme.colors.primary}30`};
+  position: fixed;
+  top: ${props => props.$top}px;
+  right: ${props => props.$right}px;
+  background: ${({ theme }) => theme.colors.background}f2;
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  border: 1px solid ${({ theme }) => theme.colors.primary}50;
   border-radius: 16px;
   padding: 8px;
   display: flex;
@@ -79,13 +92,16 @@ const ThemeMenu = styled(motion.div)`
   box-shadow: 0 10px 30px -15px rgba(2, 12, 27, 0.7);
   z-index: 101;
 
+  /* GPU Acceleration */
+  will-change: transform, opacity;
+  transform: translateZ(0);
+
   @media (max-width: 768px) {
     position: fixed;
-    top: 90px;
-    left: 20px;
-    right: 20px;
-    transform: none !important;
-    width: auto;
+    top: 80px !important;
+    left: 14px !important;
+    right: 14px !important;
+    width: auto !important;
     max-width: none;
     min-width: unset;
     background: ${({ theme }) => theme.colors.background};
@@ -145,6 +161,34 @@ export default function ThemeSwitcher() {
   const { currentTheme, setCurrentTheme } = useTheme();
   const themeMenuRef = useRef(null);
   const themeButtonRef = useRef(null);
+  const [coords, setCoords] = useState(null);
+
+  const updateCoords = () => {
+    if (themeButtonRef.current) {
+      const rect = themeButtonRef.current.getBoundingClientRect();
+      setCoords({
+        top: rect.bottom + 12,
+        right: window.innerWidth - rect.right
+      });
+    }
+  };
+
+  const handleToggle = () => {
+    updateCoords();
+    setIsOpen(o => !o);
+  };
+
+  useEffect(() => {
+    if (isOpen) {
+      updateCoords();
+      window.addEventListener('resize', updateCoords);
+      window.addEventListener('scroll', updateCoords, { passive: true });
+    }
+    return () => {
+      window.removeEventListener('resize', updateCoords);
+      window.removeEventListener('scroll', updateCoords);
+    };
+  }, [isOpen]);
 
   useEffect(() => {
     function handleClickOutside(event) {
@@ -185,58 +229,63 @@ export default function ThemeSwitcher() {
         ref={themeButtonRef}
       >
         <ThemeButton
-          onClick={() => setIsOpen(!isOpen)}
+          onClick={handleToggle}
           aria-label="Theme Configuration"
         >
           <i className={`fas fa-${themeIcons[currentTheme]} icon`} />
-          <span className="label">THEME.CONFIG</span>
+          <span className="label">THEME</span>
           <span className="status" />
         </ThemeButton>
       </motion.div>
 
-      <AnimatePresence>
-        {isOpen && (
-          <ThemeMenu
-            ref={themeMenuRef}
-            initial={{ opacity: 0, y: -10, scale: 0.95 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: -10, scale: 0.95 }}
-            transition={{ duration: 0.2 }}
-          >
-            <motion.div 
-              style={{ 
-                padding: "4px 8px", 
-                opacity: 0.7, 
-                fontSize: "0.8rem",
-                fontFamily: "'JetBrains Mono', monospace",
-                borderBottom: `1px solid ${themes[currentTheme].colors.primary}30`,
-                marginBottom: "4px"
-              }}
+      {typeof document !== 'undefined' && createPortal(
+        <AnimatePresence>
+          {isOpen && coords && (
+            <ThemeMenu
+              ref={themeMenuRef}
+              $top={coords.top}
+              $right={coords.right}
+              initial={{ opacity: 0, y: -10, scale: 0.95 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: -10, scale: 0.95 }}
+              transition={{ duration: 0.2 }}
             >
-              SELECT_THEME
-            </motion.div>
-            {Object.keys(themes).map((themeKey) => (
-              <motion.div
-                key={themeKey}
-                whileHover={{ x: 2 }}
-                whileTap={{ scale: 0.98 }}
+              <motion.div 
+                style={{ 
+                  padding: "4px 8px", 
+                  opacity: 0.7, 
+                  fontSize: "0.8rem",
+                  fontFamily: "'JetBrains Mono', monospace",
+                  borderBottom: `1px solid ${themes[currentTheme].colors.primary}30`,
+                  marginBottom: "4px"
+                }}
               >
-                <ThemeOption
-                  isActive={currentTheme === themeKey}
-                  onClick={() => {
-                    setCurrentTheme(themeKey);
-                    setIsOpen(false);
-                  }}
-                >
-                  <i className={`fas fa-${themeIcons[themeKey]} icon`} />
-                  <ThemeLabel>{themes[themeKey].name}</ThemeLabel>
-                  <ThemeShortcut>⌘{Object.keys(themes).indexOf(themeKey) + 1}</ThemeShortcut>
-                </ThemeOption>
+                SELECT_THEME
               </motion.div>
-            ))}
-          </ThemeMenu>
-        )}
-      </AnimatePresence>
+              {Object.keys(themes).map((themeKey) => (
+                <motion.div
+                  key={themeKey}
+                  whileHover={{ x: 2 }}
+                  whileTap={{ scale: 0.98 }}
+                >
+                  <ThemeOption
+                    isActive={currentTheme === themeKey}
+                    onClick={() => {
+                      setCurrentTheme(themeKey);
+                      setIsOpen(false);
+                    }}
+                  >
+                    <i className={`fas fa-${themeIcons[themeKey]} icon`} />
+                    <ThemeLabel>{themes[themeKey].name}</ThemeLabel>
+                    <ThemeShortcut>⌘{Object.keys(themes).indexOf(themeKey) + 1}</ThemeShortcut>
+                  </ThemeOption>
+                </motion.div>
+              ))}
+            </ThemeMenu>
+          )}
+        </AnimatePresence>,
+        document.body
+      )}
     </ThemeToggle>
   );
 }

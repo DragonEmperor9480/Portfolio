@@ -1,0 +1,579 @@
+'use client';
+
+import { useState, useEffect, useRef } from 'react';
+import { createPortal } from 'react-dom';
+import styled, { useTheme as useStyledTheme } from 'styled-components';
+import { motion, AnimatePresence } from 'framer-motion';
+import { usePlayer } from '../context/PlayerContext';
+import { useTheme } from '../context/ThemeContext';
+import { useApps } from '../context/AppsContext';
+
+/* ─── Tray Button ─────────────────────────────────────────────────── */
+const ControlContainer = styled.div`
+  position: relative;
+  display: flex;
+  align-items: center;
+`;
+
+const StatusTrayButton = styled(motion.button)`
+  background: ${({ theme }) => `${theme.colors.primary}10`};
+  border: 1px solid ${({ theme }) => `${theme.colors.primary}40`};
+  color: ${({ theme }) => theme.colors.primary};
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-radius: 12px;
+  padding: 6px 12px;
+  margin-left: 10px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.25s ease;
+  outline: none;
+
+  &:hover {
+    background: ${({ theme }) => `${theme.colors.primary}15`};
+    border-color: ${({ theme }) => theme.colors.primary}80;
+    box-shadow: 0 4px 12px ${({ theme }) => `${theme.colors.primary}20`};
+  }
+
+
+  .control-label {
+    display: none;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+  }
+
+  @media (max-width: 1024px) {
+    .control-label {
+      display: inline;
+    }
+  }
+`;
+
+const TrayIcon = styled.span`
+  color: ${props => props.$active ? props.$color : (props.theme?.colors?.textSecondary || '#B3B3B3')};
+  opacity: ${props => props.$active ? 1 : 0.6};
+  font-size: 0.85rem;
+  display: flex;
+  align-items: center;
+  transition: all 0.2s ease;
+
+  i {
+    filter: ${props => props.$active ? `drop-shadow(0 0 4px ${props.$color})` : 'none'};
+  }
+`;
+
+/* ─── Dropdown Panel ──────────────────────────────────────────────── */
+const DropdownPanel = styled(motion.div)`
+  position: fixed;
+  top: ${props => props.$top}px;
+  left: ${props => props.$left}px;
+  background: ${({ theme }) => {
+    const glass = theme.colors.glass || 'rgba(17, 17, 20, 0.75)';
+    if (typeof glass === 'string' && glass.startsWith('rgba')) {
+      return glass.replace(/,\s*0\.\d+\s*\)$/, ', 0.28)');
+    }
+    return 'rgba(17, 17, 20, 0.28)';
+  }};
+  backdrop-filter: blur(32px) saturate(220%);
+  -webkit-backdrop-filter: blur(32px) saturate(220%);
+  border: 1px solid ${({ theme }) => {
+    const isLight = theme.name === 'Light Mode';
+    return isLight ? 'rgba(0, 0, 0, 0.08)' : 'rgba(255, 255, 255, 0.15)';
+  }};
+  border-radius: 16px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  width: 280px;
+  box-shadow: ${({ theme }) => theme.name === 'Light Mode' 
+    ? '0 20px 48px -12px rgba(31, 38, 135, 0.12), inset 0 1px 0 0 rgba(255, 255, 255, 0.6)' 
+    : '0 25px 50px -12px rgba(0, 0, 0, 0.65), inset 0 1px 0 0 rgba(255, 255, 255, 0.15)'};
+  z-index: 101;
+  font-family: 'Space Grotesk', sans-serif;
+
+  @media (max-width: 768px) {
+    position: fixed;
+    top: 80px !important;
+    left: 14px !important;
+    right: 14px !important;
+    width: auto !important;
+    transform: none !important;
+  }
+`;
+
+const PanelHeader = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 8px;
+  border-bottom: 1px solid ${({ theme }) => theme.colors.border};
+`;
+
+const PanelTitle = styled.span`
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: ${({ theme }) => theme?.colors?.text || '#E6E6E6'};
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  opacity: 0.85;
+`;
+
+const StatusDot = styled.span`
+  font-size: 0.65rem;
+  font-weight: 600;
+  color: ${props => props.$online ? '#4ade80' : '#f87171'};
+  display: flex;
+  align-items: center;
+  gap: 5px;
+
+  &::before {
+    content: '';
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background-color: currentColor;
+    box-shadow: 0 0 6px currentColor;
+  }
+`;
+
+const SectionCard = styled.div`
+  background: ${({ theme }) => theme.name === 'Light Mode' 
+    ? 'rgba(255, 255, 255, 0.3)' 
+    : 'rgba(255, 255, 255, 0.03)'};
+  border: 1px solid ${({ theme }) => theme.name === 'Light Mode' 
+    ? 'rgba(0, 0, 0, 0.03)' 
+    : 'rgba(255, 255, 255, 0.04)'};
+  border-radius: 12px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  box-shadow: ${({ theme }) => theme.name === 'Light Mode'
+    ? 'inset 0 1px 1px 0 rgba(255, 255, 255, 0.4)'
+    : 'inset 0 1px 1px 0 rgba(255, 255, 255, 0.03)'};
+`;
+
+const DeviceRow = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.78rem;
+`;
+
+const DeviceName = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: ${({ theme }) => theme?.colors?.text || '#E6E6E6'};
+  font-weight: 500;
+
+  i {
+    color: ${props => props.$iconColor};
+    font-size: 0.8rem;
+  }
+`;
+
+const StatusBadge = styled.span`
+  font-size: 0.6rem;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 6px;
+  background: ${props => props.$type === 'online' 
+    ? (props.theme.name === 'Light Mode' ? 'rgba(22, 163, 74, 0.1)' : 'rgba(74, 222, 128, 0.1)') 
+    : (props.theme.name === 'Light Mode' ? 'rgba(0, 0, 0, 0.05)' : 'rgba(255, 255, 255, 0.05)')};
+  color: ${props => props.$type === 'online' 
+    ? (props.theme.name === 'Light Mode' ? '#16a34a' : '#4ade80') 
+    : (props.theme.name === 'Light Mode' ? '#666666' : '#888888')};
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+`;
+
+const ScannerItem = styled.button`
+  width: 100%;
+  background: ${({ theme }) => theme.name === 'Light Mode' 
+    ? 'rgba(255, 255, 255, 0.4)' 
+    : 'rgba(0, 0, 0, 0.15)'};
+  border: 1px solid ${({ theme }) => theme.name === 'Light Mode' 
+    ? 'rgba(0, 0, 0, 0.05)' 
+    : 'rgba(255, 255, 255, 0.04)'};
+  border-radius: 8px;
+  padding: 8px 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: ${props => props.disabled ? 'not-allowed' : 'pointer'};
+  opacity: ${props => props.disabled ? 0.4 : 1};
+  transition: all 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+  font-family: inherit;
+  color: ${({ theme }) => theme.colors.text};
+
+  &:hover:not(:disabled) {
+    background: ${({ theme }) => theme.name === 'Light Mode' 
+      ? 'rgba(0, 0, 0, 0.03)' 
+      : 'rgba(255, 255, 255, 0.06)'};
+    border-color: ${({ theme }) => theme.name === 'Light Mode' 
+      ? 'rgba(0, 0, 0, 0.08)' 
+      : 'rgba(255, 255, 255, 0.08)'};
+    box-shadow: ${({ theme }) => theme.name === 'Light Mode'
+      ? '0 4px 12px rgba(0, 0, 0, 0.04)'
+      : '0 4px 16px rgba(0, 0, 0, 0.25)'};
+  }
+`;
+
+/* ─── Minimal Slider Styling ───────────────────────────────────────── */
+const SliderWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+`;
+
+const SliderMeta = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.72rem;
+  color: ${({ theme }) => theme?.colors?.textSecondary || '#B3B3B3'};
+  
+  .label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+  }
+
+  .value {
+    font-family: monospace;
+    font-weight: 700;
+  }
+`;
+
+const ModernSlider = styled.input`
+  -webkit-appearance: none;
+  width: 100%;
+  height: 3px;
+  border-radius: 2px;
+  background: ${({ theme }) => theme.name === 'Light Mode' ? 'rgba(0, 0, 0, 0.1)' : 'rgba(255, 255, 255, 0.1)'};
+  outline: none;
+  margin: 4px 0;
+  position: relative;
+  cursor: pointer;
+
+  &::-webkit-slider-runnable-track {
+    width: 100%;
+    height: 3px;
+    cursor: pointer;
+    background: linear-gradient(
+      to right, 
+      ${({ theme }) => theme?.colors?.primary || '#64ffda'} 0%, 
+      ${({ theme }) => theme?.colors?.primary || '#64ffda'} ${props => props.$pct}%, 
+      ${({ theme }) => theme.name === 'Light Mode' ? 'rgba(0, 0, 0, 0.1)' : 'rgba(255, 255, 255, 0.1)'} ${props => props.$pct}%, 
+      ${({ theme }) => theme.name === 'Light Mode' ? 'rgba(0, 0, 0, 0.1)' : 'rgba(255, 255, 255, 0.1)'} 100%
+    );
+    border-radius: 2px;
+  }
+
+  &::-webkit-slider-thumb {
+    height: 12px;
+    width: 12px;
+    border-radius: 50%;
+    background: ${({ theme }) => theme.name === 'Light Mode' ? theme.colors.primary : '#ffffff'};
+    cursor: pointer;
+    -webkit-appearance: none;
+    margin-top: -4.5px;
+    box-shadow: ${({ theme }) => theme.name === 'Light Mode' ? '0 1px 4px rgba(0, 0, 0, 0.25)' : '0 0 8px rgba(0, 0, 0, 0.5)'};
+    transition: transform 0.1s ease;
+  }
+
+  &:hover::-webkit-slider-thumb {
+    transform: scale(1.2);
+  }
+
+  &::-moz-range-track {
+    width: 100%;
+    height: 3px;
+    cursor: pointer;
+    background: ${({ theme }) => theme.name === 'Light Mode' ? 'rgba(0, 0, 0, 0.1)' : 'rgba(255, 255, 255, 0.1)'};
+    border-radius: 2px;
+  }
+
+  &::-moz-range-progress {
+    background: ${({ theme }) => theme?.colors?.primary || '#64ffda'};
+    height: 3px;
+    border-radius: 2px;
+  }
+
+  &::-moz-range-thumb {
+    height: 12px;
+    width: 12px;
+    border-radius: 50%;
+    background: ${({ theme }) => theme.name === 'Light Mode' ? theme.colors.primary : '#ffffff'};
+    cursor: pointer;
+    border: none;
+    box-shadow: ${({ theme }) => theme.name === 'Light Mode' ? '0 1px 4px rgba(0, 0, 0, 0.25)' : '0 0 8px rgba(0, 0, 0, 0.5)'};
+    transition: transform 0.1s ease;
+  }
+
+  &:hover::-moz-range-thumb {
+    transform: scale(1.2);
+  }
+`;
+
+export default function SystemControl() {
+  const [isOpen, setIsOpen] = useState(false);
+  const [isOnline, setIsOnline] = useState(true);
+  const [brightness, setBrightness] = useState(100);
+  const { volume, setVolume } = usePlayer();
+  const { setCurrentTheme } = useTheme();
+  const { launchApp } = useApps();
+
+  const styledTheme = useStyledTheme();
+  const isLight = styledTheme?.name === 'Light Mode';
+
+  const containerRef = useRef(null);
+  const buttonRef = useRef(null);
+  const lastSoundTimeRef = useRef(0);
+
+  const [coords, setCoords] = useState(null);
+
+  const updateCoords = () => {
+    if (buttonRef.current) {
+      const rect = buttonRef.current.getBoundingClientRect();
+      setCoords({
+        top: rect.bottom + 12,
+        left: rect.left
+      });
+    }
+  };
+
+  const handleToggle = () => {
+    updateCoords();
+    setIsOpen(o => !o);
+  };
+
+  useEffect(() => {
+    if (isOpen) {
+      updateCoords();
+      window.addEventListener('resize', updateCoords);
+      window.addEventListener('scroll', updateCoords, { passive: true });
+    }
+    return () => {
+      window.removeEventListener('resize', updateCoords);
+      window.removeEventListener('scroll', updateCoords);
+    };
+  }, [isOpen]);
+
+  /* ── Audio helpers ── */
+  const playTone = (freq, duration = 0.12, type = 'sine', gainMult = 0.12) => {
+    try {
+      const Ctx = window.AudioContext || window.webkitAudioContext;
+      if (!Ctx) return;
+      const ctx = new Ctx();
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.type = type;
+      osc.frequency.setValueAtTime(freq, ctx.currentTime);
+      gain.gain.setValueAtTime((volume / 100) * gainMult, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + duration);
+      osc.start();
+      osc.stop(ctx.currentTime + duration);
+    } catch { /* silent */ }
+  };
+
+  const handleVolumeChange = (val) => {
+    setVolume(val);
+    const now = Date.now();
+    if (now - lastSoundTimeRef.current > 150) {
+      playTone(520, 0.10, 'sine', 0.12);
+      lastSoundTimeRef.current = now;
+    }
+  };
+
+  const startHacking = () => {
+    setIsOpen(false);
+    playTone(180, 0.25, 'sawtooth', 0.08);
+    launchApp('hackerhub');
+  };
+
+  // Sync online status
+  useEffect(() => {
+    if (typeof navigator !== 'undefined') {
+      setIsOnline(navigator.onLine);
+    }
+
+    const handleOnline = () => setIsOnline(true);
+    const handleOffline = () => setIsOnline(false);
+
+    window.addEventListener('online', handleOnline);
+    window.addEventListener('offline', handleOffline);
+
+    return () => {
+      window.removeEventListener('online', handleOnline);
+      window.removeEventListener('offline', handleOffline);
+    };
+  }, []);
+
+  // Sync brightness styling effect
+  useEffect(() => {
+    const actualBrt = Math.max(40, brightness);
+    const dimness = (100 - actualBrt) / 100;
+    document.documentElement.style.setProperty('--system-dimness', `${dimness}`);
+    return () => {
+      document.documentElement.style.removeProperty('--system-dimness');
+    };
+  }, [brightness]);
+
+  // Handle clicking outside to close
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (
+        containerRef.current && 
+        !containerRef.current.contains(event.target) &&
+        buttonRef.current &&
+        !buttonRef.current.contains(event.target)
+      ) {
+        setIsOpen(false);
+      }
+    }
+
+    if (isOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isOpen]);
+
+  const brtPct = Math.round(((brightness - 40) / 60) * 100);
+
+  return (
+    <ControlContainer>
+      <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} ref={buttonRef}>
+        <StatusTrayButton onClick={handleToggle} aria-label="Wireless Status and Controls">
+          <TrayIcon $active={isOnline} $color="#4ade80">
+            <i className={`fas fa-${isOnline ? 'wifi' : 'wifi-slash'}`} />
+          </TrayIcon>
+          <span className="control-label">SYSTEM</span>
+        </StatusTrayButton>
+      </motion.div>
+
+      {typeof document !== 'undefined' && createPortal(
+        <AnimatePresence>
+          {isOpen && coords && (
+            <DropdownPanel
+              ref={containerRef}
+              $top={coords.top}
+              $left={coords.left}
+              initial={{ opacity: 0, y: -12, scale: 0.96 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: -12, scale: 0.96 }}
+              transition={{ duration: 0.2, ease: 'easeOut' }}
+            >
+              {/* Header */}
+              <PanelHeader>
+                <PanelTitle>System Info</PanelTitle>
+                <StatusDot $online={isOnline}>{isOnline ? 'Online' : 'Offline'}</StatusDot>
+              </PanelHeader>
+
+              {/* Connection Info */}
+              <SectionCard>
+                <DeviceRow>
+                  <DeviceName $iconColor="#4ade80">
+                    <i className="fas fa-wifi" />
+                    <span>Amrut_WiFi_5G</span>
+                  </DeviceName>
+                  <StatusBadge $type="online">Connected</StatusBadge>
+                </DeviceRow>
+
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', marginTop: '6px' }}>
+                  <span style={{ fontSize: '0.55rem', opacity: 0.4, textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '4px' }}>
+                    Available Networks
+                  </span>
+                  
+                  <ScannerItem onClick={startHacking}>
+                    <span style={{ 
+                      fontSize: '0.68rem', 
+                      color: isLight ? '#15803d' : '#00ff41', 
+                      textShadow: isLight ? 'none' : '0 0 3px #00ff4140', 
+                      fontFamily: 'monospace', 
+                      fontWeight: 'bold' 
+                    }}>
+                      <i className="fas fa-terminal" style={{ marginRight: '6px' }} />
+                      Matrix_Terminal
+                    </span>
+                    <i className="fas fa-lock" style={{ fontSize: '0.58rem', color: isLight ? '#15803d' : '#00ff41' }} />
+                  </ScannerItem>
+
+                  <ScannerItem disabled>
+                    <span style={{ fontSize: '0.68rem', fontFamily: 'monospace' }}>
+                      <i className="fas fa-shield-halved" style={{ marginRight: '6px' }} />
+                      NSA_Surveillance_04
+                    </span>
+                    <i className="fas fa-lock" style={{ fontSize: '0.58rem' }} />
+                  </ScannerItem>
+
+                  <ScannerItem disabled>
+                    <span style={{ fontSize: '0.68rem', fontFamily: 'monospace' }}>
+                      <i className="fas fa-lock" style={{ marginRight: '6px' }} />
+                      Neighbor_WiFi_Ext
+                    </span>
+                    <i className="fas fa-lock" style={{ fontSize: '0.58rem' }} />
+                  </ScannerItem>
+                </div>
+              </SectionCard>
+
+              {/* Minimal Sliders */}
+              <SectionCard>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                  {/* Volume Slider */}
+                  <SliderWrapper>
+                    <SliderMeta>
+                      <span className="label">
+                        <i className="fas fa-volume-high" /> Volume
+                      </span>
+                      <span className="value">{volume}%</span>
+                    </SliderMeta>
+                    <ModernSlider
+                      type="range"
+                      min="0" max="100"
+                      value={volume}
+                      $pct={volume}
+                      onChange={(e) => handleVolumeChange(+e.target.value)}
+                    />
+                  </SliderWrapper>
+
+                  {/* Brightness Slider */}
+                  <SliderWrapper>
+                    <SliderMeta>
+                      <span className="label">
+                        <i className="fas fa-sun" /> Brightness
+                      </span>
+                      <span className="value">{brightness}%</span>
+                    </SliderMeta>
+                    <ModernSlider
+                      type="range"
+                      min="40" max="100"
+                      value={brightness}
+                      $pct={brtPct}
+                      onChange={(e) => setBrightness(+e.target.value)}
+                    />
+                  </SliderWrapper>
+                </div>
+              </SectionCard>
+            </DropdownPanel>
+          )}
+        </AnimatePresence>,
+        document.body
+      )}
+    </ControlContainer>
+  );
+}
