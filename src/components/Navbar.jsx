@@ -402,6 +402,16 @@ export default function Navbar() {
 
   useEffect(() => {
     function handleClickOutside(event) {
+      // Ignore click-outside if target is inside the portaled music player dropdown menu
+      if (event.target && event.target.closest && event.target.closest('[data-music-player-portal="true"]')) {
+        return;
+      }
+
+      // Ignore if target is no longer connected (detached by React state transitions)
+      if (event.target && (!event.target.isConnected || !document.body.contains(event.target))) {
+        return;
+      }
+
       if (
         navRef.current && 
         !navRef.current.contains(event.target) &&

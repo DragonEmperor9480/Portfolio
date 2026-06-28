@@ -780,6 +780,12 @@ export default function NavMusicPlayer() {
   /* Click-outside */
   useEffect(() => {
     const handler = (e) => {
+      // If the target is no longer in the DOM, it was likely detached during a React state render
+      // (e.g. toggling the play/pause icon or switching tracks). Ignore these clicks.
+      if (e.target && (!e.target.isConnected || !document.body.contains(e.target))) {
+        return;
+      }
+
       if (
         panelRef.current && !panelRef.current.contains(e.target) &&
         btnRef.current   && !btnRef.current.contains(e.target)
@@ -869,6 +875,7 @@ export default function NavMusicPlayer() {
         <AnimatePresence>
           {isOpen && coords && (
             <DropdownPanel
+              data-music-player-portal="true"
               ref={panelRef}
               $top={coords.top}
               $right={coords.right}
