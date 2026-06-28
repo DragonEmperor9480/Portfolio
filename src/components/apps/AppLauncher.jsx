@@ -267,6 +267,36 @@ const AppSub = styled.span`
   font-weight: 500;
 `;
 
+const MobileWarningBanner = styled.div`
+  display: none;
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.25);
+  border-radius: 12px;
+  padding: 12px 16px;
+  margin: 24px 36px 0;
+  color: #fca5a5;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.75rem;
+  line-height: 1.5;
+  text-align: center;
+  box-sizing: border-box;
+
+  i {
+    margin-right: 8px;
+    color: #ef4444;
+  }
+
+  @media (max-width: 768px) {
+    display: block;
+  }
+
+  @media (max-width: 520px) {
+    margin: 16px 16px 0;
+    font-size: 0.7rem;
+    padding: 10px 12px;
+  }
+`;
+
 const LAUNCHER_APPS = [
   {
     id: 'terminal',
@@ -423,6 +453,10 @@ export default function AppLauncher() {
                       exit={{ height: 0, opacity: 0 }}
                       transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
                     >
+                      <MobileWarningBanner>
+                        <i className="fas fa-exclamation-triangle" />
+                        <span>Warning: Applications in this OS simulation are optimized for desktop input. Mobile devices may encounter layout or control limitations.</span>
+                      </MobileWarningBanner>
                       <AppGrid>
                         {LAUNCHER_APPS.map((app) => {
                           const isRunning = runningApps.some((ra) => ra.id === app.id);

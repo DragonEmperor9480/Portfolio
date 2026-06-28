@@ -659,7 +659,7 @@ export default function NavMusicPlayer() {
 
   const { currentTheme } = useTheme();
 
-  const [coords, setCoords] = useState({ top: 0, right: 0 });
+  const [coords, setCoords] = useState(null);
 
   const updateCoords = () => {
     if (btnRef.current) {
@@ -669,6 +669,12 @@ export default function NavMusicPlayer() {
         right: window.innerWidth - rect.right
       });
     }
+  };
+
+  const handleToggle = () => {
+    updateCoords();
+    playChime(!isOpen);
+    setIsOpen(o => !o);
   };
 
   useEffect(() => {
@@ -841,7 +847,7 @@ export default function NavMusicPlayer() {
       <TriggerBtn
         ref={btnRef}
         $isPlaying={isPlaying}
-        onClick={() => { playChime(!isOpen); setIsOpen(o => !o); }}
+        onClick={handleToggle}
         whileHover={{ scale: 1.04 }}
         whileTap={{ scale: 0.96 }}
         aria-label="Toggle media player"
@@ -861,7 +867,7 @@ export default function NavMusicPlayer() {
 
       {typeof document !== 'undefined' && createPortal(
         <AnimatePresence>
-          {isOpen && (
+          {isOpen && coords && (
             <DropdownPanel
               ref={panelRef}
               $top={coords.top}

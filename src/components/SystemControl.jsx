@@ -341,7 +341,7 @@ export default function SystemControl() {
   const buttonRef = useRef(null);
   const lastSoundTimeRef = useRef(0);
 
-  const [coords, setCoords] = useState({ top: 0, left: 0 });
+  const [coords, setCoords] = useState(null);
 
   const updateCoords = () => {
     if (buttonRef.current) {
@@ -351,6 +351,11 @@ export default function SystemControl() {
         left: rect.left
       });
     }
+  };
+
+  const handleToggle = () => {
+    updateCoords();
+    setIsOpen(o => !o);
   };
 
   useEffect(() => {
@@ -453,7 +458,7 @@ export default function SystemControl() {
   return (
     <ControlContainer>
       <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} ref={buttonRef}>
-        <StatusTrayButton onClick={() => setIsOpen(o => !o)} aria-label="Wireless Status and Controls">
+        <StatusTrayButton onClick={handleToggle} aria-label="Wireless Status and Controls">
           <TrayIcon $active={isOnline} $color="#4ade80">
             <i className={`fas fa-${isOnline ? 'wifi' : 'wifi-slash'}`} />
           </TrayIcon>
@@ -463,7 +468,7 @@ export default function SystemControl() {
 
       {typeof document !== 'undefined' && createPortal(
         <AnimatePresence>
-          {isOpen && (
+          {isOpen && coords && (
             <DropdownPanel
               ref={containerRef}
               $top={coords.top}

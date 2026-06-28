@@ -320,7 +320,7 @@ export default function SystemClock() {
   const menuRef = useRef(null);
   const buttonRef = useRef(null);
 
-  const [coords, setCoords] = useState({ top: 0, right: 0 });
+  const [coords, setCoords] = useState(null);
 
   const updateCoords = () => {
     if (buttonRef.current) {
@@ -330,6 +330,11 @@ export default function SystemClock() {
         right: window.innerWidth - rect.right
       });
     }
+  };
+
+  const handleToggle = () => {
+    updateCoords();
+    setIsOpen(o => !o);
   };
 
   useEffect(() => {
@@ -502,7 +507,7 @@ export default function SystemClock() {
         ref={buttonRef}
       >
         <ClockButton 
-          onClick={() => setIsOpen(!isOpen)}
+          onClick={handleToggle}
           aria-label="System Clock and Stats"
         >
           <i className="fas fa-clock icon" />
@@ -512,7 +517,7 @@ export default function SystemClock() {
 
       {typeof document !== 'undefined' && createPortal(
         <AnimatePresence>
-          {isOpen && (
+          {isOpen && coords && (
             <StatusMenu
               ref={menuRef}
               $top={coords.top}
