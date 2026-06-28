@@ -16,8 +16,9 @@ const ControlContainer = styled.div`
 `;
 
 const StatusTrayButton = styled(motion.button)`
-  background: ${({ theme }) => theme.name === 'Light Mode' ? 'rgba(0, 0, 0, 0.02)' : 'rgba(255, 255, 255, 0.03)'};
-  border: 1px solid ${({ theme }) => theme.name === 'Light Mode' ? 'rgba(0, 0, 0, 0.06)' : 'rgba(255, 255, 255, 0.08)'};
+  background: ${({ theme }) => `${theme.colors.primary}10`};
+  border: 1px solid ${({ theme }) => `${theme.colors.primary}40`};
+  color: ${({ theme }) => theme.colors.primary};
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   border-radius: 12px;
@@ -31,9 +32,9 @@ const StatusTrayButton = styled(motion.button)`
   outline: none;
 
   &:hover {
-    background: ${({ theme }) => theme.name === 'Light Mode' ? 'rgba(0, 0, 0, 0.04)' : 'rgba(255, 255, 255, 0.06)'};
-    border-color: ${({ theme }) => theme.name === 'Light Mode' ? 'rgba(0, 0, 0, 0.1)' : 'rgba(255, 255, 255, 0.15)'};
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    background: ${({ theme }) => `${theme.colors.primary}15`};
+    border-color: ${({ theme }) => theme.colors.primary}80;
+    box-shadow: 0 4px 12px ${({ theme }) => `${theme.colors.primary}20`};
   }
 
 
@@ -53,7 +54,7 @@ const StatusTrayButton = styled(motion.button)`
 `;
 
 const TrayIcon = styled.span`
-  color: ${props => props.$active ? props.$color : ({ theme }) => theme?.colors?.textSecondary || '#B3B3B3'};
+  color: ${props => props.$active ? props.$color : (props.theme?.colors?.textSecondary || '#B3B3B3')};
   opacity: ${props => props.$active ? 1 : 0.6};
   font-size: 0.85rem;
   display: flex;
@@ -327,7 +328,7 @@ const ModernSlider = styled.input`
 
 export default function SystemControl() {
   const [isOpen, setIsOpen] = useState(false);
-  const [isOnline, setIsOnline] = useState(navigator.onLine);
+  const [isOnline, setIsOnline] = useState(true);
   const [brightness, setBrightness] = useState(100);
   const { volume, setVolume } = usePlayer();
   const { setCurrentTheme } = useTheme();
@@ -400,6 +401,10 @@ export default function SystemControl() {
 
   // Sync online status
   useEffect(() => {
+    if (typeof navigator !== 'undefined') {
+      setIsOnline(navigator.onLine);
+    }
+
     const handleOnline = () => setIsOnline(true);
     const handleOffline = () => setIsOnline(false);
 

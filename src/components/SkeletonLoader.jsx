@@ -208,6 +208,11 @@ const LogArea = styled.div`
   &::-webkit-scrollbar {
     display: none;
   }
+
+  @media (max-width: 480px) {
+    height: 200px;
+    padding: 12px 14px;
+  }
 `;
 
 const LogLine = styled.div`
@@ -216,6 +221,10 @@ const LogLine = styled.div`
   color: rgba(255, 255, 255, 0.85);
   white-space: pre-wrap;
   word-break: break-all;
+
+  @media (max-width: 480px) {
+    font-size: 0.72rem;
+  }
 `;
 
 const StatusOk = styled.span`
@@ -238,6 +247,10 @@ const InteractiveCommand = styled.div`
   align-items: center;
   gap: 6px;
   margin-top: 4px;
+
+  @media (max-width: 480px) {
+    font-size: 0.74rem;
+  }
 `;
 
 const PromptPrefix = styled.span`
@@ -262,6 +275,10 @@ const LoadingSection = styled.div`
   display: flex;
   flex-direction: column;
   gap: 10px;
+
+  @media (max-width: 480px) {
+    padding: 14px 14px 18px;
+  }
 `;
 
 const LoadingHeader = styled.div`
@@ -274,11 +291,20 @@ const LoadingHeader = styled.div`
   letter-spacing: 0.05em;
   font-size: 0.95rem;
   color: #ffffff;
+  min-height: 24px;
+
+  @media (max-width: 480px) {
+    font-size: 0.75rem;
+    min-height: 34px;
+    align-items: flex-start;
+  }
 `;
 
 const FriendlyStatus = styled.span`
   color: #64ffda;
   text-shadow: 0 0 8px rgba(100, 255, 218, 0.2);
+  flex: 1;
+  margin-right: 12px;
 `;
 
 const ProgressBar = styled.div`

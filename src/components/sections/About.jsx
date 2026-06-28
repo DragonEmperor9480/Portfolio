@@ -132,6 +132,16 @@ const ArrowButton = styled(motion.button)`
       height: 16px;
     }
   }
+
+  @media (max-width: 400px) {
+    width: 32px;
+    height: 32px;
+    
+    svg {
+      width: 14px;
+      height: 14px;
+    }
+  }
 `;
 
 const CardViewport = styled.div`
@@ -146,6 +156,10 @@ const CardViewport = styled.div`
 
   @media (max-width: 768px) {
     min-height: 520px;
+  }
+
+  @media (max-width: 480px) {
+    min-height: 460px;
   }
 `;
 
@@ -165,6 +179,10 @@ const CategoryCard = styled(motion.div)`
   @media (max-width: 768px) {
     padding: 24px;
   }
+
+  @media (max-width: 480px) {
+    padding: 18px 14px;
+  }
 `;
 
 const CardHeader = styled.div`
@@ -174,6 +192,13 @@ const CardHeader = styled.div`
   margin-bottom: 16px;
   border-bottom: 1px solid ${({ theme }) => theme.colors.border};
   padding-bottom: 14px;
+
+  @media (max-width: 480px) {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+    padding-bottom: 10px;
+  }
 `;
 
 const CategoryTitle = styled.h3`
@@ -188,6 +213,10 @@ const CategoryTitle = styled.h3`
   @media (max-width: 600px) {
     font-size: 1.2rem;
   }
+
+  @media (max-width: 400px) {
+    font-size: 1rem;
+  }
 `;
 
 const CardIndex = styled.span`
@@ -195,6 +224,10 @@ const CardIndex = styled.span`
   font-size: 0.85rem;
   color: ${props => props.$color};
   font-weight: 600;
+
+  @media (max-width: 400px) {
+    font-size: 0.75rem;
+  }
 `;
 
 const CategoryDescription = styled.p`
@@ -210,6 +243,11 @@ const SkillsGrid = styled.div`
   grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
   gap: 16px;
   margin-top: auto;
+
+  @media (max-width: 480px) {
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 10px;
+  }
 `;
 
 const SkillCard = styled(motion.div)`
