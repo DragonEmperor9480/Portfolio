@@ -1,8 +1,9 @@
 {
   "name": "amrutesh-naregal-portfolio",
   "private": true,
-  "version": "2.1.0",
+  "version": "4.0.0",
   "type": "module",
+  "license": "GPL-3.0-only",
   "scripts": {
     "dev": "next dev",
     "build": "next build",

@@ -491,7 +491,7 @@ export default function Navbar() {
                 <ActionButton 
                   as="a"
                   $primary
-                  href="https://drive.google.com/file/d/1WUu8oNh8mLDHmN2Zovze9BHVIUmzldGW/view?usp=sharing"
+                  href="https://drive.google.com/file/d/1X8IcxuXwUe62PLu-50WHdapJpFFZ-Hsr/view?usp=sharing"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
@@ -572,7 +572,7 @@ export default function Navbar() {
                   <ActionButton 
                     as="a"
                     $primary
-                    href="https://drive.google.com/file/d/1WUu8oNh8mLDHmN2Zovze9BHVIUmzldGW/view?usp=sharing"
+                    href="https://drive.google.com/file/d/1X8IcxuXwUe62PLu-50WHdapJpFFZ-Hsr/view?usp=sharing"
                     target="_blank"
                     rel="noopener noreferrer"
                   >
