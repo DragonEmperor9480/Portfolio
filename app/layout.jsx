@@ -4,10 +4,11 @@ import './globals.css';
 export const metadata = {
   title: 'Amrutesh Naregal | Portfolio',
   description:
-    "Explore Amrutesh Naregal's portfolio — a tech enthusiast passionate about full-stack development, DevOps, cloud engineering, and AI-powered applications.",
+    "Explore Amrutesh Naregal's portfolio — a backend engineer specializing in cloud computing, server architectures, and DevOps practices.",
   keywords: [
     'Amrutesh Naregal',
     'Full-Stack Developer',
+    'Backend Engineer',
     'DevOps',
     'Cloud Engineer',
     'AI',
@@ -117,9 +118,9 @@ export default function RootLayout({ children }) {
                 'https://www.linkedin.com/in/amrutesh-naregal',
                 'https://t.me/Kamisato_Amrut',
               ],
-              jobTitle: 'Full-Stack Developer & Cloud Engineer',
+              jobTitle: 'Full-Stack Developer & Cloud DevOps Engineer',
               description:
-                'Tech enthusiast passionate about full-stack development, DevOps, cloud engineering, and AI-powered applications.',
+                'Tech enthusiast passionate about backend engineering, cloud computing, and DevOps practices.',
             }),
           }}
         />

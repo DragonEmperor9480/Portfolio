@@ -405,11 +405,10 @@ const SocialLink = styled(motion.a)`
 `;
 
 const roles = [
-  "Cloud Engineer",
-  "Backend Developer",
+  "Backend Engineer",
+  "Cloud & DevOps Engineer",
   "ROM Developer",
-  "Linux Enthusiast",
-  "Tech Explorer"
+  "Linux Enthusiast"
 ];
 
 export default function Hero() {
